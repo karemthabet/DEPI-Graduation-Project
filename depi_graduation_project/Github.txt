@@ -1,0 +1,119 @@
+Branch Naming Convention {branch-naming}
+Basic Rules:
+type/short-description-in-english
+
+Branch Types:
+- feature/New feature
+- fix/Bug fix
+- hotfix/Critical production fix
+- refactor/Code improvement
+
+Examples:
+```
+feature/user-authentication
+fix/login-validation-error
+hotfix/payment-gateway-crash
+refactor/database-connection
+
+------------------------------------------------------------------------------------------------------------
+
+Commit Message Standards {commit-standards}
+
+Basic Template:
+```
+type: brief description (50 characters max)
+
+- First detail
+- Second detail
+- Third detail
+
+Final result or benefit
+```
+
+Commit Types:
+
+feat: New feature
+```
+feat: Add invoice pagination with auto-refresh
+
+- Implement scroll-based infinite loading
+- Add TabController with smart listeners
+- Fix Provider context issues
+
+Users can now browse invoices seamlessly without manual refresh
+```
+
+fix: Bug fix
+```
+fix: Resolve ProviderNotFoundException in tab listeners
+
+- Save correct Provider context in _providerContext
+- Update all listeners to use saved context
+- Add null checks for safety
+
+App no longer crashes when switching between tabs
+```
+
+refactor: Code improvement
+```
+refactor: Simplify pagination logic
+
+- Replace complex merge logic with simple spread operator
+- Remove duplicate code in loadMore()
+- Extract common functions to utils
+
+Code is now 40% more readable and maintainable
+```
+
+style: - UI/UX improvement
+```
+style: Enhance invoice card design
+
+- Add colored backgrounds for action buttons
+- Improve spacing and typography
+- Add subtle animations
+
+Better user experience with modern card design
+```
+
+perf: - Performance improvement
+```
+perf: Optimize data loading with parallel requests
+
+- Use Future.wait() for concurrent tab refresh
+- Implement smart caching for repeated requests
+- Reduce unnecessary API calls
+
+Loading time reduced by 60%
+```
+
+------------------------------------------------------------------------------
+
+Code Review Standards {#code-review-standards}
+
+Review Criteria:
+
+What to Look For:
+- Clarity: Is the code clear and understandable?
+- Performance: Are there possible improvements?
+- Security: Are there security vulnerabilities?
+- Tests: Are changes covered by tests?
+- Documentation: Is documentation updated?
+
+
+Comment Style:
+```
+Good: "Performance can be improved here using async/await"
+Bad: "This code is bad"
+
+Good: "Suggestion: Use const here for better performance"
+Bad: "Change this"
+```
+
+Comment Categories:
+- Critical: Must be fixed before merge
+- Suggestion: Improvement suggestion
+- Question: Question for clarification
+- Praise: Praise for good code
+
+

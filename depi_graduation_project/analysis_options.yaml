@@ -1,28 +1,80 @@
-# This file configures the analyzer, which statically analyzes Dart code to
-# check for errors, warnings, and lints.
-#
-# The issues identified by the analyzer are surfaced in the UI of Dart-enabled
-# IDEs (https://dart.dev/tools#ides-and-editors). The analyzer can also be
-# invoked from the command line by running `flutter analyze`.
+# analysis_options.yaml
+# =====================
+# This file configures lint rules (Analyzer rules).
+# It helps catch bad practices early and enforces clean code style.
 
-# The following line activates a set of recommended lints for Flutter apps,
-# packages, and plugins designed to encourage good coding practices.
+# 1️⃣ Inherit recommended Flutter rules
 include: package:flutter_lints/flutter.yaml
 
 linter:
-  # The lint rules applied to this project can be customized in the
-  # section below to disable rules from the `package:flutter_lints/flutter.yaml`
-  # included above or to enable additional rules. A list of all available lints
-  # and their documentation is published at https://dart.dev/lints.
-  #
-  # Instead of disabling a lint rule for the entire project in the
-  # section below, it can also be suppressed for a single line of code
-  # or a specific dart file by using the `// ignore: name_of_lint` and
-  # `// ignore_for_file: name_of_lint` syntax on the line or in the file
-  # producing the lint.
   rules:
-    # avoid_print: false  # Uncomment to disable the `avoid_print` rule
-    # prefer_single_quotes: true  # Uncomment to enable the `prefer_single_quotes` rule
+    # --------------------------
+    # ✅ Const usage (performance + memory optimization)
+    # --------------------------
+    prefer_const_constructors: true
+    # Example:
+    #   Text("Hi")   ❌
+    #   const Text("Hi") ✅
 
-# Additional information about this file can be found at
-# https://dart.dev/guides/language/analysis-options
+    prefer_const_literals_to_create_immutables: true
+    # Example:
+    #   final list = [1,2,3];  ❌
+    #   const list = [1,2,3]; ✅
+
+    prefer_const_declarations: true
+    # Example:
+    #   final pi = 3.14; ❌
+    #   const pi = 3.14; ✅
+
+    # --------------------------
+    # ✅ Logging & debugging
+    # --------------------------
+    avoid_print: true
+    # Prevent using print() → Use logger instead (e.g., debugPrint / developer.log)
+
+    # --------------------------
+    # ✅ Widgets
+    # --------------------------
+    avoid_unnecessary_containers: true
+    # Warns if Container has no decoration/constraints and only wraps another widget
+    # Example:
+    #   Container(child: Text("Hi")) ❌
+    #   Text("Hi") ✅
+
+    # --------------------------
+    # ✅ Formatting & style
+    # --------------------------
+    require_trailing_commas: true
+    # Helps auto-formatting be cleaner (esp. in multi-line widgets)
+    # Example:
+    #   Column(
+    #     children: [
+    #       Text("One"),
+    #       Text("Two")   ❌
+    #     ],
+    #   )
+    #
+    #   Column(
+    #     children: [
+    #       Text("One"),
+    #       Text("Two"), ✅
+    #     ],
+    #   )
+
+    prefer_final_locals: true
+    # Forces local variables to be final if never reassigned
+    # Example:
+    #   var name = "Karem"; ❌
+    #   final name = "Karem"; ✅
+
+    unnecessary_this: true
+    # Prevents writing "this." when not needed
+    # Example:
+    #   this.name = "Ali"; ❌ (inside class)
+    #   name = "Ali"; ✅
+
+    prefer_single_quotes: true
+    # Enforce using single quotes for strings
+    # Example:
+    #   print("Hello"); ❌
+    #   print('Hello'); ✅
