@@ -68,36 +68,36 @@ The main goal of the app is to **enhance the tourism experience in Egypt** by or
 
 ### 🧭 Onboarding Screens  
 <div align="center">
-  <img src="assets/images/Onboarding .png" alt="Onboarding Screens" width="600"/>
+  <img src="./depi_graduation_project/assets/images/Onboarding .png" alt="Onboarding Screens" width="600"/>
 </div>
 
 ---
 
 ### 👋 Splash & Welcome Screens  
 <div align="center">
-  <img src="assets/images/splash,welcome.png" alt="Splash & Welcome Screens" width="600"/>
+  <img src="./depi_graduation_project/assets/images/splash,welcome.png" alt="Splash & Welcome Screens" width="600"/>
 </div>
 
 ---
 
 ### 🏠 Home & Places  
 <div align="center">
-  <img src="assets/images/home,place,category.png" alt="Home & Places Screens" width="600"/>
+  <img src="./depi_graduation_project/assets/images/home,place,category.png" alt="Home & Places Screens" width="600"/>
 </div>
 
 ---
 
 ### 🔖 Visit List & Favorites  
 <div align="center">
-  <img src="assets/images/Visit List,favourites.png" alt="Visit List and Favorites" width="600"/>
+  <img src="./depi_graduation_project/assets/images/Visit List,favourites.png" alt="Visit List and Favorites" width="600"/>
 </div>
 
 ---
 
 ### ⚙️ Settings & Authentication  
 <div align="center">
-  <img src="assets/images/Setting.png" alt="Settings Screen" width="600"/>
-  <img src="assets/images/auth.png" alt="Auth Screen" width="600"/>
+  <img src="./depi_graduation_project/assets/images/Setting.png" alt="Settings Screen" width="600"/>
+  <img src="./depi_graduation_project/assets/images/auth.png" alt="Auth Screen" width="600"/>
 </div>
 
 ---
