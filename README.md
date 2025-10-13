@@ -1,7 +1,7 @@
 # 🏖️ Tour Guide App (Guidee) – Explore Egypt Smartly  
 
 <div align="center">
-  <img src="assets/images/splash,welcome.png" alt="Splash & Welcome Screens" width="600"/>
+  <img src="./depi_graduation_project/assets/images/splash,welcome.png" alt="Splash & Welcome Screens" width="600"/>
 </div>
 
 ---
