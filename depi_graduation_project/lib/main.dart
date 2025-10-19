@@ -12,6 +12,13 @@ void main() async {
 
     // Run the app with ScreenUtil for responsive design
     runApp(  const MyApp());
+
+
+
+    
+
+
+    
   } catch (e, stackTrace) {
     // Handle any initialization errors
     debugPrint('فشل تشغيل التطبيق: $e\n$stackTrace');
