@@ -99,7 +99,7 @@ static void showLoading(
   //   },
   // );
   static Future<void> showSuccess(
-    BuildContext context, {
+    BuildContext context, String s, {
     String? title,
     String? message,
     String okLabel = 'حسناً',

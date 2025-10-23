@@ -5,9 +5,10 @@ abstract class AppTheme {
  static ThemeData get light {
    return ThemeData(
      useMaterial3: true,
-     scaffoldBackgroundColor: AppColors.error
+     scaffoldBackgroundColor: AppColors.white
      
    );
+  
  }
   static ThemeData get dark {
    return ThemeData(
