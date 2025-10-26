@@ -5,7 +5,8 @@ class RoutesName {
   static const String chatList = '/chatList';
   static const String calenderView = '/calenderView';
   static const String profileView = '/profileView';
+  static const String editProfileView = '/editProfileView';
+  static const String languageProfileView = '/languageProfileView';
   static const String chatDetails = '/chatDetails';
   static const String mainView = '/mainView';
-
 }

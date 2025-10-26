@@ -3,11 +3,11 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 /// 🎨 AppTextStyles
-/// 
+///
 /// - تستخدم خط Cairo.
 /// - تدعم Light و Dark themes.
 /// - مرنة وسهلة التخصيص لأي مشروع.
-/// 
+///
 /// الاستخدام:
 /// ```dart
 /// Text(
@@ -17,60 +17,39 @@ import 'package:google_fonts/google_fonts.dart';
 /// ```
 class AppTextStyles {
   /// 🟢 Heading 1
-  static TextStyle displayLarge(BuildContext context) => _baseStyle(
-        context,
-        size: 32,
-        weight: FontWeight.bold,
-      );
+  static TextStyle displayLarge(BuildContext context) =>
+      _baseStyle(context, size: 32, weight: FontWeight.bold);
 
   /// 🟢 Heading 2
-  static TextStyle displayMedium(BuildContext context) => _baseStyle(
-        context,
-        size: 24,
-        weight: FontWeight.w600,
-      );
+  static TextStyle displayMedium(BuildContext context) =>
+      _baseStyle(context, size: 24, weight: FontWeight.w600);
 
   /// 🟢 Title Large
-  static TextStyle titleLarge(BuildContext context) => _baseStyle(
-        context,
-        size: 20,
-        weight: FontWeight.w600,
-      );
+  static TextStyle titleLarge(BuildContext context) =>
+      _baseStyle(context, size: 20, weight: FontWeight.w600);
 
   /// 🟢 Title Medium
-  static TextStyle titleMedium(BuildContext context) => _baseStyle(
-        context,
-        size: 18,
-        weight: FontWeight.w500,
-      );
+  static TextStyle titleMedium(BuildContext context) =>
+      _baseStyle(context, size: 18, weight: FontWeight.w500);
 
   /// 🟢 Body main text
-  static TextStyle bodyLarge(BuildContext context) => _baseStyle(
-        context,
-        size: 16,
-        weight: FontWeight.normal,
-      );
+  static TextStyle bodyLarge(BuildContext context) =>
+      _baseStyle(context, size: 16, weight: FontWeight.normal);
 
   /// 🟢 Secondary body text
-  static TextStyle bodyMedium(BuildContext context) => _baseStyle(
-        context,
-        size: 14,
-        weight: FontWeight.normal,
-      );
+  static TextStyle bodyMedium(BuildContext context) =>
+      _baseStyle(context, size: 14, weight: FontWeight.normal);
 
   /// 🟢 Small body text
-  static TextStyle bodySmall(BuildContext context) => _baseStyle(
-        context,
-        size: 12,
-        weight: FontWeight.normal,
-      );
+  static TextStyle bodySmall(BuildContext context) =>
+      _baseStyle(context, size: 12, weight: FontWeight.normal);
 
   /// 🟢 Label / Buttons
-  static TextStyle labelLarge(BuildContext context) => _baseStyle(
-        context,
-        size: 12,
-        weight: FontWeight.w500,
-      );
+  static TextStyle labelLarge(BuildContext context) =>
+      _baseStyle(context, size: 12, weight: FontWeight.w500);
+
+  static TextStyle appBarTitle(BuildContext context) =>
+      _baseStyle(context, size: 12, weight: FontWeight.w500);
 
   /// 🧩 Base method (auto adapts color)
   static TextStyle _baseStyle(
@@ -82,7 +61,7 @@ class AppTextStyles {
         ? Colors.white
         : Colors.black;
 
-    return GoogleFonts.cairo(
+    return GoogleFonts.inter(
       fontSize: size.sp,
       fontWeight: weight,
       color: color,

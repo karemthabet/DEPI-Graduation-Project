@@ -1,8 +1,11 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
+
+import 'package:whatsapp/core/utils/colors/app_colors.dart';
 
 class PasswordField extends StatefulWidget {
   const PasswordField({
-    super.key,
+    Key? key,
     this.controller,
     this.onSaved,
     this.validator,
@@ -10,12 +13,13 @@ class PasswordField extends StatefulWidget {
     this.textInputType = TextInputType.text,
     this.focusNode,
     this.obscureColor = Colors.grey,
+    this.cursorColor,
     this.textStyle,
     this.hintStyle,
     this.border,
     this.focusedBorder,
     this.enabledBorder,
-  });
+  }) : super(key: key);
 
   final TextEditingController? controller;
   final Function(String?)? onSaved;
@@ -24,6 +28,7 @@ class PasswordField extends StatefulWidget {
   final TextInputType textInputType;
   final FocusNode? focusNode;
   final Color obscureColor;
+  final Color? cursorColor;
   final TextStyle? textStyle;
   final TextStyle? hintStyle;
   final InputBorder? border;
@@ -46,34 +51,44 @@ class _PasswordFieldState extends State<PasswordField> {
       focusNode: widget.focusNode,
       keyboardType: widget.textInputType,
       obscureText: !isPasswordVisible,
-      cursorColor: widget.obscureColor,
-      style: widget.textStyle ??
+      onTapOutside: (event) => FocusScope.of(context).unfocus(),
+
+      cursorColor: widget.cursorColor ?? AppColors.darkBlue,
+
+      style:
+          widget.textStyle ??
           theme.textTheme.bodyMedium?.copyWith(
-            fontWeight: FontWeight.w500,
+            fontWeight: FontWeight.w400,
             fontSize: 14,
           ),
       decoration: InputDecoration(
         hintText: widget.hintText,
-        hintStyle: widget.hintStyle ??
+        hintStyle:
+            widget.hintStyle ??
             theme.textTheme.bodyMedium?.copyWith(
               color: Colors.grey,
               fontSize: 14,
             ),
-        border: widget.border ??
+        border:
+            widget.border ??
+            OutlineInputBorder(borderRadius: BorderRadius.circular(30)),
+
+        focusedBorder:
+            widget.focusedBorder ??
             OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(30),
+              borderSide: const BorderSide(
+                color: AppColors.darkBlue,
+                width: 1.5,
+              ),
             ),
-        focusedBorder: widget.focusedBorder ??
+
+        enabledBorder:
+            widget.enabledBorder ??
             OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
-              borderSide: BorderSide(color: widget.obscureColor, width: 1.5),
-            ),
-        enabledBorder: widget.enabledBorder ??
-            OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(30),
               borderSide: const BorderSide(color: Colors.grey),
             ),
-        // 👇 الأيقونة بتفضل ظاهرة دايمًا
         suffixIcon: IconButton(
           splashRadius: 20,
           onPressed: () {
@@ -87,7 +102,8 @@ class _PasswordFieldState extends State<PasswordField> {
           ),
         ),
       ),
-      validator: widget.validator ??
+      validator:
+          widget.validator ??
           (value) {
             if (value == null || value.isEmpty) {
               return 'Please enter ${widget.hintText}';

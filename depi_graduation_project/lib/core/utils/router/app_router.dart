@@ -4,13 +4,15 @@ import 'package:whatsapp/core/utils/router/routes_name.dart';
 import 'package:whatsapp/features/calender_view.dart';
 import 'package:whatsapp/features/chat_view.dart';
 import 'package:whatsapp/features/home_view.dart';
-import 'package:whatsapp/features/profile_view.dart';
+import 'package:whatsapp/features/profile/presentation/views/edit_profile_view.dart';
+import 'package:whatsapp/features/profile/presentation/views/language_profile_view.dart';
+import 'package:whatsapp/features/profile/presentation/views/profile_veiw.dart';
 import 'package:whatsapp/features/root_navigation_glass/presentation/views/main_view.dart';
 import 'package:whatsapp/features/splash/presentation/views/splash_view.dart';
 
 class AppRouter {
   static final router = GoRouter(
-    initialLocation: RoutesName.mainView,
+    initialLocation: RoutesName.profileView,
     errorBuilder: (context, state) => const General404Page(),
     routes: [
       GoRoute(
@@ -18,7 +20,7 @@ class AppRouter {
         path: RoutesName.splash,
         builder: (context, state) => const SplashView(),
       ),
-       GoRoute(
+      GoRoute(
         name: RoutesName.mainView,
         path: RoutesName.mainView,
         builder: (context, state) => const MainView(),
@@ -36,7 +38,17 @@ class AppRouter {
       GoRoute(
         name: RoutesName.profileView,
         path: RoutesName.profileView,
-        builder: (context, state) => const ProfileView(),
+        builder: (context, state) => const ProfileVeiw(),
+      ),
+      GoRoute(
+        name: RoutesName.editProfileView,
+        path: RoutesName.editProfileView,
+        builder: (context, state) => const EditProfileView(),
+      ),
+      GoRoute(
+        name: RoutesName.languageProfileView,
+        path: RoutesName.languageProfileView,
+        builder: (context, state) => const LanguageProfileView(),
       ),
       GoRoute(
         name: RoutesName.chatList,
