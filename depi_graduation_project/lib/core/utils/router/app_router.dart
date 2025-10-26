@@ -7,18 +7,19 @@ import 'package:whatsapp/features/home_view.dart';
 import 'package:whatsapp/features/profile_view.dart';
 import 'package:whatsapp/features/root_navigation_glass/presentation/views/main_view.dart';
 import 'package:whatsapp/features/splash/presentation/views/splash_view.dart';
+import 'package:whatsapp/features/login/presentation/views/widgets/login_view.dart';
 
 class AppRouter {
   static final router = GoRouter(
-    initialLocation: RoutesName.mainView,
+    initialLocation: RoutesName.login,
     errorBuilder: (context, state) => const General404Page(),
     routes: [
       GoRoute(
-        name: RoutesName.splash,
-        path: RoutesName.splash,
-        builder: (context, state) => const SplashView(),
+        name: RoutesName.login,
+        path: RoutesName.login,
+        builder: (context, state) => const LoginView(),
       ),
-       GoRoute(
+      GoRoute(
         name: RoutesName.mainView,
         path: RoutesName.mainView,
         builder: (context, state) => const MainView(),
