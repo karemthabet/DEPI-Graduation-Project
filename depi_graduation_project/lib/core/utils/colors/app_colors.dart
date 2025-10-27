@@ -4,6 +4,8 @@ abstract class AppColors {
   // Core
   static const Color primaryColor = Color(0xFF075E54);
   static const Color secondaryColor = Color(0xFF128C7E);
+  static const Color selectionNavBarColor = Color(0xFFffe26d);
+  static const Color unselectionNavBarColor = Color(0xFF929fa5);
 
   // Neutrals
   static const Color white = Colors.white;

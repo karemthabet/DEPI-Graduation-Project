@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:whatsapp/core/functions/hide_status_bar.dart';
 import 'core/helper/app_logger.dart';
 
 class AppInitializer {
@@ -14,6 +15,7 @@ class AppInitializer {
       
       // Initialize logger
       _initLogger();
+      hideStatusBar();
       
       AppLogger.info('تم تهيئة التطبيق بنجاح', tag: 'AppInitializer');
     } catch (e, stackTrace) {
