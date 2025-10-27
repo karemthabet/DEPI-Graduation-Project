@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+
 import 'package:whatsapp/core/utils/colors/app_colors.dart';
 
 class CustomTextFormField extends StatelessWidget {
@@ -23,6 +23,7 @@ class CustomTextFormField extends StatelessWidget {
     this.contentPadding,
     this.fillColor,
     this.filled = false,
+    this.focusNode,
   });
 
   /// Basic field behavior
@@ -48,54 +49,61 @@ class CustomTextFormField extends StatelessWidget {
   final EdgeInsetsGeometry? contentPadding;
   final Color? fillColor;
   final bool filled;
+  final FocusNode? focusNode;
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
     return TextFormField(
+      focusNode: focusNode,
       enabled: enabled,
       controller: controller,
       keyboardType: textInputType,
       maxLines: maxLines,
-      cursorColor: cursorColor ?? AppColors.primaryColor,
-      style: textStyle ??
+      cursorColor: cursorColor ?? AppColors.darkBlue,
+      onTapOutside: (event) => FocusScope.of(context).unfocus(),
+
+      style:
+          textStyle ??
           theme.textTheme.bodyMedium?.copyWith(
-            fontWeight: FontWeight.w500,
-            fontSize: 14.sp,
+            fontWeight: FontWeight.w400,
+            fontSize: 14,
           ),
       decoration: InputDecoration(
         hintText: hintText,
-        hintStyle: hintStyle ??
+        hintStyle:
+            hintStyle ??
             theme.textTheme.bodyMedium?.copyWith(
               color: Colors.grey,
-              fontSize: 14.sp,
+              fontSize: 14,
             ),
         prefixIcon: prefixIcon,
         suffixIcon: suffixIcon,
         filled: filled,
         fillColor: fillColor,
-        contentPadding:
-            contentPadding ?? EdgeInsets.symmetric(horizontal: 16.w, vertical: 14.h),
-        border: border ??
+
+        border:
+            border ??
+            OutlineInputBorder(borderRadius: BorderRadius.circular(30)),
+        focusedBorder:
+            focusedBorder ??
             OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12.r),
-            ),
-        focusedBorder: focusedBorder ??
-            OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12.r),
+              borderRadius: BorderRadius.circular(30),
               borderSide: const BorderSide(
-                color: AppColors.primaryColor,
+                color: AppColors.darkBlue,
                 width: 1.5,
               ),
             ),
-        enabledBorder: enabledBorder ??
+        enabledBorder:
+            enabledBorder ??
             OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12.r),
+              borderRadius: BorderRadius.circular(30),
               borderSide: const BorderSide(color: Colors.grey),
             ),
       ),
-      validator: validator ??
+      validator:
+          validator ??
           (value) {
             if (value == null || value.isEmpty) {
               return 'Please enter $hintText';
