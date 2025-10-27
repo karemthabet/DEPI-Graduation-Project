@@ -11,7 +11,7 @@ import 'package:whatsapp/features/profile/presentation/views/profile_veiw.dart';
 
 class AppRouter {
   static final router = GoRouter(
-    initialLocation: RoutesName.profileView,
+    initialLocation: RoutesName.mainView,
     errorBuilder: (context, state) => const General404Page(),
     routes: [
       GoRoute(
@@ -44,6 +44,9 @@ class AppRouter {
         name: RoutesName.editProfileView,
         path: RoutesName.editProfileView,
         builder: (context, state) => const EditProfileView(),
+        
+      ),
+       GoRoute(
         name: RoutesName.homeView,
         path: RoutesName.homeView,
         builder: (context, state) => const HomeView(),

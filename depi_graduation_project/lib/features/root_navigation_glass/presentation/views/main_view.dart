@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:whatsapp/features/home/presentation/views/home_view.dart';
+import 'package:whatsapp/features/profile/presentation/views/profile_veiw.dart';
 import 'package:whatsapp/features/root_navigation_glass/presentation/views/widgets/custom_glass_nav_bar.dart';
 
 class MainView extends StatefulWidget {
@@ -20,7 +21,7 @@ class _MainViewState extends State<MainView> {
     Center(
       child: IconButton(onPressed: () {}, icon: const Icon(Icons.favorite_border,)),
     ),
-    Center(child: IconButton(onPressed: () {}, icon: const Icon(Icons.person))),
+   const ProfileVeiw()
   ];
 
   @override
