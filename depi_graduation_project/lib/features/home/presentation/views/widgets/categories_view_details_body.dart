@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:whatsapp/core/utils/assets/app_assets.dart';
 import 'package:whatsapp/features/home/data/models/item_model.dart';
 
 class CategoriesViewDetailsBody extends StatefulWidget {
