@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:whatsapp/core/Cached/secure_storage.dart';
-import 'package:whatsapp/core/functions/device_size.dart';
 import 'package:whatsapp/core/utils/colors/app_colors.dart';
 import 'package:whatsapp/core/utils/router/routes_name.dart';
-import 'package:whatsapp/core/utils/styles/app_text_styles.dart';
 
 class SplashViewBody extends StatefulWidget {
   const SplashViewBody({super.key});
@@ -13,52 +11,112 @@ class SplashViewBody extends StatefulWidget {
   State<SplashViewBody> createState() => _SplashViewBodyState();
 }
 
-class _SplashViewBodyState extends State<SplashViewBody> {
+class _SplashViewBodyState extends State<SplashViewBody>
+    with SingleTickerProviderStateMixin {
+  
+  late AnimationController _animationController;
+  late Animation<Offset> _slideAnimation; // Image 1 (slides down)
+  late Animation<Offset> _slideAnimation2; // Image 2 (slides up)
+  late Animation<double> _fadeAnimation2; // Fade for Image 2
+
   @override
   void initState() {
     super.initState();
-    checkAuthAndNavigate();
+
+    // Total duration for both animations to complete: 5000ms (5 seconds)
+    _animationController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 5000),
+    );
+
+    // 1. Image 1 slides down (0.0 → 0.5)
+    _slideAnimation = Tween<Offset>(
+      begin: const Offset(0, -3.0),
+      end: Offset.zero,
+    ).animate(
+      CurvedAnimation(
+        parent: _animationController,
+        curve: const Interval(0.0, 0.5, curve: Curves.easeOutCubic),
+      ),
+    );
+    
+    // 2. Image 2 slides up (0.5 → 1.0)
+    _slideAnimation2 = Tween<Offset>(
+      begin: const Offset(0, 3.0),
+      end: Offset.zero,
+    ).animate(
+      CurvedAnimation(
+        parent: _animationController,
+        curve: const Interval(0.5, 1.0, curve: Curves.easeOutCubic),
+      ),
+    );
+
+    // 3. Fade-in animation for Image 2 (0.5 → 1.0)
+    _fadeAnimation2 = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(
+        parent: _animationController,
+        curve: const Interval(0.5, 1.0, curve: Curves.linear),
+      ),
+    );
+
+    // Start animation
+    _animationController.forward();
+
+    // Start navigation after delay
+    _checkAuthAndNavigate();
   }
 
-  Future<void> checkAuthAndNavigate() async {
-    await Future.delayed(const Duration(seconds: 3));
+  @override
+  void dispose() {
+    _animationController.dispose();
+    super.dispose();
+  }
 
-    // Use the storage methods
+  Future<void> _checkAuthAndNavigate() async {
+    // Wait only 5 seconds before navigation
+    await Future.delayed(const Duration(seconds: 5));
+
     final token = await SecureStorageService.getAccessToken();
 
     if (!mounted) return;
 
     if (token == null || token.isEmpty) {
-      if (context.mounted) {
-        context.go(RoutesName.login);
-      }
+      context.go(RoutesName.onboarding);
     } else {
-      if (context.mounted) {
-        context.go(RoutesName.homePage);
-      }
+      context.go(RoutesName.homePage);
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    final height = screenHeight(context);
-    final width = screenWidth(context);
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisSize: MainAxisSize.min,
         children: [
-          // Image.asset(
-          //   AppAssets.imagesLogo,
-          //   width: width * 0.4,
-          //   height: height * 0.2,
-          //   fit: BoxFit.contain,
-          // ),
-          SizedBox(height: height * 0.001),
-          Text(
-            'Chat App',
-            style: AppTextStyles.displayLarge(
-              context,
-            ).copyWith(color: AppColors.success),
+          /// Image 1: slides from top
+          SlideTransition(
+            position: _slideAnimation,
+            child: Image.asset(
+              'assets/images/image.png',
+              width: 120,
+              height: 120,
+              fit: BoxFit.contain,
+            ),
+          ),
+
+          /// Image 2: slides from bottom + fades in
+          FadeTransition(
+            opacity: _fadeAnimation2,
+            child: SlideTransition(
+              position: _slideAnimation2,
+              child: Image.asset(
+                'assets/images/guide.png',
+                width: 80,
+                height: 40,
+                fit: BoxFit.contain,
+              ),
+            ),
           ),
         ],
       ),

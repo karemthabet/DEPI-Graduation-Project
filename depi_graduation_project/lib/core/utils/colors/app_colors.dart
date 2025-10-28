@@ -20,4 +20,10 @@ abstract class AppColors {
   static const Color outlineInputBorder = Color(0xff6E6D6D);
   static const Color profileIcon = Color(0xffB3B3B3);
   static const Color cardBackground = Colors.white;
+
+
+  static const Color primaryYellow = Color(0xFFFEE12B);
+  static const Color primaryBlue = Color(0xFF335DFF);
+  static const Color lightGray = Color(0xFFE0E0E0);
+  static const Color darkText = Color(0xFF222222);
 }
