@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:whatsapp/core/Cached/secure_storage.dart';
-import 'package:whatsapp/core/utils/colors/app_colors.dart';
 import 'package:whatsapp/core/utils/router/routes_name.dart';
 
 class SplashViewBody extends StatefulWidget {
@@ -69,6 +68,7 @@ class _SplashViewBodyState extends State<SplashViewBody>
   @override
   void dispose() {
     _animationController.dispose();
+    
     super.dispose();
   }
 
