@@ -8,10 +8,12 @@ import 'package:whatsapp/features/home/presentation/views/home_view.dart';
 import 'package:whatsapp/features/root_navigation_glass/presentation/views/main_view.dart';
 import 'package:whatsapp/features/profile/presentation/views/edit_profile_view.dart';
 import 'package:whatsapp/features/profile/presentation/views/profile_veiw.dart';
+import 'package:whatsapp/features/onboarding1/onboarding_view.dart';
+import 'package:whatsapp/features/splash/presentation/views/splash_view.dart';
 
 class AppRouter {
   static final router = GoRouter(
-    initialLocation: RoutesName.mainView,
+    initialLocation: RoutesName.splash,
     errorBuilder: (context, state) => const General404Page(),
     routes: [
       GoRoute(
@@ -53,6 +55,11 @@ class AppRouter {
       ),
     
       
+        GoRoute(
+        name: RoutesName.onboarding,
+        path: RoutesName.onboarding,
+        builder: (context, state) => const OnboardingView(),
+      ),
     ],
   );
 }

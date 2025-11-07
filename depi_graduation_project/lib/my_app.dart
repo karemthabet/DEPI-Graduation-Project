@@ -18,17 +18,16 @@ class MyApp extends StatelessWidget {
           theme: AppTheme.light,
           title: 'DEPI Graduation Project',
           debugShowCheckedModeBanner: false,
+          routerConfig: AppRouter.router,
           builder: (context, widget) {
             // Set text scale factor to 1.0 to prevent system font scaling
             return MediaQuery(
               data: MediaQuery.of(context).copyWith(
-                devicePixelRatio: ScreenUtil().pixelRatio,
-                textScaler: const TextScaler.linear(1.0),
+                devicePixelRatio: ScreenUtil().pixelRatio, textScaler: const TextScaler.linear(1.0),
               ),
-              child: widget!,
+              child: widget ?? const SizedBox.shrink(),
             );
           },
-          routerConfig: AppRouter.router,
         );
       },
     );

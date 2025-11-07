@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:whatsapp/my_app.dart';
-import 'package:whatsapp/app_initializer.dart';
+import 'app_initializer.dart';
+import 'my_app.dart';
 
 void main() async {
-  try {
-    // Ensure Flutter binding is initialized
-    WidgetsFlutterBinding.ensureInitialized();
+  WidgetsFlutterBinding.ensureInitialized();
 
-    // Initialize app services
+  try {
     await AppInitializer.init();
 
     // Run the app with ScreenUtil for responsive design
@@ -15,6 +13,6 @@ void main() async {
   } catch (e, stackTrace) {
     // Handle any initialization errors
     debugPrint('فشل                   تشغيل التطبيق: $e\n$stackTrace');
-    rethrow;
-  }
+    runApp(const MyApp());
+  } 
 }
