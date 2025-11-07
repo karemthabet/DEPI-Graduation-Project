@@ -179,7 +179,9 @@ class _ProfileViewBodyState extends State<ProfileViewBody> {
                 color: AppColors.darkBlue,
               ),
             ),
-            onTap: () {},
+            onTap: () {
+              context.go(RoutesName.welcome);
+            },
           ),
         ],
       ),

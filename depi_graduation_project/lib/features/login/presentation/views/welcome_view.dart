@@ -43,7 +43,7 @@ class WelcomeView extends StatelessWidget {
                 SizedBox(height: 30.h),
                 GestureDetector(
                   onTap: () {
-                    AppLogger.log('NCDSCDSCDSMCSD');
+                    context.push(RoutesName.mainView);
                   },
                   child: const Text('Continue as Guest')),
 

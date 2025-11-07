@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:whatsapp/core/Cached/secure_storage.dart';
+import 'package:whatsapp/core/utils/assets/app_assets.dart';
 import 'package:whatsapp/core/utils/router/routes_name.dart';
 
 class SplashViewBody extends StatefulWidget {
@@ -83,7 +84,7 @@ class _SplashViewBodyState extends State<SplashViewBody>
     if (token == null || token.isEmpty) {
       context.go(RoutesName.onboarding);
     } else {
-      context.go(RoutesName.homePage);
+      context.go(RoutesName.mainView);
     }
   }
 
@@ -98,7 +99,7 @@ class _SplashViewBodyState extends State<SplashViewBody>
           SlideTransition(
             position: _slideAnimation,
             child: Image.asset(
-              'assets/images/image.png',
+              AppAssets.imagesImage,
               width: 120,
               height: 120,
               fit: BoxFit.contain,
@@ -111,7 +112,7 @@ class _SplashViewBodyState extends State<SplashViewBody>
             child: SlideTransition(
               position: _slideAnimation2,
               child: Image.asset(
-                'assets/images/guide.png',
+                AppAssets.imagesGuide,
                 width: 80,
                 height: 40,
                 fit: BoxFit.contain,

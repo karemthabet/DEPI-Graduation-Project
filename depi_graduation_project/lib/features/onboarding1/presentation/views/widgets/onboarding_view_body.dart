@@ -40,7 +40,7 @@ class _OnboardingViewBodyState extends State<OnboardingViewBody> {
         curve: Curves.easeInOut,
       );
     } else {
-                      context.go(RoutesName.mainView);
+                      context.go(RoutesName.welcome);
 
     }
   }
@@ -203,7 +203,7 @@ class _OnboardingViewBodyState extends State<OnboardingViewBody> {
               right: 10.w,
               child: TextButton(
                 onPressed: () {
-                 context.go(RoutesName.mainView);
+                 context.go(RoutesName.welcome);
                 },
                 child: Text(
                   'Skip',

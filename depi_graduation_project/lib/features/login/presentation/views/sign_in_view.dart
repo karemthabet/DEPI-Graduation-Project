@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:whatsapp/core/utils/router/routes_name.dart';
 import 'package:whatsapp/features/login/presentation/views/widgets/password_field.dart';
 import 'signup_view.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -90,7 +92,10 @@ class SignInView extends StatelessWidget {
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
-                  onPressed: () {},
+                  onPressed: () {
+                              context.go(RoutesName.mainView);
+
+                  },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFFFFE26D),
                     foregroundColor: const Color(0xFF243E4B),

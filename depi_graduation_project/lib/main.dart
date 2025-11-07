@@ -12,7 +12,7 @@ void main() async {
     runApp(const MyApp());
   } catch (e, stackTrace) {
     // Handle any initialization errors
-    debugPrint('فشل                   تشغيل التطبيق: $e\n$stackTrace');
+    debugPrint('فشل تشغيل التطبيق: $e\n$stackTrace');
     runApp(const MyApp());
   } 
 }
