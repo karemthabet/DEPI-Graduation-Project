@@ -65,8 +65,6 @@ flutter:
     - assets/images/logo.png
     - assets/images/google_icon.png
     - assets/images/
-    - assets/icons/
-    - assets/pdf/
 
   # fonts:
   #   - family: Cairo

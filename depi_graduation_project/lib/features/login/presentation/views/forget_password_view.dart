@@ -17,7 +17,7 @@ class ForgotPasswordScreen extends StatelessWidget {
         elevation: 0,
         backgroundColor: Colors.white,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: darkBlueColor),
+          icon: const Icon(Icons.arrow_back, color: darkBlueColor),
           onPressed: () => Navigator.of(context).pop(), // للرجوع
         ),
       ),
@@ -113,7 +113,7 @@ class ForgotPasswordScreen extends StatelessWidget {
           fontSize: 16,
           fontWeight: FontWeight.w500,
         ),
-        prefixIcon: Icon(Icons.email_outlined, color: darkBlueColor),
+        prefixIcon: const Icon(Icons.email_outlined, color: darkBlueColor),
         // خصائص الإطار
         filled: true,
         fillColor: Colors.white,

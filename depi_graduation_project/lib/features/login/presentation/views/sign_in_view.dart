@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:whatsapp/features/login/presentation/views/widgets/password_field.dart';
 import 'signup_view.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'forget_password_view.dart';
@@ -8,7 +9,7 @@ class SignInView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final textColor = const Color(0xFF243E4B);
+    const textColor = Color(0xFF243E4B);
 
     return Scaffold(
       resizeToAvoidBottomInset: true,
@@ -21,7 +22,7 @@ class SignInView extends StatelessWidget {
             children: [
               // Back arrow at the top-left
               IconButton(
-                icon: Icon(Icons.arrow_back, color: darkBlueColor),
+                icon: const  Icon(Icons.arrow_back, color: darkBlueColor),
                 color: textColor,
                 onPressed: () {
                   Navigator.pop(context);
@@ -55,16 +56,10 @@ class SignInView extends StatelessWidget {
               const SizedBox(height: 20),
 
               // Password field
-              TextField(
-                obscureText: true,
-                decoration: InputDecoration(
-                  prefixIcon: const Icon(Icons.lock_outline),
-                  suffixIcon: const Icon(Icons.visibility_off_outlined),
-                  hintText: 'Password',
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(30),
-                  ),
-                ),
+             const PasswordField(
+                hintText: 'Password',
+                icon: Icons.lock_outline,
+                isPassword: true,
               ),
 
               const SizedBox(height: 8),
@@ -168,7 +163,7 @@ class SignInView extends StatelessWidget {
                       );
                     },
                     child: const Text(
-                      "Sign Up",
+                      'Sign Up',
                       style: TextStyle(
                         color: Color(0xFFFECD27),
                         fontWeight: FontWeight.bold,

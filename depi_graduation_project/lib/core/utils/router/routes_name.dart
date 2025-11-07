@@ -7,5 +7,7 @@ class RoutesName {
   static const String profileView = '/profileView';
   static const String chatDetails = '/chatDetails';
   static const String mainView = '/mainView';
+  static const String signUp = '/signUp';
+  static const String welcome = '/welcome';
 
 }
