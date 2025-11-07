@@ -5,6 +5,9 @@ import 'package:whatsapp/features/home/data/models/item_model.dart';
 import 'package:whatsapp/features/home/presentation/views/categories_view.dart';
 import 'package:whatsapp/features/home/presentation/views/categories_view_details.dart';
 import 'package:whatsapp/features/home/presentation/views/home_view.dart';
+import 'package:whatsapp/features/login/presentation/views/sign_in_view.dart';
+import 'package:whatsapp/features/login/presentation/views/signup_view.dart';
+import 'package:whatsapp/features/login/presentation/views/welcome_view.dart';
 import 'package:whatsapp/features/root_navigation_glass/presentation/views/main_view.dart';
 import 'package:whatsapp/features/profile/presentation/views/edit_profile_view.dart';
 import 'package:whatsapp/features/profile/presentation/views/profile_veiw.dart';
@@ -49,6 +52,21 @@ class AppRouter {
         
       ),
        GoRoute(
+        name: RoutesName.welcome,
+        path: RoutesName.welcome,
+        builder: (context, state) => const WelcomeView(),
+      ),
+       GoRoute(
+        name: RoutesName.login,
+        path: RoutesName.login,
+        builder: (context, state) => const SignInView(),
+      ),
+       GoRoute(
+        name: RoutesName.signUp,
+        path: RoutesName.signUp,
+        builder: (context, state) => const SignUpView(),
+      ),
+       GoRoute(
         name: RoutesName.homeView,
         path: RoutesName.homeView,
         builder: (context, state) => const HomeView(),
@@ -57,11 +75,13 @@ class AppRouter {
         name: RoutesName.onboarding,
         path: RoutesName.onboarding,
         builder: (context, state) => const OnboardingView(),
-      ), GoRoute(
+      ),
+       GoRoute(
         name: RoutesName.splash,
         path: RoutesName.splash,
         builder: (context, state) => const SplashView(),
-      ),
+       ),
+
     ],
   );
 }
