@@ -53,12 +53,14 @@ class AppRouter {
         path: RoutesName.homeView,
         builder: (context, state) => const HomeView(),
       ),
-    
-      
-        GoRoute(
+      GoRoute(
         name: RoutesName.onboarding,
         path: RoutesName.onboarding,
         builder: (context, state) => const OnboardingView(),
+      ), GoRoute(
+        name: RoutesName.splash,
+        path: RoutesName.splash,
+        builder: (context, state) => const SplashView(),
       ),
     ],
   );

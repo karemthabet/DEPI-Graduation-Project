@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:go_router/go_router.dart';
 import 'package:whatsapp/core/utils/colors/app_colors.dart';
+import 'package:whatsapp/core/utils/router/routes_name.dart';
 
 class OnboardingViewBody extends StatefulWidget {
   const OnboardingViewBody({super.key});
@@ -38,7 +40,8 @@ class _OnboardingViewBodyState extends State<OnboardingViewBody> {
         curve: Curves.easeInOut,
       );
     } else {
-      // TODO: Navigate to login or home screen
+                      context.go(RoutesName.mainView);
+
     }
   }
 
@@ -80,7 +83,7 @@ class _OnboardingViewBodyState extends State<OnboardingViewBody> {
                               ),
                               child: Center(
                                 child: Text(
-                                  "Illustration Missing",
+                                  'Illustration Missing',
                                   style: TextStyle(fontSize: 14.sp),
                                 ),
                               ),
@@ -200,7 +203,7 @@ class _OnboardingViewBodyState extends State<OnboardingViewBody> {
               right: 10.w,
               child: TextButton(
                 onPressed: () {
-                  // TODO: Skip to main or login page
+                 context.go(RoutesName.mainView);
                 },
                 child: Text(
                   'Skip',
