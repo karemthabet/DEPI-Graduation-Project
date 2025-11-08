@@ -1,18 +1,29 @@
 import 'package:flutter/material.dart';
-import 'app_initializer.dart';
-import 'my_app.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:whatsapp/screens/home_screen.dart';
+import 'features/home/data/repositories/places_repository_impl.dart';
+import 'features/home/presentation/cubit/places_cubit.dart';
 
-void main() async {
+void main() {
   WidgetsFlutterBinding.ensureInitialized();
+  runApp(
+    BlocProvider(
+      create: (_) => PlacesCubit(PlacesRepositoryImpl()),
+      child: const MyApp(),
+    ),
+  );
+}
 
-  try {
-    await AppInitializer.init();
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
 
-    // Run the app with ScreenUtil for responsive design
-    runApp(const MyApp());
-  } catch (e, stackTrace) {
-    // Handle any initialization errors
-    debugPrint('فشل تشغيل التطبيق: $e\n$stackTrace');
-    runApp(const MyApp());
-  } 
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Nearby Explorer',
+      theme: ThemeData(primarySwatch: Colors.teal),
+      home: const HomeScreen(),
+      debugShowCheckedModeBanner: false,
+    );
+  }
 }

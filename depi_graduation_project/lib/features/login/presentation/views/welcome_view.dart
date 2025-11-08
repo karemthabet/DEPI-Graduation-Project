@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:whatsapp/core/helper/app_logger.dart';
 import 'package:whatsapp/features/login/presentation/views/sign_in_view.dart';
 import 'package:whatsapp/core/utils/router/routes_name.dart';
 

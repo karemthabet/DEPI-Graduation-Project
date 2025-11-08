@@ -26,6 +26,14 @@ dependencies:
   pretty_dio_logger: ">=1.4.0 <2.0.0"
   skeletonizer: ^2.1.0+1
   url_launcher: ">=6.3.2 <7.0.0"
+  equatable: ^2.0.5
+  google_maps_flutter: ^2.5.3
+  google_maps_flutter_platform_interface: ^2.4.0
+  location: ^5.0.0
+  geolocator: ^10.1.0
+  google_places_flutter: ^2.1.1
+  flutter_svg: ^2.0.10+1
+  cached_network_image: ^3.3.1
 
 dev_dependencies:
 
