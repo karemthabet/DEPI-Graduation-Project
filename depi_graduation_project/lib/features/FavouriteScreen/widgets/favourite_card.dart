@@ -1,5 +1,4 @@
  import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:whatsapp/core/functions/device_size.dart';
 import 'package:whatsapp/core/utils/colors/app_colors.dart';
@@ -118,8 +117,9 @@ padding: EdgeInsets.symmetric(
                             isFavorite = !isFavorite;
                           });
              } , icon:Icon(
-                          Icons.favorite,
-                          
+
+                           isFavorite? Icons.favorite : Icons.favorite_border,
+                           color: isFavorite ? Colors.red : Colors.grey,
                           size: 14,
                         ), ),
            ],
