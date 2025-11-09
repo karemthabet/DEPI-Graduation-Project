@@ -1,7 +1,11 @@
 import 'package:geolocator/geolocator.dart';
 
 class LocationService {
-  static Future<Position> getCurrentLocation() async {
+  // Singleton
+  LocationService._privateConstructor();
+  static final LocationService instance = LocationService._privateConstructor();
+
+  Future<Position> getCurrentLocation() async {
     final bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) {
       throw Exception('خدمة الموقع غير مفعّلة. الرجاء تشغيل الـ GPS.');

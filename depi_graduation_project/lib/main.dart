@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:whatsapp/screens/home_screen.dart';
-import 'features/home/data/repositories/places_repository_impl.dart';
-import 'features/home/presentation/cubit/places_cubit.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:whatsapp/core/services/setup_service_locator.dart';
+import 'package:whatsapp/core/utils/router/app_router.dart';
+import 'package:whatsapp/features/home/presentation/cubit/places_cubit.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
+  setupServiceLocator();
   runApp(
     BlocProvider(
-      create: (_) => PlacesCubit(PlacesRepositoryImpl()),
+      create: (context) => PlacesCubit(getIt()),
       child: const MyApp(),
     ),
   );
@@ -19,11 +21,11 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Nearby Explorer',
-      theme: ThemeData(primarySwatch: Colors.teal),
-      home: const HomeScreen(),
-      debugShowCheckedModeBanner: false,
+    return ScreenUtilInit(
+      designSize: const Size(360, 690),
+      builder: (context, child) {
+        return MaterialApp.router(routerConfig: AppRouter.router);
+      },
     );
   }
 }

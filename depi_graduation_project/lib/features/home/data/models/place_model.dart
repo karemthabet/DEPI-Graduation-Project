@@ -8,7 +8,6 @@ class PlaceModel {
   final double lat;
   final double lng;
 
-  // الحقول الجديدة
   final String? formattedAddress;
   final String? description;
   final List<ReviewModel>? reviews;
@@ -53,15 +52,20 @@ class PlaceModel {
   }
 
   static String _detectCategory(List<String> types) {
-    if (types.contains('restaurant') || types.contains('cafe')) return 'restaurant';
-    if (types.contains('lodging')) return 'hotel';
+    // Priority-based categorization
     if (types.contains('museum')) return 'museum';
+    if (types.contains('cafe')) return 'cafe';
+    if (types.contains('restaurant') || types.contains('food')) return 'restaurant';
+    if (types.contains('lodging') || types.contains('hotel')) return 'hotel';
     if (types.contains('park')) return 'park';
-    if (types.contains('shopping_mall')) return 'shopping_mall';
-    if (types.contains('zoo')) return 'zoo';
-    if (types.contains('movie_theater')) return 'movie_theater';
+    if (types.contains('shopping_mall') || types.contains('shopping_center')) return 'shopping_mall';
+    if (types.contains('church') || types.contains('mosque') || types.contains('synagogue') || 
+        types.contains('hindu_temple') || types.contains('place_of_worship')) return 'historical';
     if (types.contains('tourist_attraction')) return 'tourist_attraction';
-    if (types.contains('church') || types.contains('mosque')) return 'historical';
+    
+    // Default to tourist attraction for points of interest
+    if (types.contains('point_of_interest')) return 'tourist_attraction';
+    
     return 'other';
   }
 }

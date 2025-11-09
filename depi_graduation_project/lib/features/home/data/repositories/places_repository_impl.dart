@@ -1,45 +1,45 @@
-import 'dart:convert';
-import 'package:dio/dio.dart';
+import 'package:dartz/dartz.dart';
+import 'package:whatsapp/core/helper/base_repo.dart';
+import 'package:whatsapp/core/services/api_service.dart';
 import 'package:whatsapp/core/services/location_service.dart';
+import 'package:whatsapp/core/utils/constants/api_constants.dart';
 import '../models/place_model.dart';
 import 'places_repository.dart';
+import '../../../../core/errors/server_failure.dart';
 
-class PlacesRepositoryImpl extends PlacesRepository {
-  final Dio dio = Dio();
-  final String apiKey = 'AIzaSyDuccoSdICVDXCXY4Qz-HH9GjyIr6YWayY';
+class PlacesRepositoryImpl extends BaseRepo implements PlacesRepository {
+  final ApiService apiService;
+
+  PlacesRepositoryImpl({required this.apiService});
 
   @override
-  Future<List<PlaceModel>> getNearbyPlaces() async {
-    final pos = await LocationService.getCurrentLocation();
+  Future<Either<ServerFailure, List<PlaceModel>>> getNearbyPlaces() async {
+    return safeCall(() async {
+      final pos = await LocationService.instance.getCurrentLocation();
+      
+      // apiService.get() already returns the data (Map), not Response object
+      final data = await apiService.get(ApiEndpoints.getNearbyPlaces(pos.latitude, pos.longitude)) as Map<String, dynamic>;
 
-    final url =
-        'https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${pos.latitude},${pos.longitude}&radius=10000&key=$apiKey';
-
-    final response = await dio.get(url);
-    final data = jsonDecode(response.toString());
-
-    if (response.statusCode == 200 && data['status'] == 'OK') {
-      final results = data['results'] as List;
-      return results.map((e) => PlaceModel.fromJson(e)).toList();
-    } else {
-      throw Exception(data['error_message'] ?? 'فشل تحميل الأماكن.');
-    }
+      if (data['status'] == 'OK') {
+        final results = data['results'] as List;
+        return results.map((e) => PlaceModel.fromJson(e)).toList();
+      } else {
+        throw Exception(data['error_message'] ?? 'فشل تحميل الأماكن.');
+      }
+    });
   }
 
   @override
-@override
-Future<Map<String, dynamic>> getPlaceDetails(String placeId) async {
-  final url =
-      'https://maps.googleapis.com/maps/api/place/details/json?place_id=$placeId&fields=name,rating,formatted_address,geometry,photos,website,formatted_phone_number,reviews,editorial_summary&key=$apiKey';
+  Future<Either<ServerFailure, Map<String, dynamic>>> getPlaceDetails(String placeId) async {
+    return safeCall(() async {
+      // apiService.get() already returns the data (Map), not Response object
+      final data = await apiService.get(ApiEndpoints.getPlaceDetails(placeId)) as Map<String, dynamic>;
 
-  final response = await dio.get(url);
-  final data = jsonDecode(response.toString());
-
-  if (response.statusCode == 200 && data['status'] == 'OK') {
-    return data['result'];
-  } else {
-    throw Exception(data['error_message'] ?? 'فشل تحميل تفاصيل المكان.');
+      if (data['status'] == 'OK') {
+        return data['result'];
+      } else {
+        throw Exception(data['error_message'] ?? 'فشل تحميل تفاصيل المكان.');
+      }
+    });
   }
-}
-
 }

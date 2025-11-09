@@ -6,10 +6,12 @@ class BuildCategoryItem extends StatelessWidget {
     super.key,
     required this.title,
     required this.image,
+    this.count,
   });
 
   final String title;
   final String image;
+  final int? count;
 
   @override
   Widget build(BuildContext context) {
@@ -18,28 +20,52 @@ class BuildCategoryItem extends StatelessWidget {
       margin: EdgeInsets.only(right: 12.w),
       child: Column(
         children: [
-          Container(
-            width: 65.w,
-            height: 65.w,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: Colors.white,
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.08),
-                  blurRadius: 5,
-                  offset: const Offset(0, 2),
-                ),
-              ],
-            ),
-            child: ClipOval(
-              child: Image.network(
-                image,
-                fit: BoxFit.cover,
+          Stack(
+            children: [
+              Container(
                 width: 65.w,
                 height: 65.w,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: Colors.white,
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.08),
+                      blurRadius: 5,
+                      offset: const Offset(0, 2),
+                    ),
+                  ],
+                ),
+                child: ClipOval(
+                  child: Image.asset(
+                    image,
+                    fit: BoxFit.cover,
+                    width: 65.w,
+                    height: 65.w,
+                  ),
+                ),
               ),
-            ),
+              if (count != null && count! > 0)
+                Positioned(
+                  right: 0,
+                  top: 0,
+                  child: Container(
+                    padding: EdgeInsets.all(4.w),
+                    decoration: const BoxDecoration(
+                      color: Colors.red,
+                      shape: BoxShape.circle,
+                    ),
+                    child: Text(
+                      count! > 99 ? '99+' : count.toString(),
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 10.sp,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ),
+            ],
           ),
           SizedBox(height: 8.h),
           Text(
