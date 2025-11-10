@@ -27,7 +27,7 @@ class BuildCategoryList extends StatelessWidget {
                     padding: EdgeInsets.symmetric(horizontal: 8.w),
                     child: const BuildCategoryItem(
                       title: 'Loading...',
-                      image: '',
+                      image: 'assets/images/others.webp',
                       count: 0,
                     ),
                   ),
@@ -102,6 +102,14 @@ class BuildCategoryList extends StatelessWidget {
           );
         }
 
+        if (state is PlacesError) {
+          return Center(
+            child: Text(
+              'Error: ${state.failure.errMessage}',
+              style: TextStyle(fontSize: 14.sp, color: Colors.red),
+            ),
+          );
+        }
         return const SizedBox.shrink();
       },
     );

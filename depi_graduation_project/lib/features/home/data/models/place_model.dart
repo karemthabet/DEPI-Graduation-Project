@@ -7,6 +7,7 @@ class PlaceModel {
   final String? photoReference;
   final double lat;
   final double lng;
+  final OpeningHours? openingHours;
 
   final String? formattedAddress;
   final String? description;
@@ -24,32 +25,36 @@ class PlaceModel {
     this.formattedAddress,
     this.description,
     this.reviews,
+    this.openingHours,
   });
 
   factory PlaceModel.fromJson(Map<String, dynamic> json) {
-    final List<String> types = List<String>.from(json['types'] ?? []);
-    final String category = _detectCategory(types);
+  final List<String> types = List<String>.from(json['types'] ?? []);
+  final String category = _detectCategory(types);
 
-    return PlaceModel(
-      name: json['name'] ?? 'Unknown',
-      vicinity: json['vicinity'] ?? 'Unknown',
-      rating: (json['rating'] is num) ? json['rating'].toDouble() : null,
-      category: category,
-      placeId: json['place_id'] ?? '',
-      photoReference: json['photos'] != null && json['photos'].isNotEmpty
-          ? json['photos'][0]['photo_reference']
-          : null,
-      lat: json['geometry']?['location']?['lat']?.toDouble() ?? 0.0,
-      lng: json['geometry']?['location']?['lng']?.toDouble() ?? 0.0,
-      formattedAddress: json['formatted_address'],
-      description: json['editorial_summary']?['overview'],
-      reviews: json['reviews'] != null
-          ? (json['reviews'] as List)
-              .map((r) => ReviewModel.fromJson(r))
-              .toList()
-          : null,
-    );
-  }
+  return PlaceModel(
+    name: json['name'] ?? 'Unknown',
+    vicinity: json['vicinity'] ?? 'Unknown',
+    rating: (json['rating'] is num) ? json['rating'].toDouble() : null,
+    category: category,
+    placeId: json['place_id'] ?? '',
+    photoReference: json['photos'] != null && json['photos'].isNotEmpty
+        ? json['photos'][0]['photo_reference']
+        : null,
+    lat: json['geometry']?['location']?['lat']?.toDouble() ?? 0.0,
+    lng: json['geometry']?['location']?['lng']?.toDouble() ?? 0.0,
+    formattedAddress: json['formatted_address'],
+    description: json['editorial_summary']?['overview'],
+    reviews: json['reviews'] != null
+        ? (json['reviews'] as List)
+            .map((r) => ReviewModel.fromJson(r))
+            .toList()
+        : null,
+    openingHours: json['opening_hours'] != null
+        ? OpeningHours.fromJson(json['opening_hours'])
+        : null,
+  );
+}
 
   static String _detectCategory(List<String> types) {
     // تصنيف الأماكن بناءً على الأولوية من الأكثر تحديداً للأقل
@@ -107,6 +112,17 @@ class PlaceModel {
     
     // 13. أماكن أخرى غير مصنفة
     return 'others';
+  }
+}
+class OpeningHours {
+  final bool openNow;
+
+  OpeningHours({required this.openNow});
+
+  factory OpeningHours.fromJson(Map<String, dynamic> json) {
+    return OpeningHours(
+      openNow: json['open_now'] ?? false,
+    );
   }
 }
 

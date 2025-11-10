@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:whatsapp/features/home/data/models/item_model.dart';
 
-class PlaceDetails extends StatelessWidget {
-  const PlaceDetails({
+class PlaceItemInfo extends StatelessWidget {
+  const PlaceItemInfo({
     super.key,
     required this.itemModel,
     required this.heroTag,
@@ -15,9 +15,7 @@ class PlaceDetails extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      constraints: BoxConstraints(
-        maxHeight: 220.h, // أقصى ارتفاع للكارد
-      ),
+      constraints: BoxConstraints(maxHeight: 220.h),
       decoration: BoxDecoration(
         color: const Color(0xFFFEF9CF),
         borderRadius: BorderRadius.circular(15.r),
@@ -33,7 +31,6 @@ class PlaceDetails extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          // ===== الصورة =====
           ClipRRect(
             borderRadius: BorderRadius.only(
               topLeft: Radius.circular(15.r),
@@ -57,7 +54,6 @@ class PlaceDetails extends StatelessWidget {
             ),
           ),
 
-          // ===== التفاصيل =====
           Expanded(
             child: Padding(
               padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 6.h),
@@ -65,7 +61,6 @@ class PlaceDetails extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // ===== الاسم والمفضلة =====
                     Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -89,10 +84,13 @@ class PlaceDetails extends StatelessWidget {
                     ),
                     SizedBox(height: 2.h),
 
-                    // ===== الموقع =====
                     Row(
                       children: [
-                        Icon(Icons.location_on, color: Colors.grey, size: 13.sp),
+                        Icon(
+                          Icons.location_on,
+                          color: Colors.grey,
+                          size: 13.sp,
+                        ),
                         SizedBox(width: 3.w),
                         Expanded(
                           child: Text(
@@ -109,7 +107,6 @@ class PlaceDetails extends StatelessWidget {
                     ),
                     SizedBox(height: 2.h),
 
-                    // ===== التقييم =====
                     Row(
                       children: [
                         Text(
@@ -125,9 +122,8 @@ class PlaceDetails extends StatelessWidget {
                     ),
                     SizedBox(height: 2.h),
 
-                    // ===== الحالة =====
                     Text(
-                      '• Open Now',
+                      itemModel.openNow ? '• Open Now' : '• Closed',
                       style: TextStyle(
                         color: Colors.green,
                         fontSize: 11.sp,

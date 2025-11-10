@@ -4,6 +4,7 @@ class ItemModel {
   final String image;
   final String rating;
   final String location;
+  final bool openNow;
   final String description;
 
   ItemModel({
@@ -12,6 +13,7 @@ class ItemModel {
     required this.location,
     required this.image,
     required this.rating,
+    required this.openNow,
     required this.description,
   });
 
@@ -30,6 +32,7 @@ class ItemModel {
       location: location ?? this.location,
       image: image ?? this.image,
       rating: rating ?? this.rating,
+      openNow: openNow,
       description: description ?? this.description,
     );
   }
