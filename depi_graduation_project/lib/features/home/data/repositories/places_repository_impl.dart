@@ -17,9 +17,11 @@ class PlacesRepositoryImpl extends BaseRepo implements PlacesRepository {
     return safeCall(() async {
       final pos = await LocationService.instance.getCurrentLocation();
 
-      final data = await apiService.get(
-        ApiEndpoints.getNearbyPlaces(pos.latitude, pos.longitude),
-      ) as Map<String, dynamic>;
+      final data =
+          await apiService.get(
+                ApiEndpoints.getNearbyPlaces(pos.latitude, pos.longitude),
+              )
+              as Map<String, dynamic>;
 
       if (data['status'] == 'OK') {
         final results = data['results'] as List;
@@ -31,9 +33,13 @@ class PlacesRepositoryImpl extends BaseRepo implements PlacesRepository {
   }
 
   @override
-  Future<Either<ServerFailure, Map<String, dynamic>>> getPlaceDetails(String placeId) async {
+  Future<Either<ServerFailure, Map<String, dynamic>>> getPlaceDetails(
+    String placeId,
+  ) async {
     return safeCall(() async {
-      final data = await apiService.get(ApiEndpoints.getPlaceDetails(placeId)) as Map<String, dynamic>;
+      final data =
+          await apiService.get(ApiEndpoints.getPlaceDetails(placeId))
+              as Map<String, dynamic>;
 
       if (data['status'] == 'OK') {
         return data['result'];

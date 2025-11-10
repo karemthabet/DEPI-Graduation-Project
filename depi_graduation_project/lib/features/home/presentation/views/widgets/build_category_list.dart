@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:skeletonizer/skeletonizer.dart';
-import 'package:whatsapp/core/utils/constants/app_constants.dart';
 import 'package:whatsapp/features/home/presentation/cubit/places_cubit.dart';
 import 'package:whatsapp/features/home/presentation/views/places_list_view.dart';
 import 'package:whatsapp/features/home/presentation/views/widgets/build_category_item.dart';
@@ -38,20 +37,7 @@ class BuildCategoryList extends StatelessWidget {
         }
 
         if (state is PlacesLoaded) {
-          final availableCategories =
-              AppConstants.categories.entries
-                  .where(
-                    (entry) =>
-                        state.categorized.containsKey(entry.key) &&
-                        state.categorized[entry.key]!.isNotEmpty,
-                  )
-                  .toList();
-
-          availableCategories.sort((a, b) {
-            if (a.key == 'others') return 1;
-            if (b.key == 'others') return -1;
-            return 0;
-          });
+          final availableCategories = state.availableCategories;
 
           if (availableCategories.isEmpty) {
             return SizedBox(
@@ -71,9 +57,11 @@ class BuildCategoryList extends StatelessWidget {
               scrollDirection: Axis.horizontal,
               itemCount: availableCategories.length,
               itemBuilder: (context, index) {
-                final category = availableCategories[index].key;
-                final categoryName = availableCategories[index].value;
-                final count = state.categorized[category]?.length ?? 0;
+                final categoryKey = availableCategories.keys.elementAt(index);
+                final categoryName = availableCategories.values.elementAt(
+                  index,
+                );
+                final count = state.categorized[categoryKey]?.length ?? 0;
 
                 return GestureDetector(
                   onTap: () {
@@ -84,7 +72,7 @@ class BuildCategoryList extends StatelessWidget {
                             (_) => BlocProvider.value(
                               value: context.read<PlacesCubit>(),
                               child: PlacesListView(
-                                categoryKey: category,
+                                categoryKey: categoryKey,
                                 categoryName: categoryName,
                               ),
                             ),
@@ -93,7 +81,7 @@ class BuildCategoryList extends StatelessWidget {
                   },
                   child: BuildCategoryItem(
                     title: categoryName,
-                    image: _getCategoryImage(category),
+                    image: _getCategoryImage(categoryKey),
                     count: count,
                   ),
                 );
@@ -110,6 +98,7 @@ class BuildCategoryList extends StatelessWidget {
             ),
           );
         }
+
         return const SizedBox.shrink();
       },
     );

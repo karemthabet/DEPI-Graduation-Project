@@ -1,15 +1,16 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:whatsapp/core/errors/server_failure.dart';
 import '../../data/models/place_model.dart';
 import '../../data/repositories/places_repository.dart';
-import '../../../../core/errors/server_failure.dart';
 import '../../../../core/utils/constants/app_constants.dart';
+
 part 'places_state.dart';
 
 class PlacesCubit extends Cubit<PlacesState> {
   final PlacesRepository repository;
-  
+
   PlacesCubit(this.repository) : super(PlacesInitial());
-  
+
   Future<void> loadPlaces() async {
     emit(PlacesLoading());
     final result = await repository.getNearbyPlaces();
@@ -17,7 +18,12 @@ class PlacesCubit extends Cubit<PlacesState> {
       (failure) => emit(PlacesError(failure: failure)),
       (places) {
         final categorized = _groupByCategory(places);
-        emit(PlacesLoaded(places: places, categorized: categorized));
+        final availableCategories = getAvailableCategories(categorized);
+        emit(PlacesLoaded(
+          places: places,
+          categorized: categorized,
+          availableCategories: availableCategories,
+        ));
       },
     );
   }
@@ -35,38 +41,17 @@ class PlacesCubit extends Cubit<PlacesState> {
     return map;
   }
 
-  Future<void> loadPlaceDetails(String placeId) async {
-    final currentState = state;
-    
-    if (currentState is PlacesLoaded) {
-      // Show loading indicator while keeping the existing data
-      emit(PlaceDetailsLoading(
-        places: currentState.places,
-        categorized: currentState.categorized,
-      ));
-      
-      final result = await repository.getPlaceDetails(placeId);
-      result.fold(
-        (failure) => emit(PlacesError(failure: failure)),
-        (details) {
-          emit(PlacesLoaded(
-            places: currentState.places,
-            categorized: currentState.categorized,
-            placeDetails: details,
-          ));
-        },
-      );
-    }
-  }
+  Map<String, String> getAvailableCategories(Map<String, List<PlaceModel>> categorized) {
+    final availableCategories = AppConstants.categories.entries
+        .where((entry) => categorized.containsKey(entry.key) && categorized[entry.key]!.isNotEmpty)
+        .toList();
 
-  void clearPlaceDetails() {
-    final currentState = state;
-    if (currentState is PlacesLoaded) {
-      emit(PlacesLoaded(
-        places: currentState.places,
-        categorized: currentState.categorized,
-        placeDetails: null,
-      ));
-    }
+    availableCategories.sort((a, b) {
+      if (a.key == 'others') return 1;
+      if (b.key == 'others') return -1;
+      return 0;
+    });
+
+    return {for (var e in availableCategories) e.key: e.value};
   }
 }

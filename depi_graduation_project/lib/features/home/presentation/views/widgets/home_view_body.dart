@@ -21,7 +21,6 @@ class _HomeViewBodyState extends State<HomeViewBody> {
   @override
   void initState() {
     super.initState();
-    // التحقق من حالة الموقع قبل تحميل الأماكن
     _checkLocationAndLoadPlaces();
   }
 
@@ -51,7 +50,6 @@ class _HomeViewBodyState extends State<HomeViewBody> {
     return SafeArea(
       child: BlocBuilder<PlacesCubit, PlacesState>(
         builder: (context, state) {
-          // Show error dialog if there's a location/permission error
           if (state is PlacesError) {
             WidgetsBinding.instance.addPostFrameCallback((_) {
               if (state.failure.errMessage.contains('إذن') || 
