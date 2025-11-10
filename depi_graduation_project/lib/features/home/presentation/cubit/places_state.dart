@@ -9,12 +9,32 @@ class PlacesLoading extends PlacesState {}
 class PlacesLoaded extends PlacesState {
   final List<PlaceModel> places;
   final Map<String, List<PlaceModel>> categorized;
-  PlacesLoaded({required this.places, required this.categorized});
+  final Map<String, dynamic>? placeDetails;
+
+  PlacesLoaded({
+    required this.places,
+    required this.categorized,
+    this.placeDetails,
+  });
+
+  PlacesLoaded copyWith({
+    List<PlaceModel>? places,
+    Map<String, List<PlaceModel>>? categorized,
+    Map<String, dynamic>? placeDetails,
+  }) {
+    return PlacesLoaded(
+      places: places ?? this.places,
+      categorized: categorized ?? this.categorized,
+      placeDetails: placeDetails ?? this.placeDetails,
+    );
+  }
 }
 
-class PlaceDetailsLoaded extends PlacesState {
-  final Map<String, dynamic> details;
-  PlaceDetailsLoaded({required this.details});
+class PlaceDetailsLoading extends PlacesState {
+  final List<PlaceModel> places;
+  final Map<String, List<PlaceModel>> categorized;
+
+  PlaceDetailsLoading({required this.places, required this.categorized});
 }
 
 class PlacesError extends PlacesState {

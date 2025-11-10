@@ -7,14 +7,19 @@ part 'places_state.dart';
 
 class PlacesCubit extends Cubit<PlacesState> {
   final PlacesRepository repository;
+  
   PlacesCubit(this.repository) : super(PlacesInitial());
+  
   Future<void> loadPlaces() async {
     emit(PlacesLoading());
     final result = await repository.getNearbyPlaces();
-    result.fold((failure) => emit(PlacesError(failure: failure)), (places) {
-      final categorized = _groupByCategory(places);
-      emit(PlacesLoaded(places: places, categorized: categorized));
-    });
+    result.fold(
+      (failure) => emit(PlacesError(failure: failure)),
+      (places) {
+        final categorized = _groupByCategory(places);
+        emit(PlacesLoaded(places: places, categorized: categorized));
+      },
+    );
   }
 
   Map<String, List<PlaceModel>> _groupByCategory(List<PlaceModel> places) {
@@ -31,11 +36,37 @@ class PlacesCubit extends Cubit<PlacesState> {
   }
 
   Future<void> loadPlaceDetails(String placeId) async {
-    emit(PlacesLoading());
-    final result = await repository.getPlaceDetails(placeId);
-    result.fold(
-      (failure) => emit(PlacesError(failure: failure)),
-      (details) => emit(PlaceDetailsLoaded(details: details)),
-    );
+    final currentState = state;
+    
+    if (currentState is PlacesLoaded) {
+      // Show loading indicator while keeping the existing data
+      emit(PlaceDetailsLoading(
+        places: currentState.places,
+        categorized: currentState.categorized,
+      ));
+      
+      final result = await repository.getPlaceDetails(placeId);
+      result.fold(
+        (failure) => emit(PlacesError(failure: failure)),
+        (details) {
+          emit(PlacesLoaded(
+            places: currentState.places,
+            categorized: currentState.categorized,
+            placeDetails: details,
+          ));
+        },
+      );
+    }
+  }
+
+  void clearPlaceDetails() {
+    final currentState = state;
+    if (currentState is PlacesLoaded) {
+      emit(PlacesLoaded(
+        places: currentState.places,
+        categorized: currentState.categorized,
+        placeDetails: null,
+      ));
+    }
   }
 }
