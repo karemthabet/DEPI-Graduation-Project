@@ -37,12 +37,23 @@ class BuildCategoryItem extends StatelessWidget {
                   ],
                 ),
                 child: ClipOval(
-                  child: Image.asset(
-                    image,
-                    fit: BoxFit.cover,
-                    width: 65.w,
-                    height: 65.w,
-                  ),
+                  child:
+                      image.isNotEmpty
+                          ? Image.asset(
+                            image,
+                            fit: BoxFit.cover,
+                            width: 65.w,
+                            height: 65.w,
+                          )
+                          : Container(
+                            color: Colors.grey[200],
+                            width: 65.w,
+                            height: 65.w,
+                            child: const Icon(
+                              Icons.image_not_supported,
+                              color: Colors.grey,
+                            ),
+                          ),
                 ),
               ),
               if (count != null && count! > 0)
