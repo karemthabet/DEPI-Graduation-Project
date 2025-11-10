@@ -15,13 +15,10 @@ class PlacesCubit extends Cubit<PlacesState> {
     emit(PlacesLoading());
     final result = await repository.getNearbyPlaces();
 
-    result.fold(
-      (failure) => emit(PlacesError(failure: failure)),
-      (places) {
-        final categorized = _groupByCategory(places);
-        emit(PlacesLoaded(places: places, categorized: categorized));
-      },
-    );
+    result.fold((failure) => emit(PlacesError(failure: failure)), (places) {
+      final categorized = _groupByCategory(places);
+      emit(PlacesLoaded(places: places, categorized: categorized));
+    });
   }
 
   Map<String, List<PlaceModel>> _groupByCategory(List<PlaceModel> places) {
@@ -32,7 +29,6 @@ class PlacesCubit extends Cubit<PlacesState> {
       if (AppConstants.categories.containsKey(category)) {
         map.putIfAbsent(category, () => []).add(p);
       } else {
-        // ✅ إضافة للأخرى إذا مش موجود في الفئات
         map.putIfAbsent('others', () => []).add(p);
       }
     }

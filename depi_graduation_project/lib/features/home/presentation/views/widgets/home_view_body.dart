@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:whatsapp/core/services/location_service.dart';
 import 'package:whatsapp/features/home/presentation/cubit/places_cubit.dart';
 import 'package:whatsapp/features/home/presentation/views/widgets/build_category_list.dart';
 import 'package:whatsapp/features/home/presentation/views/widgets/build_profile_section.dart';
@@ -19,8 +21,29 @@ class _HomeViewBodyState extends State<HomeViewBody> {
   @override
   void initState() {
     super.initState();
-    // Load places when the home view is initialized
-    context.read<PlacesCubit>().loadPlaces();
+    // التحقق من حالة الموقع قبل تحميل الأماكن
+    _checkLocationAndLoadPlaces();
+  }
+
+  Future<void> _checkLocationAndLoadPlaces() async {
+    final status = await LocationService.instance.checkLocationStatus();
+    
+    if (!mounted) return;
+
+    switch (status) {
+      case LocationStatus.serviceDisabled:
+        _showLocationServiceDialog();
+        break;
+      case LocationStatus.permissionDenied:
+        _showPermissionDialog();
+        break;
+      case LocationStatus.permissionDeniedForever:
+        _showPermissionDeniedForeverDialog();
+        break;
+      case LocationStatus.granted:
+        context.read<PlacesCubit>().loadPlaces();
+        break;
+    }
   }
 
   @override
@@ -108,6 +131,116 @@ class _HomeViewBodyState extends State<HomeViewBody> {
             child: const Text('إعادة المحاولة'),
           ),
         ],
+      ),
+    );
+  }
+
+  void _showLocationServiceDialog() {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => AlertDialog(
+        icon: Icon(Icons.location_off, size: 48.sp, color: Colors.red),
+        title: const Text('خدمة الموقع غير مفعلة'),
+        content: const Text(
+          'يحتاج التطبيق إلى تفعيل خدمة الموقع (GPS) لعرض الأماكن القريبة منك.\n\nهل تريد تفعيل خدمة الموقع الآن؟',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            child: const Text('لاحقاً'),
+          ),
+          ElevatedButton(
+            onPressed: () async {
+              Navigator.pop(context);
+              await LocationService.instance.openLocationSettings();
+              // إعادة التحقق بعد فترة قصيرة
+              await Future.delayed(const Duration(seconds: 1));
+              _checkLocationAndLoadPlaces();
+            },
+            child: const Text('تفعيل الموقع'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showPermissionDialog() {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => AlertDialog(
+        icon: Icon(Icons.location_searching, size: 48.sp, color: Colors.orange),
+        title: const Text('إذن الوصول للموقع'),
+        content: const Text(
+          'يحتاج التطبيق إلى إذن الوصول لموقعك لعرض الأماكن القريبة منك.\n\nهل تريد منح الإذن؟',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            child: const Text('رفض'),
+          ),
+          ElevatedButton(
+            onPressed: () async {
+              Navigator.pop(context);
+              final permission = await LocationService.instance.requestPermission();
+              if (permission == LocationPermission.whileInUse ||
+                  permission == LocationPermission.always) {
+                _checkLocationAndLoadPlaces();
+              } else {
+                _showPermissionDeniedMessage();
+              }
+            },
+            child: const Text('منح الإذن'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showPermissionDeniedForeverDialog() {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => AlertDialog(
+        icon: Icon(Icons.block, size: 48.sp, color: Colors.red),
+        title: const Text('تم رفض إذن الموقع'),
+        content: const Text(
+          'تم رفض إذن الوصول للموقع بشكل نهائي.\n\nيرجى الذهاب إلى إعدادات التطبيق وتفعيل إذن الموقع يدوياً.',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            child: const Text('إلغاء'),
+          ),
+          ElevatedButton(
+            onPressed: () async {
+              Navigator.pop(context);
+              await LocationService.instance.openAppSettings();
+            },
+            child: const Text('فتح الإعدادات'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showPermissionDeniedMessage() {
+    if (!mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: const Text('تم رفض إذن الوصول للموقع. لن يتمكن التطبيق من عرض الأماكن القريبة.'),
+        action: SnackBarAction(
+          label: 'إعادة المحاولة',
+          onPressed: _checkLocationAndLoadPlaces,
+        ),
+        duration: const Duration(seconds: 5),
       ),
     );
   }

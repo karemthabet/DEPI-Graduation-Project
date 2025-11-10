@@ -28,29 +28,39 @@ class RecentlyViewedCard extends StatelessWidget {
         ],
       ),
       child: Column(
-        mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Hero(
-            tag: heroTag,
-            child: ClipRRect(
-              borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(15.r),
-                topRight: Radius.circular(15.r),
-              ),
-              child: Image.network(
-                itemModel.image,
-                height: 110.h,
-                width: double.infinity,
-                fit: BoxFit.cover,
+          Flexible(
+            flex: 5,
+            child: Hero(
+              tag: heroTag,
+              child: ClipRRect(
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(15.r),
+                  topRight: Radius.circular(15.r),
+                ),
+                child: Image.network(
+                  itemModel.image,
+                  width: double.infinity,
+                  fit: BoxFit.cover,
+                  errorBuilder: (context, error, stackTrace) {
+                    return Container(
+                      color: Colors.grey[300],
+                      child: Icon(Icons.image_not_supported, size: 40.sp),
+                    );
+                  },
+                ),
               ),
             ),
           ),
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 6.h),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
+          Flexible(
+            flex: 4,
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 6.h),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -119,6 +129,7 @@ class RecentlyViewedCard extends StatelessWidget {
                 ),
               ],
             ),
+          ),
           ),
         ],
       ),

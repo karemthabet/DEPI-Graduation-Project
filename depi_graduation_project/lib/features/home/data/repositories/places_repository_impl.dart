@@ -25,7 +25,7 @@ class PlacesRepositoryImpl extends BaseRepo implements PlacesRepository {
         final results = data['results'] as List;
         return results.map((e) => PlaceModel.fromJson(e)).toList();
       } else {
-        throw Exception(data['error_message'] ?? 'فشل تحميل الأماكن.');
+        throw Exception(data['error_message'] ?? 'Error loading places');
       }
     });
   }
@@ -38,7 +38,7 @@ class PlacesRepositoryImpl extends BaseRepo implements PlacesRepository {
       if (data['status'] == 'OK') {
         return data['result'];
       } else {
-        throw Exception(data['error_message'] ?? 'فشل تحميل تفاصيل المكان.');
+        throw Exception(data['error_message'] ?? 'Error loading place details');
       }
     });
   }
