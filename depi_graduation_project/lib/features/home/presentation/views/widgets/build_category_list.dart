@@ -38,24 +38,20 @@ class BuildCategoryList extends StatelessWidget {
         }
 
         if (state is PlacesLoaded) {
-          // الفئات المتوفرة اللي فيها بيانات
-          final availableCategories = AppConstants.categories.entries
-              .where((entry) =>
-                  state.categorized.containsKey(entry.key) &&
-                  state.categorized[entry.key]!.isNotEmpty)
-              .toList();
+          final availableCategories =
+              AppConstants.categories.entries
+                  .where(
+                    (entry) =>
+                        state.categorized.containsKey(entry.key) &&
+                        state.categorized[entry.key]!.isNotEmpty,
+                  )
+                  .toList();
 
-          // تحديد الأماكن اللي مش داخلة في أي فئة محددة
-          final categorizedKeys = AppConstants.categories.keys.toSet();
-          final allPlaces = state.categorized.values.expand((v) => v).toList();
-          final uncategorized = allPlaces
-              .where(
-                  (place) => !categorizedKeys.contains(place.category.toLowerCase()))
-              .toList();
-
-          if (uncategorized.isNotEmpty) {
-            availableCategories.add(const MapEntry('others', 'Others'));
-          }
+          availableCategories.sort((a, b) {
+            if (a.key == 'others') return 1;
+            if (b.key == 'others') return -1;
+            return 0;
+          });
 
           if (availableCategories.isEmpty) {
             return SizedBox(
@@ -72,33 +68,33 @@ class BuildCategoryList extends StatelessWidget {
           return SizedBox(
             height: 110.h,
             child: ListView.builder(
-              itemCount: availableCategories.length,
               scrollDirection: Axis.horizontal,
+              itemCount: availableCategories.length,
               itemBuilder: (context, index) {
                 final category = availableCategories[index].key;
                 final categoryName = availableCategories[index].value;
-                final placesCount = state.categorized[category]?.length ??
-                    (category == 'others' ? uncategorized.length : 0);
+                final count = state.categorized[category]?.length ?? 0;
 
                 return GestureDetector(
                   onTap: () {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (_) => BlocProvider.value(
-                          value: context.read<PlacesCubit>(),
-                          child: PlacesListView(
-                            categoryKey: category,
-                            categoryName: categoryName,
-                          ),
-                        ),
+                        builder:
+                            (_) => BlocProvider.value(
+                              value: context.read<PlacesCubit>(),
+                              child: PlacesListView(
+                                categoryKey: category,
+                                categoryName: categoryName,
+                              ),
+                            ),
                       ),
                     );
                   },
                   child: BuildCategoryItem(
                     title: categoryName,
                     image: _getCategoryImage(category),
-                    count: placesCount,
+                    count: count,
                   ),
                 );
               },
@@ -111,7 +107,6 @@ class BuildCategoryList extends StatelessWidget {
     );
   }
 
- 
   String _getCategoryImage(String category) {
     switch (category) {
       case 'tourist_attraction':
@@ -142,5 +137,4 @@ class BuildCategoryList extends StatelessWidget {
         return 'assets/images/others.webp';
     }
   }
-
 }

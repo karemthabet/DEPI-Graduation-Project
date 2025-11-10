@@ -16,8 +16,10 @@ class PlacesRepositoryImpl extends BaseRepo implements PlacesRepository {
   Future<Either<ServerFailure, List<PlaceModel>>> getNearbyPlaces() async {
     return safeCall(() async {
       final pos = await LocationService.instance.getCurrentLocation();
-      
-      final data = await apiService.get(ApiEndpoints.getNearbyPlaces(pos.latitude, pos.longitude)) as Map<String, dynamic>;
+
+      final data = await apiService.get(
+        ApiEndpoints.getNearbyPlaces(pos.latitude, pos.longitude),
+      ) as Map<String, dynamic>;
 
       if (data['status'] == 'OK') {
         final results = data['results'] as List;

@@ -2,6 +2,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../data/models/place_model.dart';
 import '../../data/repositories/places_repository.dart';
 import '../../../../core/errors/server_failure.dart';
+import '../../../../core/utils/constants/app_constants.dart';
+
 part 'places_state.dart';
 
 class PlacesCubit extends Cubit<PlacesState> {
@@ -24,9 +26,17 @@ class PlacesCubit extends Cubit<PlacesState> {
 
   Map<String, List<PlaceModel>> _groupByCategory(List<PlaceModel> places) {
     final Map<String, List<PlaceModel>> map = {};
+
     for (var p in places) {
-      map.putIfAbsent(p.category, () => []).add(p);
+      final category = p.category.toLowerCase();
+      if (AppConstants.categories.containsKey(category)) {
+        map.putIfAbsent(category, () => []).add(p);
+      } else {
+        // ✅ إضافة للأخرى إذا مش موجود في الفئات
+        map.putIfAbsent('others', () => []).add(p);
+      }
     }
+
     return map;
   }
 

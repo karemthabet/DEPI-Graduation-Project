@@ -16,6 +16,6 @@ class AppConstants {
     'library': 'Libraries',
     'mosque': 'Mosques',
     'cinema': 'Cinemas',
-    'others': 'Others',
+    'others': 'Others', 
   };
 }
