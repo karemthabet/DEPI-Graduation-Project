@@ -1,7 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:whatsapp/core/services/setup_service_locator.dart';
-import 'package:whatsapp/features/home/presentation/cubit/places_cubit.dart';
 import 'package:whatsapp/features/home/presentation/views/home_view.dart';
 import 'package:whatsapp/features/profile/presentation/views/profile_veiw.dart';
 import 'package:whatsapp/features/root_navigation_glass/presentation/views/widgets/custom_glass_nav_bar.dart';

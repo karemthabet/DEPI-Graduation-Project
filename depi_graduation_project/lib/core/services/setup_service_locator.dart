@@ -2,7 +2,6 @@ import 'package:dio/dio.dart';
 import 'package:get_it/get_it.dart';
 import 'package:whatsapp/core/services/api_service.dart';
 import 'package:whatsapp/core/services/dio_consumer.dart';
-import 'package:whatsapp/core/services/location_service.dart';
 import 'package:whatsapp/features/home/data/repositories/places_repository.dart';
 import 'package:whatsapp/features/home/data/repositories/places_repository_impl.dart';
 import 'package:whatsapp/features/home/presentation/cubit/places_cubit.dart';
