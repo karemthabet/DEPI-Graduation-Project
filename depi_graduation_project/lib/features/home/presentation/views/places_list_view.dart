@@ -75,7 +75,7 @@ class PlacesListView extends StatelessWidget {
   ItemModel _convertPlaceToItem(PlaceModel place) {
     final photoUrl =
         place.photoReference != null
-            ? 'https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=${place.photoReference}&key=YOUR_API_KEY'
+            ? 'https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=${place.photoReference}&key=AIzaSyA3FifUzz1TsB2bknK0VARH_45PT_AuyMw'
             : 'https://www.legrand.com.eg/modules/custom/legrand_ecat/assets/img/no-image.png';
 
     return ItemModel(

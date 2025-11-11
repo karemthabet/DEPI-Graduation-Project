@@ -339,7 +339,7 @@ class _CategoriesViewDetailsBodyState extends State<CategoriesViewDetailsBody>
           ],
           if (placeDetails?['website'] != null) ...[
             SizedBox(height: 8.h),
-            _buildWebsiteRow(placeDetails!['website']),
+            _buildWebsiteRow(placeDetails!['website']!),
           ],
         ],
       ),
@@ -370,21 +370,16 @@ class _CategoriesViewDetailsBodyState extends State<CategoriesViewDetailsBody>
     );
   }
 
-  Widget _buildWebsiteRow(String website) {
+  Widget _buildWebsiteRow(String url) {
     return GestureDetector(
-      onTap: () async {
-        final uri = Uri.parse(website);
-        if (await canLaunchUrl(uri)) {
-          await launchUrl(uri, mode: LaunchMode.externalApplication);
-        }
-      },
+      onTap: () => _launchUrl(url),
       child: Row(
         children: [
           Icon(Icons.language, size: 16.sp, color: Colors.blue),
           SizedBox(width: 8.w),
           Expanded(
             child: Text(
-              website,
+              url,
               style: TextStyle(
                 fontSize: 13.sp,
                 color: Colors.blue,
@@ -396,6 +391,32 @@ class _CategoriesViewDetailsBodyState extends State<CategoriesViewDetailsBody>
         ],
       ),
     );
+  }
+
+  Future<void> _launchUrl(String url) async {
+    try {
+      String fixedUrl = url.trim();
+
+      if (!fixedUrl.startsWith(RegExp(r'https?://'))) {
+        fixedUrl = 'https://$fixedUrl';
+      }
+
+      if (fixedUrl.startsWith('http://')) {
+        fixedUrl = fixedUrl.replaceFirst('http://', 'https://');
+      }
+
+      final uri = Uri.parse(fixedUrl);
+
+      if (await canLaunchUrl(uri)) {
+        await launchUrl(uri, mode: LaunchMode.externalApplication);
+      } else {
+        if (!mounted) return;
+        _showSnackBar('لا يمكن فتح الرابط');
+      }
+    } catch (e) {
+      if (!mounted) return;
+      _showSnackBar('حدث خطأ أثناء فتح الرابط');
+    }
   }
 
   Widget _buildReviewsTab(Map<String, dynamic>? placeDetails, bool isLoading) {

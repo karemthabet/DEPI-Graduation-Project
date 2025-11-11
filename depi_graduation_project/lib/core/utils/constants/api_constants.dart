@@ -1,5 +1,5 @@
 class ApiBase {
-  static const String apiKey = 'AIzaSyDuccoSdICVDXCXY4Qz-HH9GjyIr6YWayY';
+  static const String apiKey = 'AIzaSyA3FifUzz1TsB2bknK0VARH_45PT_AuyMw';
   static const String baseUrl = 'https://maps.googleapis.com/maps/api';
 }
 
