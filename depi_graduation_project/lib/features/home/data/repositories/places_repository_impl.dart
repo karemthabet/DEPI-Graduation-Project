@@ -1,4 +1,6 @@
 import 'package:dartz/dartz.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:whatsapp/core/Cached/get_storage.dart';
 import 'package:whatsapp/core/helper/base_repo.dart';
 import 'package:whatsapp/core/services/api_service.dart';
 import 'package:whatsapp/core/services/location_service.dart';
@@ -16,18 +18,51 @@ class PlacesRepositoryImpl extends BaseRepo implements PlacesRepository {
   Future<Either<ServerFailure, List<PlaceModel>>> getNearbyPlaces() async {
     return safeCall(() async {
       final pos = await LocationService.instance.getCurrentLocation();
+      final cachedPlacesJson = GetStoragePrefs.read<List>('cached_places');
+      final cachedLat = GetStoragePrefs.read<double>('last_lat');
+      final cachedLng = GetStoragePrefs.read<double>('last_lng');
+      bool shouldFetchFromApi = true;
+      if (cachedPlacesJson != null && cachedLat != null && cachedLng != null) {
+        final distance = Geolocator.distanceBetween(
+          pos.latitude,
+          pos.longitude,
+          cachedLat,
+          cachedLng,
+        );
 
-      final data =
-          await apiService.get(
-                ApiEndpoints.getNearbyPlaces(pos.latitude, pos.longitude),
-              )
-              as Map<String, dynamic>;
+        if (distance < 500) {
+          shouldFetchFromApi = false;
+        }
+      }
 
-      if (data['status'] == 'OK') {
-        final results = data['results'] as List;
-        return results.map((e) => PlaceModel.fromJson(e)).toList();
+      if (shouldFetchFromApi) {
+        final data =
+            await apiService.get(
+                  ApiEndpoints.getNearbyPlaces(pos.latitude, pos.longitude),
+                )
+                as Map<String, dynamic>;
+
+        if (data['status'] == 'OK') {
+          final results = data['results'] as List;
+          final places = results.map((e) => PlaceModel.fromJson(e)).toList();
+          await GetStoragePrefs.write(
+            'cached_places',
+            places.map((e) => e.toJson()).toList(),
+          );
+          await GetStoragePrefs.write('last_lat', pos.latitude);
+          await GetStoragePrefs.write('last_lng', pos.longitude);
+          print('done cache');
+          print(GetStoragePrefs.read('cached_places'));
+          print('CACHED  = $cachedLat, $cachedLng');
+          print(GetStoragePrefs.read('last_lat')?.runtimeType);
+
+          return places;
+        } else {
+          throw Exception(data['error_message'] ?? 'Error loading places');
+        }
       } else {
-        throw Exception(data['error_message'] ?? 'Error loading places');
+        print('get from cache');
+        return cachedPlacesJson!.map((e) => PlaceModel.fromJson(e)).toList();
       }
     });
   }

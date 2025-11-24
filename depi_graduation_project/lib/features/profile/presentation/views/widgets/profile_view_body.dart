@@ -1,9 +1,12 @@
 import 'dart:developer';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:whatsapp/core/utils/colors/app_colors.dart';
 import 'package:whatsapp/core/utils/router/routes_name.dart';
+import 'package:whatsapp/features/profile/presentation/cubit/user_cubit.dart';
+import 'package:whatsapp/features/profile/presentation/cubit/user_state.dart';
 
 class ProfileViewBody extends StatefulWidget {
   const ProfileViewBody({super.key});
@@ -46,7 +49,11 @@ class _ProfileViewBodyState extends State<ProfileViewBody> {
               ),
               const SizedBox(height: 16),
               ListTile(
-                leading: Image.asset('assets/images/egflag.png', width: 32, height: 32),
+                leading: Image.asset(
+                  'assets/images/egflag.png',
+                  width: 32,
+                  height: 32,
+                ),
                 title: const Text('Arabic'),
                 onTap: () {
                   selectedLanguage.value = 'Arabic'; // ✅ تحديث القيمة فقط
@@ -54,7 +61,11 @@ class _ProfileViewBodyState extends State<ProfileViewBody> {
                 },
               ),
               ListTile(
-                leading: Image.asset('assets/images/usflag.png', width: 32, height: 32),
+                leading: Image.asset(
+                  'assets/images/usflag.png',
+                  width: 32,
+                  height: 32,
+                ),
                 title: const Text('English'),
                 onTap: () {
                   selectedLanguage.value = 'English'; // ✅ تحديث القيمة فقط
@@ -70,121 +81,133 @@ class _ProfileViewBodyState extends State<ProfileViewBody> {
 
   @override
   Widget build(BuildContext context) {
-    log('Whole screen build');
+    return BlocBuilder<UserCubit, UserState>(
+      builder: (context, state) {
+        String name = 'Guest';
+        String email = '';
+        String? profileImage;
 
-    return Padding(
-      padding: EdgeInsets.symmetric(vertical: 48.sp, horizontal: 16.sp),
-      child: Column(
-        children: [
-          Row(
+        if (state is UserLoaded) {
+          name = state.user.name;
+          email = state.user.email;
+          profileImage = state.user.profileImage;
+        }
+
+        return Padding(
+          padding: EdgeInsets.symmetric(vertical: 48.sp, horizontal: 16.sp),
+          child: Column(
             children: [
-              InkWell(
-                onTap: () {
-                  showDialog(
-                    context: context,
-                    builder: (_) => Dialog(
-                      child: Image.asset('assets/images/auth.png'),
+              Row(
+                children: [
+                  InkWell(
+                    onTap: () {
+                      // Optional: Show full image
+                    },
+                    child: CircleAvatar(
+                      radius: 44.r,
+                      backgroundImage:
+                          profileImage != null && profileImage.isNotEmpty
+                          ? NetworkImage(profileImage) as ImageProvider
+                          : const AssetImage('assets/images/auth.png'),
                     ),
-                  );
-                },
-                child: CircleAvatar(
-                  radius: 44.r,
-                  backgroundImage: const AssetImage('assets/images/auth.png'),
-                ),
-              ),
-              SizedBox(width: 20.w),
-              Expanded(
-                child: InkWell(
-                  onTap: () => context.push(RoutesName.editProfileView),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                  ),
+                  SizedBox(width: 20.w),
+                  Expanded(
+                    child: InkWell(
+                      onTap: () => context.push(RoutesName.editProfileView),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text(
-                            'Marina',
-                            style: TextStyle(
-                              fontWeight: FontWeight.w600,
-                              fontSize: 16.sp,
-                              color: AppColors.darkBlue,
-                            ),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                name,
+                                style: TextStyle(
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: 16.sp,
+                                  color: AppColors.darkBlue,
+                                ),
+                              ),
+                              SizedBox(height: 3.h),
+                              Text(
+                                email,
+                                style: TextStyle(
+                                  fontWeight: FontWeight.w400,
+                                  fontSize: 12.sp,
+                                  color: AppColors.darkBlue,
+                                ),
+                              ),
+                            ],
                           ),
-                          SizedBox(height: 3.h),
-                          Text(
-                            'mmmmm774@gmail.com',
-                            style: TextStyle(
-                              fontWeight: FontWeight.w400,
-                              fontSize: 12.sp,
-                              color: AppColors.darkBlue,
-                            ),
+                          Icon(
+                            Icons.arrow_forward_ios,
+                            size: 16.sp,
+                            color: AppColors.darkBlue,
                           ),
                         ],
                       ),
-                      Icon(
-                        Icons.arrow_forward_ios,
-                        size: 16.sp,
+                    ),
+                  ),
+                ],
+              ),
+
+              SizedBox(height: 60.h),
+
+              // Language Option (بتتحدث لوحدها)
+              ValueListenableBuilder<String>(
+                valueListenable: selectedLanguage,
+                builder: (context, language, _) {
+                  log('Language Tile rebuilt');
+                  return ListTile(
+                    contentPadding: EdgeInsets.zero,
+                    leading: Icon(
+                      Icons.language,
+                      size: 24.sp,
+                      color: AppColors.darkBlue,
+                    ),
+                    title: Text(
+                      'Language ($language)',
+                      style: TextStyle(
+                        fontWeight: FontWeight.w400,
+                        fontSize: 16.sp,
                         color: AppColors.darkBlue,
                       ),
-                    ],
-                  ),
-                ),
+                    ),
+                    trailing: Icon(
+                      Icons.arrow_forward_ios,
+                      size: 16.sp,
+                      color: AppColors.darkBlue,
+                    ),
+                    onTap: () => showLanguagePicker(context),
+                  );
+                },
               ),
-            ],
-          ),
 
-          SizedBox(height: 60.h),
+              SizedBox(height: 16.h),
 
-          // Language Option (بتتحدث لوحدها)
-          ValueListenableBuilder<String>(
-            valueListenable: selectedLanguage,
-            builder: (context, language, _) {
-              log('Language Tile rebuilt');
-              return ListTile(
+              // 🚪 Log out
+              ListTile(
                 contentPadding: EdgeInsets.zero,
                 leading: Icon(
-                  Icons.language,
+                  Icons.logout,
                   size: 24.sp,
                   color: AppColors.darkBlue,
                 ),
                 title: Text(
-                  'Language ($language)',
+                  'Log out',
                   style: TextStyle(
                     fontWeight: FontWeight.w400,
                     fontSize: 16.sp,
                     color: AppColors.darkBlue,
                   ),
                 ),
-                trailing: Icon(
-                  Icons.arrow_forward_ios,
-                  size: 16.sp,
-                  color: AppColors.darkBlue,
-                ),
-                onTap: () => showLanguagePicker(context),
-              );
-            },
-          ),
-
-          SizedBox(height: 16.h),
-
-          // 🚪 Log out
-          ListTile(
-            contentPadding: EdgeInsets.zero,
-            leading: Icon(Icons.logout, size: 24.sp, color: AppColors.darkBlue),
-            title: Text(
-              'Log out',
-              style: TextStyle(
-                fontWeight: FontWeight.w400,
-                fontSize: 16.sp,
-                color: AppColors.darkBlue,
+                onTap: () {},
               ),
-            ),
-            onTap: () {
-              context.go(RoutesName.welcome);
-            },
+            ],
           ),
-        ],
-      ),
+        );
+      },
     );
   }
 }

@@ -1,4 +1,6 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:whatsapp/core/utils/colors/app_colors.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:whatsapp/features/home/data/models/item_model.dart';
 
@@ -39,11 +41,19 @@ class RecentlyViewedCard extends StatelessWidget {
                   topLeft: Radius.circular(15.r),
                   topRight: Radius.circular(15.r),
                 ),
-                child: Image.network(
-                  itemModel.image,
+                child: CachedNetworkImage(
+                  imageUrl: itemModel.image,
                   width: double.infinity,
                   fit: BoxFit.cover,
-                  errorBuilder: (context, error, stackTrace) {
+                  placeholder: (context, url) => Container(
+                    color: Colors.grey[300],
+                    child: const Center(
+                      child: CircularProgressIndicator(
+                        color: AppColors.darkBlue,
+                      ),
+                    ),
+                  ),
+                  errorWidget: (context, url, error) {
                     return Container(
                       color: Colors.grey[300],
                       child: Icon(Icons.image_not_supported, size: 40.sp),

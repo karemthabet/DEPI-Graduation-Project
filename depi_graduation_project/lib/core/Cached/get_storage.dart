@@ -64,7 +64,7 @@ class GetStoragePrefs {
   ///   await GetStoragePrefs.setLanguage('ar');
   static Future<void> setLanguage(String lang) async =>
       await write('app_lang', lang);
-   // Save onboarding status
+  // Save onboarding status
   static Future<void> setOnboardingSeen(bool value) async {
     await _box.write('hasSeenOnBoarding', value);
   }
@@ -78,5 +78,4 @@ class GetStoragePrefs {
   /// Example:
   ///   final lang = GetStoragePrefs.getLanguage(); // ar
   static String? getLanguage() => read<String>('app_lang');
-
 }

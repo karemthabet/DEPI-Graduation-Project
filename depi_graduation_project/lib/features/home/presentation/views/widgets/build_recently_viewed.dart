@@ -35,11 +35,8 @@ class BuildRecentlyViewed extends StatelessWidget {
         );
 
         return GestureDetector(
-          onTap:
-              () => context.push(
-                RoutesName.categoriesViewDetails,
-                extra: itemModel,
-              ),
+          onTap: () =>
+              context.push(RoutesName.categoriesViewDetails, extra: itemModel),
           child: RecentlyViewedCard(
             itemModel: itemModel,
             heroTag: 'recently_viewed_$uniqueId',

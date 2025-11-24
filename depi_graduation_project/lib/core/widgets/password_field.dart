@@ -5,7 +5,7 @@ import 'package:whatsapp/core/utils/colors/app_colors.dart';
 
 class PasswordField extends StatefulWidget {
   const PasswordField({
-    Key? key,
+    super.key,
     this.controller,
     this.onSaved,
     this.validator,
@@ -19,7 +19,8 @@ class PasswordField extends StatefulWidget {
     this.border,
     this.focusedBorder,
     this.enabledBorder,
-  }) : super(key: key);
+    this.readOnly = false,
+  });
 
   final TextEditingController? controller;
   final Function(String?)? onSaved;
@@ -34,6 +35,8 @@ class PasswordField extends StatefulWidget {
   final InputBorder? border;
   final InputBorder? focusedBorder;
   final InputBorder? enabledBorder;
+
+  final bool readOnly;
 
   @override
   State<PasswordField> createState() => _PasswordFieldState();

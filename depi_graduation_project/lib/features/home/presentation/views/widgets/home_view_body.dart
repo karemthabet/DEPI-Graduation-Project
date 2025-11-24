@@ -10,6 +10,8 @@ import 'package:whatsapp/features/home/presentation/views/widgets/build_recently
 import 'package:whatsapp/features/home/presentation/views/widgets/build_recommendation_list.dart';
 import 'package:whatsapp/features/home/presentation/views/widgets/build_search_bar.dart';
 
+import 'package:whatsapp/features/profile/presentation/cubit/user_cubit.dart';
+
 class HomeViewBody extends StatefulWidget {
   const HomeViewBody({super.key});
 
@@ -21,12 +23,13 @@ class _HomeViewBodyState extends State<HomeViewBody> {
   @override
   void initState() {
     super.initState();
+    context.read<UserCubit>().loadUserProfile();
     _checkLocationAndLoadPlaces();
   }
 
   Future<void> _checkLocationAndLoadPlaces() async {
     final status = await LocationService.instance.checkLocationStatus();
-    
+
     if (!mounted) return;
 
     switch (status) {
@@ -52,7 +55,7 @@ class _HomeViewBodyState extends State<HomeViewBody> {
         builder: (context, state) {
           if (state is PlacesError) {
             WidgetsBinding.instance.addPostFrameCallback((_) {
-              if (state.failure.errMessage.contains('إذن') || 
+              if (state.failure.errMessage.contains('إذن') ||
                   state.failure.errMessage.contains('GPS')) {
                 _showLocationErrorDialog(context, state.failure.errMessage);
               }
@@ -74,7 +77,10 @@ class _HomeViewBodyState extends State<HomeViewBody> {
 
                   Text(
                     'Browse By Category',
-                    style: TextStyle(fontSize: 18.sp, fontWeight: FontWeight.bold),
+                    style: TextStyle(
+                      fontSize: 18.sp,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                   SizedBox(height: 12.h),
 
@@ -84,20 +90,31 @@ class _HomeViewBodyState extends State<HomeViewBody> {
 
                   Text(
                     'Top Recommendations',
-                    style: TextStyle(fontSize: 18.sp, fontWeight: FontWeight.bold),
+                    style: TextStyle(
+                      fontSize: 18.sp,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                   SizedBox(height: 10.h),
-                  const BuildRecommendationList(),
+                  if (state is PlacesLoaded)
+                    BuildRecommendationList(
+                      recommendations: state.topRecommendations,
+                    )
+                  else
+                    const BuildRecommendationList(recommendations: []),
 
                   SizedBox(height: 20.h),
 
                   Text(
                     'Recently Viewed',
-                    style: TextStyle(fontSize: 18.sp, fontWeight: FontWeight.bold),
+                    style: TextStyle(
+                      fontSize: 18.sp,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                   SizedBox(height: 10.h),
-                  const BuildRecentlyViewed(),
 
+                  const BuildRecentlyViewed(),
                   SizedBox(height: 20.h),
                 ],
               ),
@@ -185,7 +202,8 @@ class _HomeViewBodyState extends State<HomeViewBody> {
           ElevatedButton(
             onPressed: () async {
               Navigator.pop(context);
-              final permission = await LocationService.instance.requestPermission();
+              final permission = await LocationService.instance
+                  .requestPermission();
               if (permission == LocationPermission.whileInUse ||
                   permission == LocationPermission.always) {
                 _checkLocationAndLoadPlaces();
@@ -233,7 +251,9 @@ class _HomeViewBodyState extends State<HomeViewBody> {
     if (!mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: const Text('تم رفض إذن الوصول للموقع. لن يتمكن التطبيق من عرض الأماكن القريبة.'),
+        content: const Text(
+          'تم رفض إذن الوصول للموقع. لن يتمكن التطبيق من عرض الأماكن القريبة.',
+        ),
         action: SnackBarAction(
           label: 'إعادة المحاولة',
           onPressed: _checkLocationAndLoadPlaces,
