@@ -4,8 +4,14 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:whatsapp/core/services/location_service.dart';
+import 'package:whatsapp/features/FavouriteScreen/data/models/favourite_model.dart';
 import 'package:whatsapp/features/home/data/models/item_model.dart';
 import 'package:whatsapp/features/home/presentation/cubit/place_details_cubit.dart';
+
+import '../../../../FavouriteScreen/presentation/cubit/favourite_cubit.dart'
+    show FavoritesCubit;
+import '../../../../FavouriteScreen/presentation/cubit/favourite_state.dart'
+    show FavoritesState;
 
 class CategoriesViewDetailsBody extends StatefulWidget {
   final ItemModel itemModel;
@@ -107,6 +113,7 @@ class _CategoriesViewDetailsBodyState extends State<CategoriesViewDetailsBody>
       children: [
         _buildHeroImage(item),
         _buildBackButton(),
+        _buildFavoriteButton(item),
         _buildInfoCard(item, placeDetails, isLoading),
       ],
     );
@@ -130,6 +137,40 @@ class _CategoriesViewDetailsBodyState extends State<CategoriesViewDetailsBody>
             );
           },
         ),
+      ),
+    );
+  }
+
+  Widget _buildFavoriteButton(ItemModel item) {
+    return Positioned(
+      top: 50,
+      right: 0,
+      child: BlocBuilder<FavoritesCubit, FavoritesState>(
+        builder: (context, state) {
+          final favoritesCubit = context.watch<FavoritesCubit>();
+          final isFav = favoritesCubit.isFavorite(item.id);
+          final favouritePlace = FavouriteModel(
+            id: '',
+            userId: '22222222-2222-2222-2222-222222222222',
+            placeId: item.id,
+            title: item.name,
+            location: item.location,
+            imageUrl: item.image,
+            rating: item.rating,
+          );
+          return IconButton(
+            onPressed: () {
+              context.read<FavoritesCubit>().toggleFavorite(favouritePlace);
+            },
+            icon: isFav
+                ? Image.asset(
+                    'assets/images/heartFilled.png',
+                    width: 24,
+                    height: 24,
+                  )
+                : Image.asset('assets/images/heart.png', width: 24, height: 24),
+          );
+        },
       ),
     );
   }
@@ -197,7 +238,6 @@ class _CategoriesViewDetailsBodyState extends State<CategoriesViewDetailsBody>
                 ],
               ),
             ),
-            Icon(Icons.favorite_border, color: Colors.grey[700], size: 20.sp),
           ],
         ),
       ),
@@ -248,10 +288,10 @@ class _CategoriesViewDetailsBodyState extends State<CategoriesViewDetailsBody>
       final isOpen = placeDetails!['opening_hours']['open_now'] == true;
       return Row(
         children: [
-          Icon(Icons.access_time, color: Colors.grey, size: 14.sp),
+          Icon(Icons.circle, color: Colors.red, size: 5.sp),
           SizedBox(width: 4.w),
           Text(
-            isOpen ? 'مفتوح الآن' : 'مغلق',
+            isOpen ? 'Open Now' : 'Close Now',
             style: TextStyle(
               fontSize: 12.sp,
               color: isOpen ? Colors.green : Colors.red,
@@ -287,7 +327,10 @@ class _CategoriesViewDetailsBodyState extends State<CategoriesViewDetailsBody>
         labelColor: Colors.black,
         unselectedLabelColor: Colors.grey,
         labelStyle: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w600),
-        tabs: const [Tab(text: 'Description'), Tab(text: 'Reviews')],
+        tabs: const [
+          Tab(text: 'Description'),
+          Tab(text: 'Reviews'),
+        ],
       ),
     );
   }
@@ -437,11 +480,10 @@ class _CategoriesViewDetailsBodyState extends State<CategoriesViewDetailsBody>
 
     return SingleChildScrollView(
       child: Column(
-        children:
-            placeDetails['reviews']
-                .take(5)
-                .map<Widget>((review) => _buildReviewCard(review))
-                .toList(),
+        children: placeDetails['reviews']
+            .take(5)
+            .map<Widget>((review) => _buildReviewCard(review))
+            .toList(),
       ),
     );
   }

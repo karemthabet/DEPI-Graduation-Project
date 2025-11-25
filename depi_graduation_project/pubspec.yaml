@@ -19,7 +19,7 @@ dependencies:
 
   # ---------- UI ----------
   google_fonts: ^6.3.2
-  flutter_svg: ^2.2.1
+  flutter_svg: ^2.2.2
   cached_network_image: ^3.4.1
   skeletonizer: ^2.1.0+1
 
@@ -44,6 +44,8 @@ dependencies:
   location: ^5.0.0
   geolocator: ^10.1.0
   google_places_flutter: ^2.1.1
+  supabase_flutter: ^2.10.3
+  liquid_glass_renderer: ^0.2.0-dev.4
 
 dev_dependencies:
   build_runner: ^2.4.0
@@ -64,7 +66,7 @@ flutter:
 #         weight: 700
 
 flutter_assets:
-  assets_path: assets/images/
+  assets_path: assets/
   output_path: lib/core/utils/assets/
   filename: app_assets.dart
   ignore_comments: true

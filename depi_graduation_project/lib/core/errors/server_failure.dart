@@ -10,7 +10,6 @@ abstract class Failure {
 class ServerFailure extends Failure {
   ServerFailure({required super.errMessage, super.statusCode});
 
-  /// ✅ تحويل DioException إلى ServerFailure
   factory ServerFailure.fromDioExcepiton(DioException dioException) {
     final statusCode = dioException.response?.statusCode ?? 0;
 
