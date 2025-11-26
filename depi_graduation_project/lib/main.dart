@@ -11,10 +11,18 @@ import 'package:whatsapp/features/home/presentation/cubit/places_cubit.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import 'package:whatsapp/features/profile/presentation/cubit/user_cubit.dart';
+import 'package:hive_flutter/hive_flutter.dart';
+import 'features/home/data/models/cached_places_model.dart';
+import 'features/home/data/models/place_model.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await GetStorage.init();
+  await Hive.initFlutter();
+  Hive.registerAdapter(CachedPlacesModelAdapter());
+  Hive.registerAdapter(PlaceModelAdapter());
+  Hive.registerAdapter(OpeningHoursAdapter());
+  Hive.registerAdapter(ReviewModelAdapter());
+  await Hive.openBox<CachedPlacesModel>('places_cache');
   await Supabase.initialize(
     url: SupabaseConstants.supabaseUrl,
     anonKey: SupabaseConstants.supabaseAnonKey,

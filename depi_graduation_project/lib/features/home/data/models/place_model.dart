@@ -1,16 +1,33 @@
+import 'package:hive/hive.dart';
+
+part 'place_model.g.dart';
+
+@HiveType(typeId: 1)
 class PlaceModel {
+  @HiveField(0)
   final String name;
+  @HiveField(1)
   final String vicinity;
+  @HiveField(2)
   final double? rating;
+  @HiveField(3)
   final String category;
+  @HiveField(4)
   final String placeId;
+  @HiveField(5)
   final String? photoReference;
+  @HiveField(6)
   final double lat;
+  @HiveField(7)
   final double lng;
+  @HiveField(8)
   final OpeningHours? openingHours;
 
+  @HiveField(9)
   final String? formattedAddress;
+  @HiveField(10)
   final String? description;
+  @HiveField(11)
   final List<ReviewModel>? reviews;
 
   PlaceModel({
@@ -144,7 +161,9 @@ class PlaceModel {
   }
 }
 
+@HiveType(typeId: 2)
 class OpeningHours {
+  @HiveField(0)
   final bool openNow;
 
   OpeningHours({required this.openNow});
@@ -158,9 +177,13 @@ class OpeningHours {
   }
 }
 
+@HiveType(typeId: 3)
 class ReviewModel {
+  @HiveField(0)
   final String authorName;
+  @HiveField(1)
   final String text;
+  @HiveField(2)
   final double? rating;
 
   ReviewModel({required this.authorName, required this.text, this.rating});

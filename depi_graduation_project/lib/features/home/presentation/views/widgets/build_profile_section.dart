@@ -16,7 +16,7 @@ class BuildProfileSection extends StatelessWidget {
     return BlocBuilder<UserCubit, UserState>(
       builder: (context, state) {
         String name = 'Guest';
-        String? profileImage;
+        String? profileImage = 'assets/images/profile.png';
 
         if (state is UserLoaded) {
           name = state.user.name;
@@ -33,7 +33,7 @@ class BuildProfileSection extends StatelessWidget {
                 radius: 25.r,
                 backgroundImage: profileImage != null && profileImage.isNotEmpty
                     ? NetworkImage(profileImage) as ImageProvider
-                    : const AssetImage(AppAssets.imagesMyPhoto),
+                    : const AssetImage('assets/images/profile.png'),
               ),
             ),
             SizedBox(width: 14.w),

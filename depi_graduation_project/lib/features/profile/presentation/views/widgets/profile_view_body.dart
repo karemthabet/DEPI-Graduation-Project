@@ -1,4 +1,5 @@
 import 'dart:developer';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -85,7 +86,7 @@ class _ProfileViewBodyState extends State<ProfileViewBody> {
       builder: (context, state) {
         String name = 'Guest';
         String email = '';
-        String? profileImage;
+        String? profileImage = 'assets/images/profile.png';
 
         if (state is UserLoaded) {
           name = state.user.name;
@@ -107,7 +108,7 @@ class _ProfileViewBodyState extends State<ProfileViewBody> {
                       radius: 44.r,
                       backgroundImage:
                           profileImage != null && profileImage.isNotEmpty
-                          ? NetworkImage(profileImage) as ImageProvider
+                          ? CachedNetworkImageProvider(profileImage) as ImageProvider
                           : const AssetImage('assets/images/auth.png'),
                     ),
                   ),

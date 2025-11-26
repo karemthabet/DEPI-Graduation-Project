@@ -18,7 +18,7 @@ import 'package:whatsapp/features/visit_Screen/view/visit_view.dart';
 
 class AppRouter {
   static final router = GoRouter(
-    initialLocation: RoutesName.login,
+    initialLocation: RoutesName.mainView,
     errorBuilder: (context, state) => const General404Page(),
     routes: [
       GoRoute(
