@@ -2,8 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:uuid/uuid.dart';
+import 'package:whatsapp/core/services/google_maps_place_service.dart';
 import 'package:whatsapp/core/services/location_service.dart';
+import 'package:whatsapp/features/home/data/repositories/places_repository.dart';
 import 'package:whatsapp/features/home/presentation/cubit/places_cubit.dart';
+import 'package:whatsapp/features/home/presentation/views/places_list_view.dart';
 import 'package:whatsapp/features/home/presentation/views/widgets/build_category_list.dart';
 import 'package:whatsapp/features/home/presentation/views/widgets/build_profile_section.dart';
 import 'package:whatsapp/features/home/presentation/views/widgets/build_recently_viewed.dart';
@@ -12,21 +17,30 @@ import 'package:whatsapp/features/home/presentation/views/widgets/build_search_b
 
 class HomeViewBody extends StatefulWidget {
   const HomeViewBody({super.key});
-
   @override
   State<HomeViewBody> createState() => _HomeViewBodyState();
 }
 
 class _HomeViewBodyState extends State<HomeViewBody> {
+  final TextEditingController textEditingController = TextEditingController();
+  late GoogleMapsPlaceServic googleMapsPlaceServic;
+
+  @override
+  void dispose() {
+    textEditingController.dispose();
+    super.dispose();
+  }
+
   @override
   void initState() {
+    googleMapsPlaceServic = GoogleMapsPlaceServic();
     super.initState();
     _checkLocationAndLoadPlaces();
   }
 
   Future<void> _checkLocationAndLoadPlaces() async {
     final status = await LocationService.instance.checkLocationStatus();
-    
+
     if (!mounted) return;
 
     switch (status) {
@@ -52,7 +66,7 @@ class _HomeViewBodyState extends State<HomeViewBody> {
         builder: (context, state) {
           if (state is PlacesError) {
             WidgetsBinding.instance.addPostFrameCallback((_) {
-              if (state.failure.errMessage.contains('إذن') || 
+              if (state.failure.errMessage.contains('إذن') ||
                   state.failure.errMessage.contains('GPS')) {
                 _showLocationErrorDialog(context, state.failure.errMessage);
               }
@@ -69,12 +83,15 @@ class _HomeViewBodyState extends State<HomeViewBody> {
                   const BuildProfileSection(),
                   SizedBox(height: 20.h),
 
-                  const BuildSearchBar(),
+                  BuildSearchBar(textEditingController: textEditingController),
                   SizedBox(height: 24.h),
 
                   Text(
                     'Browse By Category',
-                    style: TextStyle(fontSize: 18.sp, fontWeight: FontWeight.bold),
+                    style: TextStyle(
+                      fontSize: 18.sp,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                   SizedBox(height: 12.h),
 
@@ -84,7 +101,10 @@ class _HomeViewBodyState extends State<HomeViewBody> {
 
                   Text(
                     'Top Recommendations',
-                    style: TextStyle(fontSize: 18.sp, fontWeight: FontWeight.bold),
+                    style: TextStyle(
+                      fontSize: 18.sp,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                   SizedBox(height: 10.h),
                   const BuildRecommendationList(),
@@ -93,7 +113,10 @@ class _HomeViewBodyState extends State<HomeViewBody> {
 
                   Text(
                     'Recently Viewed',
-                    style: TextStyle(fontSize: 18.sp, fontWeight: FontWeight.bold),
+                    style: TextStyle(
+                      fontSize: 18.sp,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                   SizedBox(height: 10.h),
                   const BuildRecentlyViewed(),
@@ -185,7 +208,8 @@ class _HomeViewBodyState extends State<HomeViewBody> {
           ElevatedButton(
             onPressed: () async {
               Navigator.pop(context);
-              final permission = await LocationService.instance.requestPermission();
+              final permission = await LocationService.instance
+                  .requestPermission();
               if (permission == LocationPermission.whileInUse ||
                   permission == LocationPermission.always) {
                 _checkLocationAndLoadPlaces();
@@ -233,7 +257,9 @@ class _HomeViewBodyState extends State<HomeViewBody> {
     if (!mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: const Text('تم رفض إذن الوصول للموقع. لن يتمكن التطبيق من عرض الأماكن القريبة.'),
+        content: const Text(
+          'تم رفض إذن الوصول للموقع. لن يتمكن التطبيق من عرض الأماكن القريبة.',
+        ),
         action: SnackBarAction(
           label: 'إعادة المحاولة',
           onPressed: _checkLocationAndLoadPlaces,
