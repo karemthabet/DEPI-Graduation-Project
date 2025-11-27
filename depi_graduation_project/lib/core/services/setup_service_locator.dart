@@ -21,7 +21,7 @@ void setupServiceLocator() {
   getIt.registerLazySingleton<PlacesRepository>(
     () => PlacesRepositoryImpl(apiService: getIt<ApiService>()),
   );
-getIt.registerFactory(() => PlacesCubit(getIt<PlacesRepository>()));
+ getIt.registerFactory(() => PlacesCubit(repository:  getIt<PlacesRepository>()));
 }
 
 /// Example:

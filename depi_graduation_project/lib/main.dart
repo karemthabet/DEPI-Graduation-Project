@@ -12,7 +12,7 @@ void main() {
   runApp(
     MultiBlocProvider(
       providers: [
-        BlocProvider(create: (context) => PlacesCubit(getIt())),
+        BlocProvider(create: (context) => PlacesCubit(repository: getIt())),
         BlocProvider(create: (context) => PlaceDetailsCubit(getIt())),
       ],
       child: const MyApp(),

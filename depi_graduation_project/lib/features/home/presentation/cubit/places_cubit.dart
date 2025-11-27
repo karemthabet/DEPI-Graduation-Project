@@ -9,7 +9,7 @@ part 'places_state.dart';
 class PlacesCubit extends Cubit<PlacesState> {
   final PlacesRepository repository;
 
-  PlacesCubit(this.repository) : super(PlacesInitial());
+  PlacesCubit({required this.repository}) : super(PlacesInitial());
 
   Future<void> loadPlaces() async {
     emit(PlacesLoading());

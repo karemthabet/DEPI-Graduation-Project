@@ -48,4 +48,10 @@ class PlacesRepositoryImpl extends BaseRepo implements PlacesRepository {
       }
     });
   }
+  
+  @override
+  Future<Either<ServerFailure, Map<String, dynamic>>> getRecommendedPlaces(String placeId) {
+    // TODO: implement getRecommendedPlaces
+    throw UnimplementedError();
+  }
 }
