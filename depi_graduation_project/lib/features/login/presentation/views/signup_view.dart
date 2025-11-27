@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';   
 import 'package:whatsapp/core/utils/router/routes_name.dart';
 import 'widgets/password_field.dart';
 
@@ -12,6 +13,23 @@ class SignUpView extends StatefulWidget {
 }
 
 class _SignUpViewState extends State<SignUpView> {
+  // Add controllers
+  final TextEditingController nameController = TextEditingController();
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passController = TextEditingController();
+  final TextEditingController confirmPassController = TextEditingController();
+
+  final supabase = Supabase.instance.client; 
+
+  @override
+  void dispose() {
+    nameController.dispose();
+    emailController.dispose();
+    passController.dispose();
+    confirmPassController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -23,7 +41,6 @@ class _SignUpViewState extends State<SignUpView> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Back Arrow
               Positioned(
                 top: 14,
                 left: 16,
@@ -34,7 +51,6 @@ class _SignUpViewState extends State<SignUpView> {
               ),
               const SizedBox(height: 10),
 
-              // Title
               Text(
                 "Let's get\nstarted",
                 style: GoogleFonts.inter(
@@ -47,52 +63,49 @@ class _SignUpViewState extends State<SignUpView> {
               ),
               const SizedBox(height: 40),
 
-              // Name field
               _buildTextField(
+                controller: nameController,
                 icon: Icons.person_outline,
                 hintText: 'Name',
               ),
               const SizedBox(height: 16),
 
-              // Email field
               _buildTextField(
+                controller: emailController,
                 icon: Icons.email_outlined,
                 hintText: 'Email',
               ),
               const SizedBox(height: 16),
 
-              // Password field
-              const PasswordField(
+              PasswordField(
+                controller: passController,
                 hintText: 'Password',
                 icon: Icons.lock_outline,
                 isPassword: true,
               ),
               const SizedBox(height: 16),
 
-              // Confirm Password field
-              const PasswordField(
+              PasswordField(
+                controller: confirmPassController,
                 hintText: 'Confirm Password',
                 icon: Icons.lock_outline,
                 isConfirmPassword: true,
               ),
+
               const SizedBox(height: 24),
 
-              // Sign Up Button
               _buildSignUpButton(),
 
               const SizedBox(height: 16),
 
-              // "Or continue with" text
               _buildContinueWithText(),
 
               const SizedBox(height: 16),
 
-              // Google Button
               _buildGoogleButton(),
 
               const SizedBox(height: 24),
 
-              // Already have an account
               _buildAlreadyHaveAccount(),
             ],
           ),
@@ -102,10 +115,12 @@ class _SignUpViewState extends State<SignUpView> {
   }
 
   Widget _buildTextField({
+    required TextEditingController controller,
     required IconData icon,
     required String hintText,
   }) {
     return TextField(
+      controller: controller,
       decoration: InputDecoration(
         prefixIcon: Icon(icon),
         hintText: hintText,
@@ -116,12 +131,56 @@ class _SignUpViewState extends State<SignUpView> {
     );
   }
 
+  // ============================================================
+  // 🔥 MODIFIED — SUPABASE SIGN UP LOGIC
+  // ============================================================
   Widget _buildSignUpButton() {
     return SizedBox(
       width: double.infinity,
       child: ElevatedButton(
-        onPressed: () {
-          context.go(RoutesName.mainView);
+        onPressed: () async {
+          final name = nameController.text.trim();
+          final email = emailController.text.trim();
+          final password = passController.text.trim();
+          final confirmPassword = confirmPassController.text.trim();
+
+          // Basic validation
+          if (name.isEmpty || email.isEmpty || password.isEmpty) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text("All fields are required")),
+            );
+            return;
+          }
+
+          if (password != confirmPassword) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text("Passwords do not match")),
+            );
+            return;
+          }
+
+          try {
+            final response = await supabase.auth.signUp(
+              email: email,
+              password: password,
+              data: {
+                'name': name,
+              },
+            );
+
+            // SUCCESS
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text("Sign up successful")),
+            );
+
+            // Navigate when success
+            context.go(RoutesName.mainView);
+
+          } on AuthException catch (e) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text(e.message)),
+            );
+          }
         },
         style: ElevatedButton.styleFrom(
           backgroundColor: const Color(0xFFFFE26D),

@@ -44,6 +44,8 @@ dependencies:
   location: ^5.0.0
   geolocator: ^10.1.0
   google_places_flutter: ^2.1.1
+  supabase: ^2.10.0
+  supabase_flutter: ^2.10.3
 
 dev_dependencies:
   build_runner: ^2.4.0
@@ -70,3 +72,11 @@ flutter_assets:
   ignore_comments: true
   classname: AppAssets
   field_prefix: null
+
+dependency_overrides:
+  flutter_plugin_android_lifecycle:
+    path: ./external/flutter_plugin_android_lifecycle-2.0.31
+  location:
+    path: ./external/location-5.0.3
+
+

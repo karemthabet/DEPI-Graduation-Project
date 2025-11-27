@@ -5,9 +5,26 @@ import 'package:whatsapp/features/login/presentation/views/widgets/password_fiel
 import 'signup_view.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'forget_password_view.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
-class SignInView extends StatelessWidget {
+class SignInView extends StatefulWidget {
   const SignInView({super.key});
+
+  @override
+  State<SignInView> createState() => _SignInViewState();
+}
+
+class _SignInViewState extends State<SignInView> {
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+  final supabase = Supabase.instance.client;
+
+  @override
+  void dispose() {
+    emailController.dispose();
+    passwordController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -22,13 +39,10 @@ class SignInView extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Back arrow at the top-left
+              // Back arrow
               IconButton(
-                icon: const  Icon(Icons.arrow_back, color: darkBlueColor),
-                color: textColor,
-                onPressed: () {
-                  Navigator.pop(context);
-                },
+                icon: const Icon(Icons.arrow_back, color: textColor),
+                onPressed: () => Navigator.pop(context),
               ),
               const SizedBox(height: 15),
 
@@ -47,6 +61,7 @@ class SignInView extends StatelessWidget {
 
               // Email field
               TextField(
+                controller: emailController,
                 decoration: InputDecoration(
                   prefixIcon: const Icon(Icons.email_outlined),
                   hintText: 'Email',
@@ -58,9 +73,10 @@ class SignInView extends StatelessWidget {
               const SizedBox(height: 20),
 
               // Password field
-             const PasswordField(
+              PasswordField(
                 hintText: 'Password',
                 icon: Icons.lock_outline,
+                controller: passwordController,
                 isPassword: true,
               ),
 
@@ -92,9 +108,61 @@ class SignInView extends StatelessWidget {
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
-                  onPressed: () {
-                              context.go(RoutesName.mainView);
+                  onPressed: () async {
+                    final email = emailController.text.trim();
+                    final password = passwordController.text.trim();
 
+                    // Basic validation
+                    if (email.isEmpty || password.isEmpty) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                            content: Text("Email and password are required")),
+                      );
+                      return;
+                    }
+
+                    try {
+                      // Supabase sign in
+                      final response = await supabase.auth.signInWithPassword(
+                        email: email,
+                        password: password,
+                      );
+
+                      final user = response.user;
+
+                      if (user == null) {
+                        // Sign-in failed
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text("Invalid credentials")),
+                        );
+                        return;
+                      }
+
+                      // Check email verification
+                      if (user.emailConfirmedAt == null) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                              content: Text(
+                                  "Please verify your email before signing in")),
+                        );
+                        return;
+                      }
+
+                      // SUCCESS: Navigate to main view
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text("Sign in successful")),
+                      );
+                      context.go(RoutesName.mainView);
+
+                    } on AuthException catch (e) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text(e.message)),
+                      );
+                    } catch (e) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text("Unexpected error: $e")),
+                      );
+                    }
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFFFFE26D),
@@ -118,11 +186,9 @@ class SignInView extends StatelessWidget {
 
               const SizedBox(height: 20),
 
-              // Or continue with
               const Center(child: Text('Or continue with')),
               const SizedBox(height: 15),
 
-              // Google Button
               SizedBox(
                 width: double.infinity,
                 child: OutlinedButton.icon(
@@ -133,7 +199,6 @@ class SignInView extends StatelessWidget {
                   ),
                   label: Text(
                     'Google',
-                    textAlign: TextAlign.center,
                     style: GoogleFonts.inter(
                       fontSize: 14,
                       fontWeight: FontWeight.w700,
@@ -155,7 +220,6 @@ class SignInView extends StatelessWidget {
 
               const SizedBox(height: 20),
 
-              // Sign up link
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
