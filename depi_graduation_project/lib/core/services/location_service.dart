@@ -78,8 +78,8 @@ class LocationService {
 
 /// حالات الموقع والأذونات
 enum LocationStatus {
-  granted,              // تم منح الإذن والموقع مفعل
-  serviceDisabled,      // خدمة الموقع غير مفعلة
-  permissionDenied,     // تم رفض الإذن
+  granted, // تم منح الإذن والموقع مفعل
+  serviceDisabled, // خدمة الموقع غير مفعلة
+  permissionDenied, // تم رفض الإذن
   permissionDeniedForever, // تم رفض الإذن نهائياً
 }

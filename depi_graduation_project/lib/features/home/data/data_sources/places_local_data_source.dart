@@ -12,7 +12,7 @@ class PlacesLocalDataSource {
   static const String _topRecommendationsBoxName = 'top_recommendations_cache';
   static const String _placeDetailsBoxName = 'place_details_cache';
   static const String _categoriesBoxName = 'categories_cache';
-  static const String _lastLocationBoxName = 'last_location_cache';
+  static const String _lastLocationBoxName = 'location_cache';
 
   Future<void> cacheNearbyPlaces({
     required List<PlaceModel> places,

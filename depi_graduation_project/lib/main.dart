@@ -1,27 +1,33 @@
-import 'package:flutter/material.dart';
+// In main.dart
+import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hive_flutter/adapters.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:whatsapp/core/services/setup_service_locator.dart';
-
 import 'package:whatsapp/core/utils/constants/supabase_constants.dart';
-import 'package:whatsapp/core/utils/router/app_router.dart';
 import 'package:whatsapp/features/home/presentation/cubit/place_details_cubit.dart';
 import 'package:whatsapp/features/home/presentation/cubit/places_cubit.dart';
-
 import 'package:whatsapp/features/profile/presentation/cubit/user_cubit.dart';
+import 'package:whatsapp/my_app.dart';
 import 'features/home/data/models/cached_places_model.dart';
 import 'features/home/data/models/place_model.dart';
+import 'features/home/data/models/cached_location_model.dart'; // Add this import
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Hive.initFlutter();
+  
+  // Register all Hive adapters
   Hive.registerAdapter(CachedPlacesModelAdapter());
   Hive.registerAdapter(PlaceModelAdapter());
   Hive.registerAdapter(OpeningHoursAdapter());
   Hive.registerAdapter(ReviewModelAdapter());
+  Hive.registerAdapter(CachedLocationModelAdapter()); // Register the location adapter
+  
+  // Open Hive boxes
   await Hive.openBox<CachedPlacesModel>('places_cache');
+  await Hive.openBox<CachedLocationModel>('location_cache'); // Open location box
+  
   await Supabase.initialize(
     url: SupabaseConstants.supabaseUrl,
     anonKey: SupabaseConstants.supabaseAnonKey,
@@ -38,18 +44,4 @@ Future<void> main() async {
       child: const MyApp(),
     ),
   );
-}
-
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return ScreenUtilInit(
-      designSize: const Size(360, 690),
-      builder: (context, child) {
-        return MaterialApp.router(routerConfig: AppRouter.router);
-      },
-    );
-  }
 }
