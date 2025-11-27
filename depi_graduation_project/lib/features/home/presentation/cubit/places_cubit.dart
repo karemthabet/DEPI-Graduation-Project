@@ -14,18 +14,19 @@ class PlacesCubit extends Cubit<PlacesState> {
   Future<void> loadPlaces() async {
     emit(PlacesLoading());
     final result = await repository.getNearbyPlaces();
-    result.fold(
-      (failure) => emit(PlacesError(failure: failure)),
-      (places) {
-        final categorized = _groupByCategory(places);
-        final availableCategories = getAvailableCategories(categorized);
-        emit(PlacesLoaded(
+    result.fold((failure) => emit(PlacesError(failure: failure)), (places) {
+      final categorized = _groupByCategory(places);
+      final availableCategories = getAvailableCategories(categorized);
+      final topRecommendations = getTopRecommendations(places, limit: 10);
+      emit(
+        PlacesLoaded(
           places: places,
           categorized: categorized,
           availableCategories: availableCategories,
-        ));
-      },
-    );
+          topRecommendations: topRecommendations,
+        ),
+      );
+    });
   }
 
   Map<String, List<PlaceModel>> _groupByCategory(List<PlaceModel> places) {
@@ -41,9 +42,15 @@ class PlacesCubit extends Cubit<PlacesState> {
     return map;
   }
 
-  Map<String, String> getAvailableCategories(Map<String, List<PlaceModel>> categorized) {
+  Map<String, String> getAvailableCategories(
+    Map<String, List<PlaceModel>> categorized,
+  ) {
     final availableCategories = AppConstants.categories.entries
-        .where((entry) => categorized.containsKey(entry.key) && categorized[entry.key]!.isNotEmpty)
+        .where(
+          (entry) =>
+              categorized.containsKey(entry.key) &&
+              categorized[entry.key]!.isNotEmpty,
+        )
         .toList();
 
     availableCategories.sort((a, b) {
@@ -53,5 +60,14 @@ class PlacesCubit extends Cubit<PlacesState> {
     });
 
     return {for (var e in availableCategories) e.key: e.value};
+  }
+
+  List<PlaceModel> getTopRecommendations(
+    List<PlaceModel> places, {
+    int limit = 10,
+  }) {
+    final ratedPlaces = places.where((p) => p.rating != null).toList();
+    ratedPlaces.sort((a, b) => b.rating!.compareTo(a.rating!));
+    return ratedPlaces.take(limit).toList();
   }
 }

@@ -15,6 +15,8 @@ import 'package:whatsapp/features/home/presentation/views/widgets/build_recently
 import 'package:whatsapp/features/home/presentation/views/widgets/build_recommendation_list.dart';
 import 'package:whatsapp/features/home/presentation/views/widgets/build_search_bar.dart';
 
+import 'package:whatsapp/features/profile/presentation/cubit/user_cubit.dart';
+
 class HomeViewBody extends StatefulWidget {
   const HomeViewBody({super.key});
   @override
@@ -35,6 +37,7 @@ class _HomeViewBodyState extends State<HomeViewBody> {
   void initState() {
     googleMapsPlaceServic = GoogleMapsPlaceServic();
     super.initState();
+    context.read<UserCubit>().loadUserProfile();
     _checkLocationAndLoadPlaces();
   }
 
@@ -107,7 +110,12 @@ class _HomeViewBodyState extends State<HomeViewBody> {
                     ),
                   ),
                   SizedBox(height: 10.h),
-                  const BuildRecommendationList(),
+                  if (state is PlacesLoaded)
+                    BuildRecommendationList(
+                      recommendations: state.topRecommendations,
+                    )
+                  else
+                    const BuildRecommendationList(recommendations: []),
 
                   SizedBox(height: 20.h),
 
@@ -119,8 +127,8 @@ class _HomeViewBodyState extends State<HomeViewBody> {
                     ),
                   ),
                   SizedBox(height: 10.h),
-                  const BuildRecentlyViewed(),
 
+                  const BuildRecentlyViewed(),
                   SizedBox(height: 20.h),
                 ],
               ),

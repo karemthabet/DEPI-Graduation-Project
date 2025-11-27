@@ -1,27 +1,58 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:go_router/go_router.dart';
+import 'package:whatsapp/core/utils/router/routes_name.dart';
+import 'package:whatsapp/features/home/data/models/item_model.dart';
 import 'package:whatsapp/features/home/presentation/views/widgets/recommendation_card.dart';
+import 'package:whatsapp/features/home/data/models/place_model.dart';
 
 class BuildRecommendationList extends StatelessWidget {
-  const BuildRecommendationList({super.key});
+  final List<PlaceModel> recommendations;
+
+  const BuildRecommendationList({super.key, required this.recommendations});
 
   @override
   Widget build(BuildContext context) {
+    if (recommendations.isEmpty) {
+      return const SizedBox.shrink();
+    }
+
     return SizedBox(
       height: 120.h,
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
-        itemCount: 10,
+        itemCount: recommendations.length,
         padding: EdgeInsets.symmetric(horizontal: 12.w),
         itemBuilder: (context, index) {
+          final place = recommendations[index];
+          final imageUrl = place.photoReference != null
+              ? 'https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=${place.photoReference}&key=AIzaSyA3FifUzz1TsB2bknK0VARH_45PT_AuyMw'
+              : 'https://www.legrand.com.eg/modules/custom/legrand_ecat/assets/img/no-image.png';
+
           return Padding(
             padding: EdgeInsets.only(right: 12.w),
-            child: const RecommendationCard(
-              title: 'Grand Egyptian Museum',
-              location: 'Giza, near the Pyramids',
-              rating: 4.8,
-              imageUrl:
-                  'https://cdn.alweb.com/thumbs/travel/article/fit710x532/%D8%A7%D9%84%D8%A3%D9%87%D8%B1%D8%A7%D9%85%D8%A7%D8%AA-%D8%A3%D9%87%D9%85-%D9%85%D8%B9%D9%84%D9%85-%D8%B3%D9%8A%D8%A7%D8%AD%D9%8A-%D8%B9%D9%84%D9%8A%D9%83-%D8%B2%D9%8A%D8%A7%D8%B1%D8%AA%D9%87-%D9%81%D9%8A-%D9%85%D8%B5%D8%B1.jpg',
+            child: GestureDetector(
+              onTap: () {
+                final itemModel = ItemModel(
+                  id: place.placeId,
+                  name: place.name,
+                  location: place.vicinity,
+                  image: imageUrl,
+                  rating: place.rating?.toString() ?? '0.0',
+                  openNow: place.openingHours?.openNow ?? false,
+                  description: place.description ?? 'No description available',
+                );
+                context.push(
+                  RoutesName.categoriesViewDetails,
+                  extra: itemModel,
+                );
+              },
+              child: RecommendationCard(
+                title: place.name,
+                location: place.vicinity,
+                rating: place.rating ?? 0.0,
+                imageUrl: imageUrl,
+              ),
             ),
           );
         },

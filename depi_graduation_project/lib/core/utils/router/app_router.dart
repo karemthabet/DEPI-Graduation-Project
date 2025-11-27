@@ -13,6 +13,7 @@ import 'package:whatsapp/features/profile/presentation/views/edit_profile_view.d
 import 'package:whatsapp/features/profile/presentation/views/profile_veiw.dart';
 import 'package:whatsapp/features/onboarding1/onboarding_view.dart';
 import 'package:whatsapp/features/splash/presentation/views/splash_view.dart';
+import 'package:whatsapp/features/visit_Screen/view/visit_view.dart';
 
 class AppRouter {
   static final router = GoRouter(

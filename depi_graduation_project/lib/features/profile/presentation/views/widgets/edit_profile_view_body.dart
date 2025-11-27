@@ -1,10 +1,12 @@
 import 'dart:developer';
-
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:whatsapp/core/utils/colors/app_colors.dart';
 import 'package:whatsapp/core/widgets/custom_text_form_field.dart';
 import 'package:whatsapp/core/widgets/password_field.dart';
+import 'package:whatsapp/features/profile/presentation/cubit/user_cubit.dart';
+import 'package:whatsapp/features/profile/presentation/cubit/user_state.dart';
 import 'package:whatsapp/features/profile/presentation/views/widgets/custom_button.dart';
 import 'package:whatsapp/features/profile/presentation/views/widgets/profile_image_picker.dart';
 
@@ -16,12 +18,22 @@ class EditProfileViewBody extends StatefulWidget {
 }
 
 class _EditProfileViewBodyState extends State<EditProfileViewBody> {
-   final nameController = TextEditingController();
+  final nameController = TextEditingController();
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
   final nameFocus = FocusNode();
   final emailFocus = FocusNode();
   final passwordFocus = FocusNode();
+
+  @override
+  void initState() {
+    super.initState();
+    final state = context.read<UserCubit>().state;
+    if (state is UserLoaded) {
+      nameController.text = state.user.name;
+      emailController.text = state.user.email;
+    }
+  }
 
   @override
   void dispose() {
@@ -34,12 +46,31 @@ class _EditProfileViewBodyState extends State<EditProfileViewBody> {
     super.dispose();
   }
 
+  Future<void> _handleSave() async {
+    final state = context.read<UserCubit>().state;
+    if (state is UserLoaded) {
+      final updatedUser = state.user.copyWith(name: nameController.text);
+
+      await context.read<UserCubit>().updateUserProfile(updatedUser);
+      if (mounted) {
+        Navigator.pop(context);
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     log('ascsdcsdc');
 
-    return Padding(
-
+    return BlocListener<UserCubit, UserState>(
+      listener: (context, state) {
+        if (state is UserError) {
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(SnackBar(content: Text(state.message)));
+        }
+      },
+      child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
         child: SingleChildScrollView(
           physics: const BouncingScrollPhysics(),
@@ -86,6 +117,7 @@ class _EditProfileViewBodyState extends State<EditProfileViewBody> {
                         controller: emailController,
                         hintText: 'Email',
                         focusNode: emailFocus,
+                        readOnly: true,
                       ),
                     ),
                     const SizedBox(height: 16),
@@ -103,6 +135,7 @@ class _EditProfileViewBodyState extends State<EditProfileViewBody> {
                         controller: passwordController,
                         hintText: 'Password',
                         focusNode: passwordFocus,
+                        readOnly: true,
                       ),
                     ),
                   ],
@@ -118,7 +151,7 @@ class _EditProfileViewBodyState extends State<EditProfileViewBody> {
                       backGroungColor: AppColors.orange,
                       text: 'Save',
                       textColor: Colors.white,
-                      onPressed: () {},
+                      onPressed: _handleSave,
                     ),
                   ),
                   const SizedBox(width: 16),
@@ -131,7 +164,9 @@ class _EditProfileViewBodyState extends State<EditProfileViewBody> {
                         color: AppColors.darkBlue,
                         width: 1,
                       ),
-                      onPressed: () {},
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
                     ),
                   ),
                 ],
@@ -139,6 +174,7 @@ class _EditProfileViewBodyState extends State<EditProfileViewBody> {
             ],
           ),
         ),
-      );
+      ),
+    );
   }
 }

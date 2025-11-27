@@ -1,4 +1,6 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:whatsapp/core/utils/colors/app_colors.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
@@ -117,12 +119,21 @@ class _CategoriesViewDetailsBodyState extends State<CategoriesViewDetailsBody>
       tag: '${item.image}_${item.name}',
       child: ClipRRect(
         borderRadius: const BorderRadius.vertical(bottom: Radius.circular(25)),
-        child: Image.network(
-          item.image,
+        child: CachedNetworkImage(
+          imageUrl: item.image,
           height: 330.h,
           width: double.infinity,
           fit: BoxFit.cover,
-          errorBuilder: (context, error, stackTrace) {
+          placeholder: (context, url) => Container(
+            height: 330.h,
+            color: Colors.grey[300],
+            child: const Center(
+              child: CircularProgressIndicator(
+                color: AppColors.darkBlue,
+              ),
+            ),
+          ),
+          errorWidget: (context, url, error) {
             return Container(
               height: 330.h,
               color: Colors.grey[300],
