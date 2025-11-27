@@ -6,6 +6,10 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:whatsapp/core/services/location_service.dart';
 import 'package:whatsapp/features/home/data/models/item_model.dart';
 import 'package:whatsapp/features/home/presentation/cubit/place_details_cubit.dart';
+import 'package:whatsapp/features/visit_Screen/presentation/cubit/visit_cubit.dart';
+import 'package:whatsapp/core/di/injection_container.dart';
+import 'package:whatsapp/features/visit_Screen/data/model/place__model.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class CategoriesViewDetailsBody extends StatefulWidget {
   final ItemModel itemModel;
@@ -517,25 +521,123 @@ class _CategoriesViewDetailsBodyState extends State<CategoriesViewDetailsBody>
   Widget _buildNavigationButton() {
     return Padding(
       padding: EdgeInsets.all(20.w),
-      child: ElevatedButton(
-        style: ElevatedButton.styleFrom(
-          backgroundColor: const Color(0xFFFFE66D),
-          minimumSize: Size(double.infinity, 48.h),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(25.r),
+      child: Row(
+        children: [
+          Expanded(
+            child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFFFFE66D),
+                minimumSize: Size(double.infinity, 48.h),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(25.r),
+                ),
+                elevation: 0,
+              ),
+              onPressed: _openInMaps,
+              child: Text(
+                'Find Your Way',
+                style: TextStyle(
+                  color: Colors.black,
+                  fontWeight: FontWeight.w600,
+                  fontSize: 15.sp,
+                ),
+              ),
+            ),
           ),
-          elevation: 0,
-        ),
-        onPressed: _openInMaps,
-        child: Text(
-          'Find Your Way',
-          style: TextStyle(
-            color: Colors.black,
-            fontWeight: FontWeight.w600,
-            fontSize: 15.sp,
+          SizedBox(width: 12.w),
+          Expanded(
+            child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFF2C3E50),
+                minimumSize: Size(double.infinity, 48.h),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(25.r),
+                ),
+                elevation: 0,
+              ),
+              onPressed: _addToPlan,
+              child: Text(
+                'Add to Plan',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.w600,
+                  fontSize: 15.sp,
+                ),
+              ),
+            ),
           ),
-        ),
+        ],
       ),
     );
+  }
+
+  Future<void> _addToPlan() async {
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime.now(),
+      lastDate: DateTime.now().add(const Duration(days: 365)),
+      builder: (context, child) {
+        return Theme(
+          data: Theme.of(context).copyWith(
+            colorScheme: const ColorScheme.light(
+              primary: Color(0xFF2C3E50),
+              onPrimary: Colors.white,
+              onSurface: Color(0xFF2C3E50),
+            ),
+            textButtonTheme: TextButtonThemeData(
+              style: TextButton.styleFrom(
+                foregroundColor: const Color(0xFF2C3E50),
+              ),
+            ),
+          ),
+          child: child!,
+        );
+      },
+    );
+
+    if (picked != null && mounted) {
+      try {
+        final userId = Supabase.instance.client.auth.currentUser?.id;
+        if (userId == null) {
+          _showSnackBar('Please login first');
+          return;
+        }
+
+        // Create Place object from ItemModel
+        final place = Place(
+          id: widget.itemModel.id ?? '',
+          name: widget.itemModel.name,
+          address: widget.itemModel.location,
+          imageUrl: widget.itemModel.image,
+          rating: double.tryParse(widget.itemModel.rating) ?? 0.0,
+          rawData: {
+            'name': widget.itemModel.name,
+            'vicinity': widget.itemModel.location,
+            'rating': widget.itemModel.rating,
+            'photos': [{'photo_reference': widget.itemModel.image}], 
+            // Note: This is a simplified reconstruction. 
+            // Ideally we should pass the full PlaceModel if available.
+          },
+        );
+
+        final visitCubit = sl<VisitCubit>();
+        await visitCubit.addVisit(
+          place: place,
+          visitDate: picked,
+          userId: userId,
+        );
+
+        if (mounted) {
+          _showSnackBar('Added to plan successfully!');
+          // Optional: Navigate to Visit List
+          // context.pushNamed(RoutesName.visitList);
+        }
+      } catch (e) {
+        if (mounted) {
+          _showSnackBar('Failed to add visit: $e');
+        }
+      }
+    }
   }
 }

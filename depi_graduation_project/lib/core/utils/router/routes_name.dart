@@ -14,6 +14,7 @@ class RoutesName {
   static const String browseByCategoryScreen = '/browseByCategoryScreen';
   static const String homePage2 = '/homePage2';
   static const String homePage1 = '/homePage1';
+  static const String visitList = '/visitList';
 
 }
  

@@ -44,6 +44,10 @@ dependencies:
   location: ^5.0.0
   geolocator: ^10.1.0
   google_places_flutter: ^2.1.1
+  supabase_flutter: ^2.10.3
+  intl: ^0.20.2
+  flutter_local_notifications: ^19.5.0
+  rxdart: ^0.28.0
 
 dev_dependencies:
   build_runner: ^2.4.0

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:whatsapp/features/visit_Screen/view/visit_view.dart';
+import 'package:whatsapp/features/visit_Screen/presentation/pages/visit_list_screen.dart';
 import '../widgets/favourite_card.dart';
 class FavouriteView extends StatefulWidget {
 
@@ -15,13 +15,12 @@ class _FavouriteViewState extends State<FavouriteView> {
   @override
   Widget build(BuildContext context) {
 
-    print("voini");
     return  GestureDetector(
       onHorizontalDragEnd: (details) {
         if (details.primaryVelocity! > 0) {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => VisitedView()),
+            MaterialPageRoute(builder: (context) => const VisitListScreen()),
           );
         }
       }, 

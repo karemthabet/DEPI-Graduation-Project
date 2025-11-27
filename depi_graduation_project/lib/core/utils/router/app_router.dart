@@ -14,7 +14,8 @@ import 'package:whatsapp/features/profile/presentation/views/profile_veiw.dart';
 import 'package:whatsapp/features/onboarding1/onboarding_view.dart';
 import 'package:whatsapp/features/FavouriteScreen/view/favourite_view.dart';
 import 'package:whatsapp/features/splash/presentation/views/splash_view.dart';
-import 'package:whatsapp/features/visit_Screen/view/visit_view.dart';
+
+import 'package:whatsapp/features/visit_Screen/presentation/pages/visit_list_screen.dart';
 class AppRouter {
   static final router = GoRouter(
     initialLocation: RoutesName.mainView,
@@ -82,6 +83,11 @@ class AppRouter {
         path: RoutesName.splash,
         builder: (context, state) => const SplashView(),
        ),
+        GoRoute(
+        name: RoutesName.visitList,
+        path: RoutesName.visitList,
+        builder: (context, state) => const VisitListScreen(),
+      ),
 
     ],
   );
