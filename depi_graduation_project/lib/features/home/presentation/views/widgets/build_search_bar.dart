@@ -1,19 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:google_places_flutter/model/place_details.dart';
 import 'package:uuid/uuid.dart';
 import 'package:whatsapp/core/services/google_maps_place_service.dart';
 import 'package:whatsapp/core/utils/styles/app_text_styles.dart';
 import 'package:whatsapp/features/home/data/models/item_model.dart';
-import 'package:whatsapp/features/home/presentation/views/widgets/home_view_body.dart';
 import 'package:whatsapp/models/place_autocomplete_model/place_autocomplete_model.dart';
 import 'package:whatsapp/features/home/presentation/views/widgets/categories_view_details_body.dart';
-import 'package:whatsapp/models/places_details_model/photo.dart';
 import 'package:whatsapp/models/places_details_model/places_details_model.dart';
 
 class BuildSearchBar extends StatefulWidget {
   final TextEditingController textEditingController;
-  BuildSearchBar({super.key, required this.textEditingController});
+  const BuildSearchBar({super.key, required this.textEditingController});
 
   @override
   _BuildSearchBarState createState() => _BuildSearchBarState();
@@ -28,7 +25,7 @@ class _BuildSearchBarState extends State<BuildSearchBar> {
   @override
   void initState() {
     textEditingController = widget.textEditingController;
-    uuid = Uuid();
+    uuid = const Uuid();
     super.initState();
     fetchPredictions();
   }
@@ -38,8 +35,8 @@ class _BuildSearchBarState extends State<BuildSearchBar> {
       sessiontoken ??= uuid.v4();
 
       if (textEditingController.text.isNotEmpty) {
-        var service = GoogleMapsPlaceServic();
-        var result = await service.getpredictions(
+        final service = GoogleMapsPlaceServic();
+        final result = await service.getpredictions(
           sessiontoken: sessiontoken!,
           input: textEditingController.text,
         );
@@ -127,22 +124,23 @@ class customlistview extends StatelessWidget {
             title: Text(places[index].description!),
             trailing: IconButton(
               onPressed: () async {
-                var placeDetails = await googleMapsPlaceServic.getPlaceDetails(
-                  placeId: places[index].placeId.toString(),
-                );
+                final placeDetails = await googleMapsPlaceServic
+                    .getPlaceDetails(placeId: places[index].placeId.toString());
 
                 final item = ItemModel(
                   id: places[index].placeId,
 
                   name: places[index].description ?? 'unkown place',
 
-                  image: placeDetails.photos?.isNotEmpty == true
-                      ? placeDetails.photos![0].photoReference ?? ''
-                      : '',
+                  image:
+                      placeDetails.photos?.isNotEmpty == true
+                          ? placeDetails.photos![0].photoReference ?? ''
+                          : '',
 
-                  location: placeDetails.geometry != null
-                      ? '${placeDetails.geometry!.location!.lat},${placeDetails.geometry!.location!.lng}'
-                      : 'Location not available',
+                  location:
+                      placeDetails.geometry != null
+                          ? '${placeDetails.geometry!.location!.lat},${placeDetails.geometry!.location!.lng}'
+                          : 'Location not available',
                   description:
                       placeDetails.editorialSummary ??
                       '', // وصف افتراضي أو فاضي
@@ -152,11 +150,11 @@ class customlistview extends StatelessWidget {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) =>
-                        CategoriesViewDetailsBody(itemModel: item),
+                    builder:
+                        (context) => CategoriesViewDetailsBody(itemModel: item),
                   ),
                 ).then((_) {
-                  onPlaceSelection(placeDetails!);
+                  onPlaceSelection(placeDetails);
                 });
               },
               icon: const Icon(Icons.arrow_circle_right_outlined),

@@ -33,7 +33,9 @@ Future<void> setupServiceLocator() async {
   );
 
   // --- Cubits ---
-  getIt.registerFactory(() => PlacesCubit(getIt<PlacesRepository>()));
+  getIt.registerFactory(
+    () => PlacesCubit(repository: getIt<PlacesRepository>()),
+  );
   getIt.registerFactory(() => UserCubit(getIt<UserRepository>()));
 }
 

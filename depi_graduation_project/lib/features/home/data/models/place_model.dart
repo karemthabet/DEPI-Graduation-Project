@@ -46,32 +46,35 @@ class PlaceModel {
   });
 
   factory PlaceModel.fromJson(Map<String, dynamic> json) {
-      final List<String> types = List<String>.from(json['types'] ?? []);
-      final String category = _detectCategory(types);
+    final List<String> types = List<String>.from(json['types'] ?? []);
+    final String category = _detectCategory(types);
 
-      return PlaceModel(
-        name: json['name'] ?? 'Unknown',
-        vicinity: json['vicinity'] ?? 'Unknown',
-        rating: (json['rating'] is num) ? json['rating'].toDouble() : null,
-        category: category,
-        placeId: json['place_id'] ?? '',
-        photoReference: json['photos'] != null && json['photos'].isNotEmpty
-            ? json['photos'][0]['photo_reference']
-            : null,
-        lat: json['geometry']?['location']?['lat']?.toDouble() ?? 0.0,
-        lng: json['geometry']?['location']?['lng']?.toDouble() ?? 0.0,
-        formattedAddress: json['formatted_address'],
-        description: json['editorial_summary']?['overview'],
-        reviews: json['reviews'] != null
-            ? (json['reviews'] as List)
-                    .map((r) => ReviewModel.fromJson(r))
-                    .toList()
-            : null,
-        openingHours: json['opening_hours'] != null
-            ? OpeningHours.fromJson(json['opening_hours'])
-            : null,
-      );
-    }
+    return PlaceModel(
+      name: json['name'] ?? 'Unknown',
+      vicinity: json['vicinity'] ?? 'Unknown',
+      rating: (json['rating'] is num) ? json['rating'].toDouble() : null,
+      category: category,
+      placeId: json['place_id'] ?? '',
+      photoReference:
+          json['photos'] != null && json['photos'].isNotEmpty
+              ? json['photos'][0]['photo_reference']
+              : null,
+      lat: json['geometry']?['location']?['lat']?.toDouble() ?? 0.0,
+      lng: json['geometry']?['location']?['lng']?.toDouble() ?? 0.0,
+      formattedAddress: json['formatted_address'],
+      description: json['editorial_summary']?['overview'],
+      reviews:
+          json['reviews'] != null
+              ? (json['reviews'] as List)
+                  .map((r) => ReviewModel.fromJson(r))
+                  .toList()
+              : null,
+      openingHours:
+          json['opening_hours'] != null
+              ? OpeningHours.fromJson(json['opening_hours'])
+              : null,
+    );
+  }
   Map<String, dynamic> toJson() {
     return {
       'name': name,
@@ -95,31 +98,21 @@ class PlaceModel {
   static String _detectCategory(List<String> types) {
     // تصنيف الأماكن بناءً على الأولوية من الأكثر تحديداً للأقل
 
-
     // 1. المتاحف (أعلى أولوية للأماكن الثقافية)
     if (types.contains('museum')) return 'museum';
-
 
     // 2. المكتبات
     if (types.contains('library')) return 'library';
 
-
     // 3. السينما ودور العرض
-    if (types.contains('movie_theater') || types.contains('cinema'))
+    if (types.contains('movie_theater') || types.contains('cinema')) {
       return 'cinema';
-
-    if (types.contains('movie_theater') || types.contains('cinema'))
-      return 'cinema';
+    }
 
     // 4. المساجد ودور العبادة الإسلامية
     if (types.contains('mosque')) return 'mosque';
 
-
     // 5. الأماكن التاريخية والدينية
-    if (types.contains('church') ||
-        types.contains('synagogue') ||
-        types.contains('hindu_temple') ||
-        types.contains('place_of_worship')) {
     if (types.contains('church') ||
         types.contains('synagogue') ||
         types.contains('hindu_temple') ||
@@ -127,12 +120,7 @@ class PlaceModel {
       return 'historical';
     }
 
-
     // 6. المطاعم (قبل الكافيهات لأنها أكثر تحديداً)
-    if (types.contains('restaurant') ||
-        types.contains('food') ||
-        types.contains('meal_takeaway') ||
-        types.contains('meal_delivery')) {
     if (types.contains('restaurant') ||
         types.contains('food') ||
         types.contains('meal_takeaway') ||
@@ -140,16 +128,10 @@ class PlaceModel {
       return 'restaurant';
     }
 
-
     // 7. الكافيهات
     if (types.contains('cafe') || types.contains('coffee_shop')) return 'cafe';
 
-
     // 8. الفنادق وأماكن الإقامة
-    if (types.contains('lodging') ||
-        types.contains('hotel') ||
-        types.contains('resort') ||
-        types.contains('hostel')) {
     if (types.contains('lodging') ||
         types.contains('hotel') ||
         types.contains('resort') ||
@@ -157,12 +139,7 @@ class PlaceModel {
       return 'hotel';
     }
 
-
     // 9. الحدائق والمنتزهات
-    if (types.contains('park') ||
-        types.contains('amusement_park') ||
-        types.contains('aquarium') ||
-        types.contains('zoo')) {
     if (types.contains('park') ||
         types.contains('amusement_park') ||
         types.contains('aquarium') ||
@@ -170,30 +147,23 @@ class PlaceModel {
       return 'park';
     }
 
-
     // 10. مراكز التسوق
-    if (types.contains('shopping_mall') ||
-        types.contains('shopping_center') ||
     if (types.contains('shopping_mall') ||
         types.contains('shopping_center') ||
         types.contains('department_store')) {
       return 'shopping_mall';
     }
 
-
     // 11. المعالم السياحية (أولوية متوسطة)
     if (types.contains('tourist_attraction')) return 'tourist_attraction';
 
-
     // 12. نقاط الاهتمام العامة تُصنف كمعالم سياحية
     if (types.contains('point_of_interest')) return 'tourist_attraction';
-
 
     // 13. أماكن أخرى غير مصنفة
     return 'others';
   }
 }
-
 
 @HiveType(typeId: 2)
 class OpeningHours {
@@ -204,6 +174,10 @@ class OpeningHours {
 
   factory OpeningHours.fromJson(Map<String, dynamic> json) {
     return OpeningHours(openNow: json['open_now'] ?? false);
+  }
+
+  Map<String, dynamic> toJson() {
+    return {'open_now': openNow};
   }
 }
 
@@ -216,7 +190,6 @@ class ReviewModel {
   @HiveField(2)
   final double? rating;
 
-  ReviewModel({required this.authorName, required this.text, this.rating});
   ReviewModel({required this.authorName, required this.text, this.rating});
 
   factory ReviewModel.fromJson(Map<String, dynamic> json) {
