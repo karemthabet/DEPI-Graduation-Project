@@ -117,6 +117,8 @@ class PlaceModel {
         types.contains('synagogue') ||
         types.contains('hindu_temple') ||
         types.contains('place_of_worship')) {
+      // إذا كان المكان مصنفاً كمسجد أيضاً، فقد تم التعامل معه في الخطوة السابقة
+      // هنا نتعامل مع باقي دور العبادة كأماكن تاريخية/دينية
       return 'historical';
     }
 

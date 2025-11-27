@@ -5,6 +5,7 @@ import 'package:whatsapp/features/home/data/models/item_model.dart';
 import 'package:whatsapp/features/home/presentation/views/categories_view.dart';
 import 'package:whatsapp/features/home/presentation/views/categories_view_details.dart';
 import 'package:whatsapp/features/home/presentation/views/home_view.dart';
+import 'package:whatsapp/features/home/presentation/views/widgets/places_example_usage.dart';
 import 'package:whatsapp/features/login/presentation/views/sign_in_view.dart';
 import 'package:whatsapp/features/login/presentation/views/signup_view.dart';
 import 'package:whatsapp/features/login/presentation/views/welcome_view.dart';
@@ -16,13 +17,18 @@ import 'package:whatsapp/features/splash/presentation/views/splash_view.dart';
 
 class AppRouter {
   static final router = GoRouter(
-    initialLocation: RoutesName.mainView,
+    initialLocation: RoutesName.placesExample,
     errorBuilder: (context, state) => const General404Page(),
     routes: [
       GoRoute(
         name: RoutesName.mainView,
         path: RoutesName.mainView,
         builder: (context, state) => const MainView(),
+      ),
+      GoRoute(
+        name: RoutesName.placesExample,
+        path: RoutesName.placesExample,
+        builder: (context, state) => const PlacesExampleUsage(),
       ),
       GoRoute(
         name: RoutesName.categoriesViewDetails,
