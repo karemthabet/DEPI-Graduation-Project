@@ -147,14 +147,14 @@ class _SignUpViewState extends State<SignUpView> {
           // Basic validation
           if (name.isEmpty || email.isEmpty || password.isEmpty) {
             ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text("All fields are required")),
+              const SnackBar(content: Text('All fields are required')),
             );
             return;
           }
 
           if (password != confirmPassword) {
             ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text("Passwords do not match")),
+              const SnackBar(content: Text('Passwords do not match')),
             );
             return;
           }
@@ -170,7 +170,7 @@ class _SignUpViewState extends State<SignUpView> {
 
             // SUCCESS
             ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text("Sign up successful")),
+              const SnackBar(content: Text('Sign up successful')),
             );
 
             // Navigate when success
