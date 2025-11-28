@@ -7,6 +7,7 @@ import 'package:whatsapp/features/home/data/models/item_model.dart';
 import 'package:whatsapp/models/place_autocomplete_model/place_autocomplete_model.dart';
 import 'package:whatsapp/features/home/presentation/views/widgets/categories_view_details_body.dart';
 import 'package:whatsapp/models/places_details_model/places_details_model.dart';
+import 'package:whatsapp/core/utils/constants/api_constants.dart';
 
 class BuildSearchBar extends StatefulWidget {
   final TextEditingController textEditingController;
@@ -127,20 +128,25 @@ class customlistview extends StatelessWidget {
                 final placeDetails = await googleMapsPlaceServic
                     .getPlaceDetails(placeId: places[index].placeId.toString());
 
+                String imageUrl = '';
+                if (placeDetails.photos?.isNotEmpty == true &&
+                    placeDetails.photos![0].photoReference != null) {
+                  imageUrl =
+                      'https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photo_reference=${placeDetails.photos![0].photoReference}&key=${ApiBase.apiKey}';
+                }
+
                 final item = ItemModel(
                   id: places[index].placeId,
 
                   name: places[index].description ?? 'unkown place',
 
-                  image:
-                      placeDetails.photos?.isNotEmpty == true
-                          ? placeDetails.photos![0].photoReference ?? ''
-                          : '',
+                  image: imageUrl,
 
                   location:
-                      placeDetails.geometry != null
+                      placeDetails.formattedAddress ??
+                      (placeDetails.geometry != null
                           ? '${placeDetails.geometry!.location!.lat},${placeDetails.geometry!.location!.lng}'
-                          : 'Location not available',
+                          : 'Location not available'),
                   description:
                       placeDetails.editorialSummary ??
                       '', // وصف افتراضي أو فاضي

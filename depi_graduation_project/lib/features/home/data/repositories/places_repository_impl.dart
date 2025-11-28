@@ -1,5 +1,6 @@
 import 'package:dartz/dartz.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:whatsapp/core/helper/app_logger.dart';
 import '../../../../core/errors/server_failure.dart';
 import '../../../../core/services/location_service.dart';
 import '../../../../core/services/network_checker.dart';
@@ -28,10 +29,10 @@ class PlacesRepositoryImpl implements PlacesRepository {
       final Position currentPosition =
           await LocationService.instance.getCurrentLocation();
 
-      print(
+     AppLogger.info(
         'Current location: (${currentPosition.latitude}, ${currentPosition.longitude})\n',
       );
-      print('Step 2: Checking cache existence...');
+      AppLogger.info('Step 2: Checking cache existence...');
 
       final cachedPlaces = await localDataSource.getCachedNearbyPlaces();
       final cachedLocation = await localDataSource.getLastLocation();
@@ -43,7 +44,7 @@ class PlacesRepositoryImpl implements PlacesRepository {
       double? distanceFromCache;
 
       if (cachedPlaces != null && cachedLocation != null) {
-        print('Cache found');
+       AppLogger.info(' Cache found');
 
         // Calculate distance between current and cached location
         distanceFromCache = DistanceCalculator.calculateDistance(
@@ -52,7 +53,7 @@ class PlacesRepositoryImpl implements PlacesRepository {
           lat2: cachedLocation.latitude,
           lon2: cachedLocation.longitude,
         );
-        print(
+        AppLogger.info(
           'Distance from cache: ${DistanceCalculator.formatDistance(distanceFromCache)}',
         );
 
@@ -61,25 +62,25 @@ class PlacesRepositoryImpl implements PlacesRepository {
           distance: distanceFromCache,
           thresholdMeters: DistanceConstants.cacheThresholdMeters,
         )) {
-          print(
+          AppLogger.info(
             'Distance less than ${DistanceConstants.cacheThresholdMeters} meters',
           );
-          print(' Will use cache only without API call\n');
+          AppLogger.info(' Will use cache only without API call\n');
 
           shouldUseCache = true;
           shouldCallAPI = false;
         } else {
-          print(
+          AppLogger.info(
             'Distance greater than ${DistanceConstants.cacheThresholdMeters} meters',
           );
-          print(' Will call API to update data\n');
+          AppLogger.info(' Will call API to update data\n');
 
           shouldUseCache = true; // Show cache first then update it
           shouldCallAPI = true; // We show cache first then update it
         }
       } else {
-        print(' No cache found');
-        print('Will call API to fetch data\n');
+        AppLogger.info(' No cache found');
+        AppLogger.info('Will call API to fetch data\n');
 
         shouldUseCache = false;
         shouldCallAPI = true;
@@ -98,21 +99,21 @@ class PlacesRepositoryImpl implements PlacesRepository {
       // ==================== Step 5: Call API if Needed ====================
 
       if (shouldCallAPI) {
-        print(' Attempting API call...');
+        AppLogger.info(' Attempting API call...');
 
         // Check internet connection
         final bool isConnected = await NetworkChecker.instance.isConnected();
 
         if (!isConnected) {
-          print('No internet connection');
+          AppLogger.info('No internet connection');
 
           if (shouldUseCache) {
             // We have cache, no need to emit error
-            print('Will use existing cache');
-            print(' Warning: Data might be outdated\n');
+            AppLogger.info('Will use existing cache');
+            AppLogger.info(' Warning: Data might be outdated\n');
           } else {
             // No cache and no internet
-            print(' No data available\n');
+            AppLogger.info(' No data available\n');
 
             yield Left(
               ServerFailure(
@@ -125,17 +126,17 @@ class PlacesRepositoryImpl implements PlacesRepository {
 
         // Internet connection exists, try fetching data
         try {
-          print(' Fetching data from API...');
+          AppLogger.info(' Fetching data from API...');
 
           final places = await remoteDataSource.getNearbyPlaces(
             latitude: currentPosition.latitude,
             longitude: currentPosition.longitude,
           );
 
-          print(' Fetched ${places.length} places from API');
+          AppLogger.info(' Fetched ${places.length} places from API');
 
           // Save data to cache
-          print(' Saving data to cache...');
+          AppLogger.info(' Saving data to cache...');
 
           await localDataSource.cacheNearbyPlaces(
             places: places,
@@ -148,16 +149,16 @@ class PlacesRepositoryImpl implements PlacesRepository {
             longitude: currentPosition.longitude,
           );
 
-          print('✅ Data saved to cache');
+          AppLogger.info('✅ Data saved to cache');
 
           // Emit new data
-          print('📤 Emitting API data...');
+          AppLogger.info('📤 Emitting API data...');
 
           yield Right(places);
 
-          print('✅ Emitted ${places.length} places from API\n');
+          AppLogger.info('✅ Emitted ${places.length} places from API\n');
         } catch (e) {
-          print('❌ API call failed: $e');
+          AppLogger.error('❌ API call failed: $e');
 
           if (shouldUseCache) {
             // We have cache, no need to emit error
@@ -165,7 +166,7 @@ class PlacesRepositoryImpl implements PlacesRepository {
             print(' Warning: Failed to update data\n');
           } else {
             // No cache, emit error
-            print(' No data available\n');
+            AppLogger.info(' No data available\n');
 
             yield Left(
               ServerFailure(

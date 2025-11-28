@@ -8,6 +8,7 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:whatsapp/core/services/location_service.dart';
 import 'package:whatsapp/features/home/data/models/item_model.dart';
 import 'package:whatsapp/features/home/presentation/cubit/place_details_cubit.dart';
+import 'package:whatsapp/core/utils/constants/api_constants.dart';
 
 class CategoriesViewDetailsBody extends StatefulWidget {
   final ItemModel itemModel;
@@ -107,32 +108,43 @@ class _CategoriesViewDetailsBodyState extends State<CategoriesViewDetailsBody>
   ) {
     return Stack(
       children: [
-        _buildHeroImage(item),
+        _buildHeroImage(item, placeDetails),
         _buildBackButton(),
         _buildInfoCard(item, placeDetails, isLoading),
       ],
     );
   }
 
-  Widget _buildHeroImage(ItemModel item) {
+  Widget _buildHeroImage(ItemModel item, Map<String, dynamic>? placeDetails) {
+    String imageUrl = item.image;
+
+    if (placeDetails != null &&
+        placeDetails['photos'] != null &&
+        (placeDetails['photos'] as List).isNotEmpty) {
+      final photoRef = placeDetails['photos'][0]['photo_reference'];
+      if (photoRef != null) {
+        imageUrl =
+            'https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photo_reference=$photoRef&key=${ApiBase.apiKey}';
+      }
+    }
+
     return Hero(
-      tag: '${item.image}_${item.name}',
+      tag: '${item.image}_${item.name}', // Keep original tag for transition
       child: ClipRRect(
         borderRadius: const BorderRadius.vertical(bottom: Radius.circular(25)),
         child: CachedNetworkImage(
-          imageUrl: item.image,
+          imageUrl: imageUrl,
           height: 330.h,
           width: double.infinity,
           fit: BoxFit.cover,
-          placeholder: (context, url) => Container(
-            height: 330.h,
-            color: Colors.grey[300],
-            child: const Center(
-              child: CircularProgressIndicator(
-                color: AppColors.darkBlue,
+          placeholder:
+              (context, url) => Container(
+                height: 330.h,
+                color: Colors.grey[300],
+                child: const Center(
+                  child: CircularProgressIndicator(color: AppColors.darkBlue),
+                ),
               ),
-            ),
-          ),
           errorWidget: (context, url, error) {
             return Container(
               height: 330.h,
@@ -165,6 +177,12 @@ class _CategoriesViewDetailsBodyState extends State<CategoriesViewDetailsBody>
     Map<String, dynamic>? placeDetails,
     bool isLoading,
   ) {
+    // Use details from API if available, otherwise fallback to item
+    final String name = placeDetails?['name'] ?? item.name;
+    final String location = placeDetails?['formatted_address'] ?? item.location;
+    final String rating = placeDetails?['rating']?.toString() ?? item.rating;
+    
+
     return Positioned(
       bottom: 0,
       left: 20.w,
@@ -191,7 +209,7 @@ class _CategoriesViewDetailsBodyState extends State<CategoriesViewDetailsBody>
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Text(
-                    item.name,
+                    name,
                     style: TextStyle(
                       fontSize: 16.sp,
                       fontWeight: FontWeight.bold,
@@ -200,11 +218,11 @@ class _CategoriesViewDetailsBodyState extends State<CategoriesViewDetailsBody>
                     overflow: TextOverflow.ellipsis,
                   ),
                   SizedBox(height: 4.h),
-                  _buildLocationRow(item),
+                  _buildLocationRow(location),
                   SizedBox(height: 4.h),
                   _buildOpeningHoursRow(placeDetails, isLoading),
                   SizedBox(height: 4.h),
-                  _buildRatingRow(item),
+                  _buildRatingRow(rating),
                 ],
               ),
             ),
@@ -215,14 +233,14 @@ class _CategoriesViewDetailsBodyState extends State<CategoriesViewDetailsBody>
     );
   }
 
-  Widget _buildLocationRow(ItemModel item) {
+  Widget _buildLocationRow(String location) {
     return Row(
       children: [
         Icon(Icons.location_on, color: Colors.grey, size: 14.sp),
         SizedBox(width: 4.w),
         Expanded(
           child: Text(
-            item.location,
+            location,
             style: TextStyle(fontSize: 12.sp, color: Colors.grey[700]),
             overflow: TextOverflow.ellipsis,
           ),
@@ -276,11 +294,11 @@ class _CategoriesViewDetailsBodyState extends State<CategoriesViewDetailsBody>
     return const SizedBox.shrink();
   }
 
-  Widget _buildRatingRow(ItemModel item) {
+  Widget _buildRatingRow(String rating) {
     return Row(
       children: [
         Text(
-          item.rating,
+          rating,
           style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.w500),
         ),
         SizedBox(width: 3.w),
@@ -320,42 +338,7 @@ class _CategoriesViewDetailsBodyState extends State<CategoriesViewDetailsBody>
     );
   }
 
-  Widget _buildDescriptionTab(
-    ItemModel item,
-    Map<String, dynamic>? placeDetails,
-    bool isLoading,
-  ) {
-    if (isLoading) {
-      return const Center(
-        child: CircularProgressIndicator(color: Color(0xFFFFE66D)),
-      );
-    }
-
-    return SingleChildScrollView(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          if (placeDetails?['editorial_summary']?['overview'] != null) ...[
-            _buildSectionTitle('نبذة عن المكان'),
-            SizedBox(height: 8.h),
-            _buildSectionText(placeDetails!['editorial_summary']['overview']),
-            SizedBox(height: 16.h),
-          ],
-          _buildSectionTitle('الوصف'),
-          SizedBox(height: 8.h),
-          _buildSectionText(item.description),
-          if (placeDetails?['formatted_phone_number'] != null) ...[
-            SizedBox(height: 16.h),
-            _buildPhoneRow(placeDetails!['formatted_phone_number']),
-          ],
-          if (placeDetails?['website'] != null) ...[
-            SizedBox(height: 8.h),
-            _buildWebsiteRow(placeDetails!['website']!),
-          ],
-        ],
-      ),
-    );
-  }
+ 
 
   Widget _buildSectionTitle(String title) {
     return Text(
@@ -381,150 +364,201 @@ class _CategoriesViewDetailsBodyState extends State<CategoriesViewDetailsBody>
     );
   }
 
-  Widget _buildWebsiteRow(String url) {
-    return GestureDetector(
-      onTap: () => _launchUrl(url),
-      child: Row(
-        children: [
-          Icon(Icons.language, size: 16.sp, color: Colors.blue),
-          SizedBox(width: 8.w),
-          Expanded(
-            child: Text(
-              url,
-              style: TextStyle(
-                fontSize: 13.sp,
-                color: Colors.blue,
-                decoration: TextDecoration.underline,
-              ),
-              overflow: TextOverflow.ellipsis,
-            ),
-          ),
+
+
+Widget _buildDescriptionTab(ItemModel item, Map<String, dynamic>? placeDetails, bool isLoading) {
+  if (isLoading) {
+    return const Center(
+      child: CircularProgressIndicator(color: Color(0xFFFFE66D)),
+    );
+  }
+
+  // Debug: Print the entire placeDetails to see what we're working with
+  print('🔍 placeDetails: $placeDetails');
+  
+  final result = placeDetails;
+  if (result == null) {
+    return const Center(
+      child: Text('لا توجد بيانات متاحة'),
+    );
+  }
+
+  // Debug: Print the structure of the result
+  print('🔍 result keys: ${result.keys.toList()}');
+  if (result['result'] != null) {
+    print('🔍 result[result] keys: ${result['result'].keys.toList()}');
+  }
+
+  return SingleChildScrollView(
+    padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        // Description
+        if (result['result']?['editorial_summary']?['overview'] != null) ...[
+          _buildSectionTitle('الوصف'),
+          SizedBox(height: 8.h),
+          _buildSectionText(result['result']?['editorial_summary']?['overview'] ?? ''),
+          SizedBox(height: 16.h),
         ],
+        
+        // Address
+        if (result['result']?['formatted_address'] != null) ...[
+          _buildSectionTitle('العنوان'),
+          SizedBox(height: 8.h),
+          _buildSectionText(result['result']?['formatted_address'] ?? ''),
+          SizedBox(height: 16.h),
+        ],
+        
+        // Phone Number
+        if (result['result']?['formatted_phone_number'] != null) ...[
+          _buildPhoneRow(result['result']?['formatted_phone_number'] ?? ''),
+          SizedBox(height: 16.h),
+        ],
+        
+        // Rating
+        if (result['result']?['rating'] != null) ...[
+          _buildSectionTitle('التقييم'),
+          SizedBox(height: 8.h),
+          Row(
+            children: [
+              Icon(Icons.star, color: Colors.amber, size: 20.sp),
+              SizedBox(width: 8.w),
+              Text(
+                '${result['result']?['rating']} من 5',
+                style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w500),
+              ),
+            ],
+          ),
+          SizedBox(height: 16.h),
+        ],
+      ],
+    ),
+  );
+}
+
+Widget _buildReviewsTab(Map<String, dynamic>? placeDetails, bool isLoading) {
+  if (isLoading) {
+    return const Center(
+      child: CircularProgressIndicator(color: Color(0xFFFFE66D)),
+    );
+  }
+
+  // Debug: Print the placeDetails to see what we're working with
+  print('🔍 placeDetails in reviews: $placeDetails');
+  
+  final result = placeDetails;
+  if (result == null) {
+    return const Center(
+      child: Text('لا توجد بيانات متاحة'),
+    );
+  }
+
+  final reviews = result['result']?['reviews'] as List<dynamic>?;
+  
+  // Debug: Print the reviews if they exist
+  print('🔍 Reviews data: $reviews');
+  
+  if (reviews == null || reviews.isEmpty) {
+    return Center(
+      child: Text(
+        'لا توجد تقييمات متاحة',
+        style: TextStyle(fontSize: 14.sp, color: Colors.grey),
       ),
     );
   }
 
-  Future<void> _launchUrl(String url) async {
-    try {
-      String fixedUrl = url.trim();
-
-      if (!fixedUrl.startsWith(RegExp(r'https?://'))) {
-        fixedUrl = 'https://$fixedUrl';
+  return ListView.builder(
+    padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 8.h),
+    itemCount: reviews.length,
+    itemBuilder: (context, index) {
+      final review = reviews[index];
+      if (review is Map<String, dynamic>) {
+        return _buildReviewCard(review);
       }
-
-      if (fixedUrl.startsWith('http://')) {
-        fixedUrl = fixedUrl.replaceFirst('http://', 'https://');
-      }
-
-      final uri = Uri.parse(fixedUrl);
-
-      if (await canLaunchUrl(uri)) {
-        await launchUrl(uri, mode: LaunchMode.externalApplication);
-      } else {
-        if (!mounted) return;
-        _showSnackBar('لا يمكن فتح الرابط');
-      }
-    } catch (e) {
-      if (!mounted) return;
-      _showSnackBar('حدث خطأ أثناء فتح الرابط');
-    }
-  }
-
-  Widget _buildReviewsTab(Map<String, dynamic>? placeDetails, bool isLoading) {
-    if (isLoading) {
-      return const Center(
-        child: CircularProgressIndicator(color: Color(0xFFFFE66D)),
-      );
-    }
-
-    if (placeDetails?['reviews'] == null || placeDetails!['reviews'].isEmpty) {
-      return Center(
-        child: Text(
-          'لا توجد تقييمات متاحة',
-          style: TextStyle(fontSize: 14.sp, color: Colors.grey),
-        ),
-      );
-    }
-
-    return SingleChildScrollView(
-      child: Column(
-        children:
-            placeDetails['reviews']
-                .take(5)
-                .map<Widget>((review) => _buildReviewCard(review))
-                .toList(),
-      ),
-    );
-  }
-
-  Widget _buildReviewCard(Map<String, dynamic> review) {
-    return Container(
-      margin: EdgeInsets.only(bottom: 12.h),
+      return const SizedBox.shrink();
+    },
+  );
+}
+Widget _buildReviewCard(Map<String, dynamic> review) {
+  return Card(
+    margin: EdgeInsets.symmetric(vertical: 8.h, horizontal: 4.w),
+    child: Padding(
       padding: EdgeInsets.all(12.w),
-      decoration: BoxDecoration(
-        border: Border.all(color: Colors.yellow.shade700),
-        borderRadius: BorderRadius.circular(12.r),
-      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             children: [
-              CircleAvatar(
-                radius: 16.r,
-                backgroundColor: Colors.blue,
-                child: Text(
-                  (review['author_name'] ?? 'A').substring(0, 1).toUpperCase(),
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                  ),
+              if (review['profile_photo_url'] != null)
+                CircleAvatar(
+                  radius: 20.sp,
+                  backgroundImage: NetworkImage(review['profile_photo_url']),
                 ),
-              ),
-              SizedBox(width: 8.w),
+              SizedBox(width: 12.w),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      review['author_name'] ?? 'Anonymous',
+                      review['author_name'] ?? 'مستخدم مجهول',
                       style: TextStyle(
-                        fontWeight: FontWeight.bold,
                         fontSize: 14.sp,
+                        fontWeight: FontWeight.bold,
                       ),
                     ),
-                    if (review['rating'] != null)
-                      Row(
-                        children: [
-                          Icon(Icons.star, color: Colors.amber, size: 12.sp),
-                          SizedBox(width: 4.w),
-                          Text(
-                            review['rating'].toString(),
-                            style: TextStyle(fontSize: 11.sp),
-                          ),
-                        ],
+                    if (review['relative_time_description'] != null)
+                      Text(
+                        review['relative_time_description'],
+                        style: TextStyle(
+                          fontSize: 12.sp,
+                          color: Colors.grey[600],
+                        ),
                       ),
                   ],
                 ),
               ),
+              Row(
+                children: [
+                  Icon(Icons.star, color: Colors.amber, size: 18.sp),
+                  SizedBox(width: 4.w),
+                  Text(
+                    review['rating']?.toString() ?? '',
+                    style: TextStyle(
+                      fontSize: 14.sp,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
+              ),
             ],
           ),
-          if (review['text'] != null) ...[
-            SizedBox(height: 8.h),
+          SizedBox(height: 8.h),
+          if (review['text'] != null && review['text'].toString().isNotEmpty)
             Text(
               review['text'],
               style: TextStyle(
                 fontSize: 13.sp,
-                color: Colors.grey[800],
                 height: 1.4,
               ),
             ),
-          ],
+          if (review['translated'] == true)
+            Padding(
+              padding: EdgeInsets.only(top: 4.h),
+              child: Text(
+                'تمت الترجمة تلقائياً',
+                style: TextStyle(
+                  fontSize: 11.sp,
+                  color: Colors.grey[600],
+                  fontStyle: FontStyle.italic,
+                ),
+              ),
+            ),
         ],
       ),
-    );
-  }
-
+    ),
+  );
+}
   Widget _buildNavigationButton() {
     return Padding(
       padding: EdgeInsets.all(20.w),

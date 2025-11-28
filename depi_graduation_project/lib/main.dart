@@ -5,6 +5,7 @@ import 'package:hive_flutter/adapters.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:whatsapp/core/services/setup_service_locator.dart';
 import 'package:whatsapp/core/utils/constants/supabase_constants.dart';
+import 'package:whatsapp/features/home/data/models/cached_place_details_model.dart';
 import 'package:whatsapp/features/home/presentation/cubit/place_details_cubit.dart';
 import 'package:whatsapp/features/home/presentation/cubit/places_cubit.dart';
 import 'package:whatsapp/features/profile/presentation/cubit/user_cubit.dart';
@@ -24,7 +25,13 @@ Future<void> main() async {
   Hive.registerAdapter(ReviewModelAdapter());
   Hive.registerAdapter(
     CachedLocationModelAdapter(),
-  ); // Register the location adapter
+  ); 
+  // Register the location adapter
+    Hive.registerAdapter(CachedPlaceDetailsModelAdapter());
+  
+  // Open the box
+  await Hive.openBox<CachedPlaceDetailsModel>('place_details_cache');
+
 
   // Open Hive boxes
   await Hive.openBox<CachedPlacesModel>('places_cache');
