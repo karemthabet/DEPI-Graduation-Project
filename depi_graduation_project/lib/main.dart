@@ -11,23 +11,27 @@ import 'package:whatsapp/features/profile/presentation/cubit/user_cubit.dart';
 import 'package:whatsapp/my_app.dart';
 import 'features/home/data/models/cached_places_model.dart';
 import 'features/home/data/models/place_model.dart';
-import 'features/home/data/models/cached_location_model.dart'; // Add this import
+import 'features/home/data/models/cached_location_model.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Hive.initFlutter();
-  
+
   // Register all Hive adapters
   Hive.registerAdapter(CachedPlacesModelAdapter());
   Hive.registerAdapter(PlaceModelAdapter());
   Hive.registerAdapter(OpeningHoursAdapter());
   Hive.registerAdapter(ReviewModelAdapter());
-  Hive.registerAdapter(CachedLocationModelAdapter()); // Register the location adapter
-  
+  Hive.registerAdapter(
+    CachedLocationModelAdapter(),
+  ); // Register the location adapter
+
   // Open Hive boxes
   await Hive.openBox<CachedPlacesModel>('places_cache');
-  await Hive.openBox<CachedLocationModel>('location_cache'); // Open location box
-  
+  await Hive.openBox<CachedLocationModel>(
+    'location_cache',
+  ); // Open location box
+
   await Supabase.initialize(
     url: SupabaseConstants.supabaseUrl,
     anonKey: SupabaseConstants.supabaseAnonKey,

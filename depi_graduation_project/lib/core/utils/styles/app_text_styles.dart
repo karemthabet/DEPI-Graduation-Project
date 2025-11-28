@@ -4,9 +4,9 @@ import 'package:google_fonts/google_fonts.dart';
 
 /// 🎨 AppTextStyles
 ///
-/// - تستخدم خط Cairo.
-/// - تدعم Light و Dark themes.
-/// - مرنة وسهلة التخصيص لأي مشروع.
+/// - تستخدم خط Inter مع fallback للخطوط الافتراضية
+/// - تدعم Light و Dark themes
+/// - مرنة وسهلة التخصيص لأي مشروع
 ///
 /// الاستخدام:
 /// ```dart
@@ -51,20 +51,26 @@ class AppTextStyles {
   static TextStyle appBarTitle(BuildContext context) =>
       _baseStyle(context, size: 12, weight: FontWeight.w500);
 
-  /// 🧩 Base method (auto adapts color)
+  /// 🧩 Base method (auto adapts color and handles offline font loading)
   static TextStyle _baseStyle(
     BuildContext context, {
     required double size,
     required FontWeight weight,
   }) {
-    final color = Theme.of(context).brightness == Brightness.dark
-        ? Colors.white
-        : Colors.black;
+    final color =
+        Theme.of(context).brightness == Brightness.dark
+            ? Colors.white
+            : Colors.black;
 
-    return GoogleFonts.inter(
+    // Use GoogleFonts with fallback to prevent errors when offline
+    return GoogleFonts.getFont(
+      'Inter',
       fontSize: size.sp,
       fontWeight: weight,
       color: color,
+    ).copyWith(
+      // Add fallback fonts in case Inter fails to load (offline scenario)
+      fontFamilyFallback: const ['Roboto', 'Arial', 'sans-serif'],
     );
   }
 }

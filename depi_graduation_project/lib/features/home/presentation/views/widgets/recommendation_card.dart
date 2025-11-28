@@ -10,17 +10,19 @@ class RecommendationCard extends StatelessWidget {
     required this.location,
     required this.rating,
     required this.imageUrl,
+    this.isFullWidth = false, // جديد
   });
 
   final String title;
   final String location;
   final double rating;
   final String imageUrl;
+  final bool isFullWidth;
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 260.w,
+      width: isFullWidth ? double.infinity : 260.w, // تعديل
       decoration: BoxDecoration(
         color: const Color(0xFFFEF9CF),
         borderRadius: BorderRadius.circular(20.r),

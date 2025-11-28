@@ -60,76 +60,62 @@ class _HomeViewBodyState extends State<HomeViewBody> {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-      child: BlocBuilder<PlacesCubit, PlacesState>(
-        builder: (context, state) {
+      child: BlocListener<PlacesCubit, PlacesState>(
+        listener: (context, state) {
+          // Show location error dialog only for location-related errors
           if (state is PlacesError) {
-            WidgetsBinding.instance.addPostFrameCallback((_) {
-              if (state.failure.errMessage.contains('إذن') ||
-                  state.failure.errMessage.contains('GPS')) {
-                _showLocationErrorDialog(context, state.failure.errMessage);
-              }
-            });
+            if (state.failure.errMessage.contains('إذن') ||
+                state.failure.errMessage.contains('GPS') ||
+                state.failure.errMessage.contains('Location') ||
+                state.failure.errMessage.contains('الموقع')) {
+              _showLocationErrorDialog(context, state.failure.errMessage);
+            }
           }
-
-          return SingleChildScrollView(
-            physics: const BouncingScrollPhysics(),
-            child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 20.h),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const BuildProfileSection(),
-                  SizedBox(height: 20.h),
-
-                  BuildSearchBar(textEditingController: textEditingController),
-                  SizedBox(height: 24.h),
-
-                  Text(
-                    'Browse By Category',
-                    style: TextStyle(
-                      fontSize: 18.sp,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  SizedBox(height: 12.h),
-
-                  const BuildCategoryList(),
-
-                  SizedBox(height: 20.h),
-
-                  Text(
-                    'Top Recommendations',
-                    style: TextStyle(
-                      fontSize: 18.sp,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  SizedBox(height: 10.h),
-                  if (state is PlacesLoaded)
-                    BuildRecommendationList(
-                      recommendations: state.topRecommendations,
-                    )
-                  else
-                    const BuildRecommendationList(recommendations: []),
-
-                  SizedBox(height: 20.h),
-
-                  // Text(
-                  //   'Recently Viewed',
-                  //   style: TextStyle(
-                  //     fontSize: 18.sp,
-                  //     fontWeight: FontWeight.bold,
-                  //   ),
-                  // ),
-                  // SizedBox(height: 10.h),
-
-                  // const BuildRecentlyViewed(),
-                  SizedBox(height: 20.h),
-                ],
-              ),
-            ),
-          );
         },
+        child: SingleChildScrollView(
+          physics: const BouncingScrollPhysics(),
+          child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 20.h),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Profile Section
+                const BuildProfileSection(),
+                SizedBox(height: 20.h),
+
+                // Search Bar
+                BuildSearchBar(textEditingController: textEditingController),
+                SizedBox(height: 24.h),
+
+                // Categories Section
+                Text(
+                  'Browse By Category',
+                  style: TextStyle(
+                    fontSize: 18.sp,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black87,
+                  ),
+                ),
+                SizedBox(height: 12.h),
+                const BuildCategoryList(),
+                SizedBox(height: 24.h),
+
+                // Recommendations Section
+                Text(
+                  'Top Recommendations',
+                  style: TextStyle(
+                    fontSize: 18.sp,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black87,
+                  ),
+                ),
+                SizedBox(height: 10.h),
+                const BuildRecommendationList(),
+                SizedBox(height: 20.h),
+              ],
+            ),
+          ),
+        ),
       ),
     );
   }
