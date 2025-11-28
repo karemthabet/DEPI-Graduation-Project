@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../data/model/visit_items.dart';
 
 class VisitTimelineCard extends StatelessWidget {
@@ -23,29 +24,29 @@ class VisitTimelineCard extends StatelessWidget {
         children: [
           // Timeline
           SizedBox(
-            width: 40,
+            width: 40.w,
             child: Column(
               children: [
                 Container(
-                  width: 24,
-                  height: 24,
+                  width: 24.w,
+                  height: 24.w,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     color: visit.isCompleted ? Colors.green : Colors.white,
                     border: Border.all(
                       color: visit.isCompleted ? Colors.green : const Color(0xFFFFC107),
-                      width: 2,
+                      width: 2.w,
                     ),
                   ),
                   child: visit.isCompleted
-                      ? const Icon(Icons.check, size: 16, color: Colors.white)
+                      ? Icon(Icons.check, size: 16.sp, color: Colors.white)
                       : null,
                 ),
                 if (!isLast)
                   Expanded(
                     child: Container(
-                      width: 1, // Thinner line
-                      margin: const EdgeInsets.symmetric(vertical: 4),
+                      width: 1.w, // Thinner line
+                      margin: EdgeInsets.symmetric(vertical: 4.h),
                       decoration: const BoxDecoration(
                         color: Colors.grey, // Dashed line effect simulation or just grey
                       ),
@@ -58,39 +59,39 @@ class VisitTimelineCard extends StatelessWidget {
             ),
           ),
           
-          const SizedBox(width: 8),
+          SizedBox(width: 8.w),
 
           // Card
           Expanded(
             child: Padding(
-              padding: const EdgeInsets.only(bottom: 20.0),
+              padding: EdgeInsets.only(bottom: 20.0.h),
               child: Container(
                 decoration: BoxDecoration(
                   color: const Color(0xFFFFF9C4), // Light yellow bg
-                  borderRadius: BorderRadius.circular(24),
+                  borderRadius: BorderRadius.circular(24.r),
                 ),
-                padding: const EdgeInsets.all(16),
+                padding: EdgeInsets.all(16.w),
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     // Image
                     ClipRRect(
-                      borderRadius: BorderRadius.circular(16),
+                      borderRadius: BorderRadius.circular(16.r),
                       child: Image.network(
                         visit.imageUrl,
-                        width: 90,
-                        height: 90,
+                        width: 90.w,
+                        height: 90.w,
                         fit: BoxFit.cover,
                         errorBuilder: (context, error, stackTrace) =>
                             Container(
-                              width: 90,
-                              height: 90,
+                              width: 90.w,
+                              height: 90.w,
                               color: Colors.grey[300],
                               child: const Icon(Icons.image_not_supported),
                             ),
                       ),
                     ),
-                    const SizedBox(width: 16),
+                    SizedBox(width: 16.w),
                     
                     // Details
                     Expanded(
@@ -102,13 +103,13 @@ class VisitTimelineCard extends StatelessWidget {
                             children: [
                               Row(
                                 children: [
-                                  const Icon(Icons.access_time, size: 14, color: Color(0xFF2C3E50)),
-                                  const SizedBox(width: 4),
+                                  Icon(Icons.access_time, size: 14.sp, color: const Color(0xFF2C3E50)),
+                                  SizedBox(width: 4.w),
                                   Text(
                                     visit.visitTime ?? 'Anytime',
-                                    style: const TextStyle(
-                                      fontSize: 12,
-                                      color: Color(0xFF2C3E50),
+                                    style: TextStyle(
+                                      fontSize: 12.sp,
+                                      color: const Color(0xFF2C3E50),
                                       fontWeight: FontWeight.w500,
                                     ),
                                   ),
@@ -117,15 +118,15 @@ class VisitTimelineCard extends StatelessWidget {
                               PopupMenuButton(
                                 padding: EdgeInsets.zero,
                                 constraints: const BoxConstraints(),
-                                icon: const Icon(Icons.more_vert, size: 20, color: Color(0xFF2C3E50)),
+                                icon: Icon(Icons.more_vert, size: 20.sp, color: const Color(0xFF2C3E50)),
                                 itemBuilder: (context) => [
                                   PopupMenuItem(
                                     onTap: onDelete,
-                                    child: const Row(
+                                    child: Row(
                                       children: [
-                                        Icon(Icons.delete, color: Colors.red, size: 20),
-                                        SizedBox(width: 8),
-                                        Text('Delete'),
+                                        Icon(Icons.delete, color: Colors.red, size: 20.sp),
+                                        SizedBox(width: 8.w),
+                                        Text('Delete', style: TextStyle(fontSize: 14.sp)),
                                       ],
                                     ),
                                   ),
@@ -136,10 +137,10 @@ class VisitTimelineCard extends StatelessWidget {
                                         Icon(
                                           visit.isCompleted ? Icons.close : Icons.check, 
                                           color: Colors.green, 
-                                          size: 20
+                                          size: 20.sp
                                         ),
-                                        const SizedBox(width: 8),
-                                        Text(visit.isCompleted ? 'Mark Undone' : 'Mark Done'),
+                                        SizedBox(width: 8.w),
+                                        Text(visit.isCompleted ? 'Mark Undone' : 'Mark Done', style: TextStyle(fontSize: 14.sp)),
                                       ],
                                     ),
                                   ),
@@ -147,30 +148,30 @@ class VisitTimelineCard extends StatelessWidget {
                               ),
                             ],
                           ),
-                          const SizedBox(height: 8),
+                          SizedBox(height: 8.h),
                           Text(
                             visit.placeName,
-                            style: const TextStyle(
-                              fontSize: 16,
+                            style: TextStyle(
+                              fontSize: 16.sp,
                               fontWeight: FontWeight.bold,
-                              color: Color(0xFF102A43),
+                              color: const Color(0xFF102A43),
                             ),
                             maxLines: 2,
                             overflow: TextOverflow.ellipsis,
                           ),
-                          const SizedBox(height: 8),
+                          SizedBox(height: 8.h),
                           Row(
                             children: [
                               Text(
                                 visit.rating.toString(),
-                                style: const TextStyle(
-                                  fontSize: 12,
+                                style: TextStyle(
+                                  fontSize: 12.sp,
                                   fontWeight: FontWeight.bold,
-                                  color: Color(0xFF486581),
+                                  color: const Color(0xFF486581),
                                 ),
                               ),
-                              const SizedBox(width: 4),
-                              const Icon(Icons.star, size: 14, color: Colors.amber),
+                              SizedBox(width: 4.w),
+                              Icon(Icons.star, size: 14.sp, color: Colors.amber),
                             ],
                           ),
                         ],
@@ -190,10 +191,10 @@ class VisitTimelineCard extends StatelessWidget {
 class DashedLinePainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
-    double dashHeight = 5, dashSpace = 3, startY = 0;
+    double dashHeight = 5.h, dashSpace = 3.h, startY = 0;
     final paint = Paint()
       ..color = Colors.grey[400]!
-      ..strokeWidth = 1;
+      ..strokeWidth = 1.w;
 
     while (startY < size.height) {
       canvas.drawLine(Offset(0, startY), Offset(0, startY + dashHeight), paint);

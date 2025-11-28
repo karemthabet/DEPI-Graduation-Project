@@ -1,0 +1,134 @@
+[1mdiff --git a/depi_graduation_project/lib/features/visit_Screen/presentation/cubit/visit_cubit.dart b/depi_graduation_project/lib/features/visit_Screen/presentation/cubit/visit_cubit.dart[m
+[1mindex 99a7c92..6f79369 100644[m
+[1m--- a/depi_graduation_project/lib/features/visit_Screen/presentation/cubit/visit_cubit.dart[m
+[1m+++ b/depi_graduation_project/lib/features/visit_Screen/presentation/cubit/visit_cubit.dart[m
+[36m@@ -28,11 +28,18 @@[m [mclass VisitCubit extends Cubit<VisitState> {[m
+ [m
+         final filteredVisits = _getVisitsForDate(visitDates, selectedDate);[m
+ [m
+[31m-        emit(VisitLoaded([m
+[31m-          visitDates: visitDates,[m
+[31m-          selectedDate: selectedDate,[m
+[31m-          filteredVisits: filteredVisits,[m
+[31m-        ));[m
+[32m+[m[32m        if (filteredVisits.isEmpty) {[m
+[32m+[m[32m          emit(VisitEmpty([m
+[32m+[m[32m            visitDates: visitDates,[m
+[32m+[m[32m            selectedDate: selectedDate,[m
+[32m+[m[32m          ));[m
+[32m+[m[32m        } else {[m
+[32m+[m[32m          emit(VisitLoaded([m
+[32m+[m[32m            visitDates: visitDates,[m
+[32m+[m[32m            selectedDate: selectedDate,[m
+[32m+[m[32m            filteredVisits: filteredVisits,[m
+[32m+[m[32m          ));[m
+[32m+[m[32m        }[m
+         [m
+         _checkAndNotifyTodayVisits(visitDates);[m
+       },[m
+[36m@@ -46,20 +53,35 @@[m [mclass VisitCubit extends Cubit<VisitState> {[m
+ [m
+   void selectDate(DateTime date) {[m
+     print('VisitCubit: selectDate called with $date');[m
+[32m+[m[41m    [m
+[32m+[m[32m    List<VisitDate> currentVisitDates = [];[m
+     if (state is VisitLoaded) {[m
+[31m-      final currentState = state as VisitLoaded;[m
+[32m+[m[32m      currentVisitDates = (state as VisitLoaded).visitDates;[m
+[32m+[m[32m    } else if (state is VisitEmpty) {[m
+[32m+[m[32m      currentVisitDates = (state as VisitEmpty).visitDates;[m
+[32m+[m[32m    }[m
+[32m+[m
+[32m+[m[32m    if (currentVisitDates.isNotEmpty) {[m
+       // Normalize date to start of day[m
+       final normalizedDate = DateTime(date.year, date.month, date.day);[m
+       print('VisitCubit: Normalized date to $normalizedDate');[m
+       [m
+[31m-      final filteredVisits = _getVisitsForDate(currentState.visitDates, normalizedDate);[m
+[32m+[m[32m      final filteredVisits = _getVisitsForDate(currentVisitDates, normalizedDate);[m
+       [m
+[31m-      emit(currentState.copyWith([m
+[31m-        selectedDate: normalizedDate,[m
+[31m-        filteredVisits: filteredVisits,[m
+[31m-      ));[m
+[32m+[m[32m      if (filteredVisits.isEmpty) {[m
+[32m+[m[32m        emit(VisitEmpty([m
+[32m+[m[32m          visitDates: currentVisitDates,[m
+[32m+[m[32m          selectedDate: normalizedDate,[m
+[32m+[m[32m        ));[m
+[32m+[m[32m      } else {[m
+[32m+[m[32m        emit(VisitLoaded([m
+[32m+[m[32m          visitDates: currentVisitDates,[m
+[32m+[m[32m          selectedDate: normalizedDate,[m
+[32m+[m[32m          filteredVisits: filteredVisits,[m
+[32m+[m[32m        ));[m
+[32m+[m[32m      }[m
+     } else {[m
+[31m-      print('VisitCubit: State is not VisitLoaded');[m
+[32m+[m[32m      print('VisitCubit: No visit dates available');[m
+     }[m
+   }[m
+ [m
+[1mdiff --git a/depi_graduation_project/lib/features/visit_Screen/presentation/cubit/visit_state.dart b/depi_graduation_project/lib/features/visit_Screen/presentation/cubit/visit_state.dart[m
+[1mindex 7285271..b1792ae 100644[m
+[1m--- a/depi_graduation_project/lib/features/visit_Screen/presentation/cubit/visit_state.dart[m
+[1m+++ b/depi_graduation_project/lib/features/visit_Screen/presentation/cubit/visit_state.dart[m
+[36m@@ -35,3 +35,13 @@[m [mclass VisitError extends VisitState {[m
+   final String message;[m
+   VisitError(this.message);[m
+ }[m
+[32m+[m
+[32m+[m[32mclass VisitEmpty extends VisitState {[m
+[32m+[m[32m  final List<VisitDate> visitDates;[m
+[32m+[m[32m  final DateTime selectedDate;[m
+[32m+[m
+[32m+[m[32m  VisitEmpty({[m
+[32m+[m[32m    required this.visitDates,[m
+[32m+[m[32m    required this.selectedDate,[m
+[32m+[m[32m  });[m
+[32m+[m[32m}[m
+[1mdiff --git a/depi_graduation_project/lib/features/visit_Screen/presentation/pages/visit_list_screen.dart b/depi_graduation_project/lib/features/visit_Screen/presentation/pages/visit_list_screen.dart[m
+[1mindex c35fefb..3068dfb 100644[m
+[1m--- a/depi_graduation_project/lib/features/visit_Screen/presentation/pages/visit_list_screen.dart[m
+[1m+++ b/depi_graduation_project/lib/features/visit_Screen/presentation/pages/visit_list_screen.dart[m
+[36m@@ -57,6 +57,8 @@[m [mclass _VisitListScreenState extends State<VisitListScreen> {[m
+                   DateTime currentDate = DateTime.now();[m
+                   if (state is VisitLoaded) {[m
+                     currentDate = state.selectedDate;[m
+[32m+[m[32m                  } else if (state is VisitEmpty) {[m
+[32m+[m[32m                    currentDate = state.selectedDate;[m
+                   }[m
+                   [m
+                   return CalendarStrip([m
+[36m@@ -92,20 +94,18 @@[m [mclass _VisitListScreenState extends State<VisitListScreen> {[m
+                       return const Center(child: CircularProgressIndicator());[m
+                     } else if (state is VisitError) {[m
+                       return Center(child: Text('Error: ${state.message}'));[m
+[32m+[m[32m                    } else if (state is VisitEmpty) {[m
+[32m+[m[32m                      return const Center([m
+[32m+[m[32m                        child: Column([m
+[32m+[m[32m                          mainAxisAlignment: MainAxisAlignment.center,[m
+[32m+[m[32m                          children: [[m
+[32m+[m[32m                            Icon(Icons.event_busy, size: 64, color: Colors.grey),[m
+[32m+[m[32m                            SizedBox(height: 16),[m
+[32m+[m[32m                            Text('No visits planned for this day'),[m
+[32m+[m[32m                          ],[m
+[32m+[m[32m                        ),[m
+[32m+[m[32m                      );[m
+                     } else if (state is VisitLoaded) {[m
+[31m-                      if (state.filteredVisits.isEmpty) {[m
+[31m-                        return const Center([m
+[31m-                          child: Column([m
+[31m-                            mainAxisAlignment: MainAxisAlignment.center,[m
+[31m-                            children: [[m
+[31m-                              Icon(Icons.event_busy, size: 64, color: Colors.grey),[m
+[31m-                              SizedBox(height: 16),[m
+[31m-                              Text('No visits planned for this day'),[m
+[31m-                            ],[m
+[31m-                          ),[m
+[31m-                        );[m
+[31m-                      }[m
+[31m-[m
+                       return ListView.builder([m
+                         padding: const EdgeInsets.symmetric(horizontal: 20),[m
+                         itemCount: state.filteredVisits.length,[m

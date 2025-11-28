@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
 
 class CalendarStrip extends StatelessWidget {
@@ -21,21 +22,21 @@ class CalendarStrip extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+          padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
           child: Text(
             DateFormat('MMMM, yyyy').format(selectedDate),
-            style: const TextStyle(
-              fontSize: 18,
+            style: TextStyle(
+              fontSize: 18.sp,
               fontWeight: FontWeight.bold,
-              color: Color(0xFF2C3E50),
+              color: const Color(0xFF2C3E50),
             ),
           ),
         ),
         SizedBox(
-          height: 80,
+          height: 80.h,
           child: ListView.builder(
             scrollDirection: Axis.horizontal,
-            padding: const EdgeInsets.symmetric(horizontal: 12),
+            padding: EdgeInsets.symmetric(horizontal: 12.w),
             itemCount: days.length,
             itemBuilder: (context, index) {
               // Normalize date to start of day for comparison
@@ -51,11 +52,11 @@ class CalendarStrip extends StatelessWidget {
                   onDateSelected(date);
                 },
                 child: Container(
-                  width: 50, // Slightly narrower
-                  margin: const EdgeInsets.symmetric(horizontal: 6),
+                  width: 50.w, // Slightly narrower
+                  margin: EdgeInsets.symmetric(horizontal: 6.w),
                   decoration: BoxDecoration(
                     color: isSelected ? const Color(0xFFFFC107) : const Color(0xFFE0E6EB).withOpacity(0.5),
-                    borderRadius: BorderRadius.circular(20), 
+                    borderRadius: BorderRadius.circular(20.r), 
                     
                   ),
                   child: Column(
@@ -64,16 +65,16 @@ class CalendarStrip extends StatelessWidget {
                       Text(
                         date.day.toString(),
                         style: TextStyle(
-                          fontSize: 18,
+                          fontSize: 18.sp,
                           fontWeight: FontWeight.bold,
                           color: isSelected ? Colors.black : const Color(0xFF546E7A),
                         ),
                       ),
-                      const SizedBox(height: 4),
+                      SizedBox(height: 4.h),
                       Text(
                         DateFormat('E').format(date),
                         style: TextStyle(
-                          fontSize: 12,
+                          fontSize: 12.sp,
                           fontWeight: FontWeight.w500,
                           color: isSelected ? Colors.black : const Color(0xFF78909C),
                         ),
