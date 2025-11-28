@@ -71,10 +71,4 @@ flutter_assets:
   classname: AppAssets
   field_prefix: null
 
-dependency_overrides:
-  flutter_plugin_android_lifecycle:
-    path: ./external/flutter_plugin_android_lifecycle-2.0.31
-  location:
-    path: ./external/location-5.0.3
-
 

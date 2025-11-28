@@ -28,9 +28,9 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
     final email = emailController.text.trim();
 
     if (email.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Email is required")),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('Email is required')));
       return;
     }
 
@@ -39,25 +39,26 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
     });
 
     try {
-      final response = await supabase.auth.resetPasswordForEmail(email);
+      //  final response = await supabase.auth.resetPasswordForEmail(email);
 
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text(
-              "If an account exists, a password reset link has been sent to your email"),
+            'If an account exists, a password reset link has been sent to your email',
+          ),
         ),
       );
 
       // Optionally, navigate back to login
       Navigator.of(context).pop();
     } on AuthException catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(e.message)),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(e.message)));
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Unexpected error: $e")),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Unexpected error: $e')));
     } finally {
       setState(() {
         _isLoading = false;
@@ -118,18 +119,19 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                     ),
                     foregroundColor: darkBlueColor,
                   ),
-                  child: _isLoading
-                      ? const CircularProgressIndicator(
-                          color: darkBlueColor,
-                        )
-                      : Text(
-                          'Submit',
-                          style: GoogleFonts.inter(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
+                  child:
+                      _isLoading
+                          ? const CircularProgressIndicator(
                             color: darkBlueColor,
+                          )
+                          : Text(
+                            'Submit',
+                            style: GoogleFonts.inter(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                              color: darkBlueColor,
+                            ),
                           ),
-                        ),
                 ),
               ),
               const SizedBox(height: 40),
@@ -150,7 +152,10 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
         fontWeight: FontWeight.w500,
       ),
       decoration: InputDecoration(
-        contentPadding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+        contentPadding: const EdgeInsets.symmetric(
+          vertical: 16,
+          horizontal: 16,
+        ),
         hintText: 'Email',
         hintStyle: GoogleFonts.inter(
           color: darkBlueColor,

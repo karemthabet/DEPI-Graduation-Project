@@ -17,7 +17,7 @@ import 'package:whatsapp/features/splash/presentation/views/splash_view.dart';
 
 class AppRouter {
   static final router = GoRouter(
-    initialLocation: RoutesName.mainView,
+    initialLocation: RoutesName.splash,
     errorBuilder: (context, state) => const General404Page(),
     routes: [
       GoRoute(
