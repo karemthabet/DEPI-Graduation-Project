@@ -13,9 +13,10 @@ import 'package:whatsapp/my_app.dart';
 import 'features/home/data/models/cached_places_model.dart';
 import 'features/home/data/models/place_model.dart';
 import 'features/home/data/models/cached_location_model.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
-Future<void> main() async {
-  WidgetsFlutterBinding.ensureInitialized();
+Future<void> main() async async {
+WidgetsFlutterBinding.ensureInitialized();
   await Hive.initFlutter();
 
   // Register all Hive adapters
@@ -44,15 +45,24 @@ Future<void> main() async {
     anonKey: SupabaseConstants.supabaseAnonKey,
   );
 
-  setupServiceLocator();
-  runApp(
-    MultiBlocProvider(
-      providers: [
-        BlocProvider(create: (context) => PlacesCubit(repository: getIt())),
-        BlocProvider(create: (context) => PlaceDetailsCubit(getIt())),
+
+// Initialize Supabase here
+await Supabase.initialize(
+url: 'https://uztrxupjubheaxxagzyd.supabase.co',
+anonKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV6dHJ4dXBqdWJoZWF4eGFnenlkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjMyMTc0NjksImV4cCI6MjA3ODc5MzQ2OX0.GDcTRLVFM_i0m9LMDhAR3z97JzM4bZj0FQdKpfiuZTQ',
+);
+
+// Setup service locator dependencies
+setupServiceLocator();
+
+runApp(
+MultiBlocProvider(
+providers: [
+BlocProvider(create: (context) => PlacesCubit(repository: getIt())),
+BlocProvider(create: (context) => PlaceDetailsCubit(getIt())),
         BlocProvider(create: (context) => UserCubit(getIt())),
-      ],
-      child: const MyApp(),
-    ),
-  );
+],
+child: const MyApp(),
+),
+);
 }
