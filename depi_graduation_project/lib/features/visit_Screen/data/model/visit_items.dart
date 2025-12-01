@@ -8,6 +8,7 @@ class VisitItem {
   final int visitDateId;
   final String? visitTime;
   final bool isCompleted;
+  final String userId;
 
   VisitItem({
     required this.id,
@@ -19,6 +20,7 @@ class VisitItem {
     required this.visitDateId,
     this.visitTime,
     required this.isCompleted,
+    required this.userId,
   });
 
   factory VisitItem.fromJson(Map<String, dynamic> json) {
@@ -34,6 +36,7 @@ class VisitItem {
       visitDateId: json['visited_date_id'], // Note: Schema has 'visited_date_id'
       visitTime: json['visit_time'],
       isCompleted: json['iscompleted'] ?? false,
+      userId: json['user_id'] ?? '',
     );
   }
 
@@ -48,6 +51,7 @@ class VisitItem {
       'visited_date_id': visitDateId, // Note: Schema has 'visited_date_id'
       'visit_time': visitTime,
       'iscompleted': isCompleted,
+      'user_id': userId,
     };
   }
 }

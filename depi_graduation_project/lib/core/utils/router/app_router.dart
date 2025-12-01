@@ -5,6 +5,7 @@ import 'package:whatsapp/features/home/data/models/item_model.dart';
 import 'package:whatsapp/features/home/presentation/views/categories_view.dart';
 import 'package:whatsapp/features/home/presentation/views/categories_view_details.dart';
 import 'package:whatsapp/features/home/presentation/views/home_view.dart';
+import 'package:whatsapp/features/home/presentation/views/widgets/places_example_usage.dart';
 import 'package:whatsapp/features/login/presentation/views/sign_in_view.dart';
 import 'package:whatsapp/features/login/presentation/views/signup_view.dart';
 import 'package:whatsapp/features/login/presentation/views/welcome_view.dart';
@@ -12,19 +13,22 @@ import 'package:whatsapp/features/root_navigation_glass/presentation/views/main_
 import 'package:whatsapp/features/profile/presentation/views/edit_profile_view.dart';
 import 'package:whatsapp/features/profile/presentation/views/profile_veiw.dart';
 import 'package:whatsapp/features/onboarding1/onboarding_view.dart';
-import 'package:whatsapp/features/FavouriteScreen/view/favourite_view.dart';
 import 'package:whatsapp/features/splash/presentation/views/splash_view.dart';
-
 import 'package:whatsapp/features/visit_Screen/presentation/pages/visit_list_screen.dart';
 class AppRouter {
   static final router = GoRouter(
-    initialLocation: RoutesName.mainView,
+    initialLocation: RoutesName.splash,
     errorBuilder: (context, state) => const General404Page(),
     routes: [
       GoRoute(
         name: RoutesName.mainView,
         path: RoutesName.mainView,
         builder: (context, state) => const MainView(),
+      ),
+      GoRoute(
+        name: RoutesName.placesExample,
+        path: RoutesName.placesExample,
+        builder: (context, state) => const PlacesExampleUsage(),
       ),
       GoRoute(
         name: RoutesName.categoriesViewDetails,
@@ -51,24 +55,23 @@ class AppRouter {
         name: RoutesName.editProfileView,
         path: RoutesName.editProfileView,
         builder: (context, state) => const EditProfileView(),
-        
       ),
-       GoRoute(
+      GoRoute(
         name: RoutesName.welcome,
         path: RoutesName.welcome,
         builder: (context, state) => const WelcomeView(),
       ),
-       GoRoute(
+      GoRoute(
         name: RoutesName.login,
         path: RoutesName.login,
         builder: (context, state) => const SignInView(),
       ),
-       GoRoute(
+      GoRoute(
         name: RoutesName.signUp,
         path: RoutesName.signUp,
         builder: (context, state) => const SignUpView(),
       ),
-       GoRoute(
+      GoRoute(
         name: RoutesName.homeView,
         path: RoutesName.homeView,
         builder: (context, state) => const HomeView(),
@@ -78,16 +81,11 @@ class AppRouter {
         path: RoutesName.onboarding,
         builder: (context, state) => const OnboardingView(),
       ),
-       GoRoute(
+      GoRoute(
         name: RoutesName.splash,
         path: RoutesName.splash,
         builder: (context, state) => const SplashView(),
        ),
-        GoRoute(
-        name: RoutesName.visitList,
-        path: RoutesName.visitList,
-        builder: (context, state) => const VisitListScreen(),
-      ),
 
     ],
   );

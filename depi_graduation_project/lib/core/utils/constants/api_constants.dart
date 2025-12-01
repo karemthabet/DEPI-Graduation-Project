@@ -6,7 +6,7 @@ class ApiBase {
 class ApiEndpoints {
   static String getNearbyPlaces(double lat, double lng) =>
       '/place/nearbysearch/json?location=$lat,$lng'
-      '&radius=5000000' // 5 كيلومتر -  للأماكن القريبة
+      '&radius=50000' // 50 كيلومتر -  للأماكن القريبة
       '&key=${ApiBase.apiKey}';
 
   static String getPlaceDetails(String placeId) =>

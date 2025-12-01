@@ -31,6 +31,11 @@ class VisitLoaded extends VisitState {
   }
 }
 
+class VisitEmpty extends VisitState {
+  final DateTime selectedDate;
+  VisitEmpty(this.selectedDate);
+}
+
 class VisitError extends VisitState {
   final String message;
   VisitError(this.message);

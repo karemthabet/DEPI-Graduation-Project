@@ -24,6 +24,7 @@ class CustomTextFormField extends StatelessWidget {
     this.fillColor,
     this.filled = false,
     this.focusNode,
+    this.readOnly = false,
   });
 
   /// Basic field behavior
@@ -50,6 +51,7 @@ class CustomTextFormField extends StatelessWidget {
   final Color? fillColor;
   final bool filled;
   final FocusNode? focusNode;
+  final bool readOnly;
 
   @override
   Widget build(BuildContext context) {

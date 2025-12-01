@@ -1,63 +1,60 @@
 import 'package:dio/dio.dart';
 import 'package:get_it/get_it.dart';
+
+// Core
 import 'package:whatsapp/core/services/api_service.dart';
 import 'package:whatsapp/core/services/dio_consumer.dart';
+
+// Home Feature
+import 'package:whatsapp/features/home/data/data_sources/places_local_data_source.dart';
+import 'package:whatsapp/features/home/data/data_sources/places_remote_data_source.dart';
 import 'package:whatsapp/features/home/data/repositories/places_repository.dart';
 import 'package:whatsapp/features/home/data/repositories/places_repository_impl.dart';
 import 'package:whatsapp/features/home/presentation/cubit/places_cubit.dart';
 
-/// ✅ Global GetIt instance
+// Profile Feature
+import 'package:whatsapp/core/services/supabase_service.dart';
+import 'package:whatsapp/features/profile/data/repositories/user_repository.dart';
+import 'package:whatsapp/features/profile/data/repositories/user_repository_impl.dart';
+import 'package:whatsapp/features/profile/presentation/cubit/user_cubit.dart';
+
 final getIt = GetIt.instance;
 
-/// ✅ Setup Service Locator
-/// Call this function in `main()`
-/// Example:
-///   setupServiceLocator();
-///   runApp(MyApp());
-void setupServiceLocator() {
-  // --- Core services ---
+Future<void> setupServiceLocator() async {
+  // ================= Core Services =================
   getIt.registerLazySingleton<Dio>(() => Dio());
+
   getIt.registerLazySingleton<ApiService>(() => DioConsumer(dio: getIt<Dio>()));
-  getIt.registerLazySingleton<PlacesRepository>(
-    () => PlacesRepositoryImpl(apiService: getIt<ApiService>()),
+
+  getIt.registerLazySingleton<SupabaseService>(() => SupabaseService());
+
+  // ================= Data Sources =================
+
+  getIt.registerLazySingleton<PlacesLocalDataSource>(
+    () => PlacesLocalDataSource(),
   );
-getIt.registerFactory(() => PlacesCubit(getIt<PlacesRepository>()));
+
+  getIt.registerLazySingleton<PlacesRemoteDataSource>(
+    () => PlacesRemoteDataSource(apiService: getIt<ApiService>()),
+  );
+
+  // ================= Repository =================
+  getIt.registerLazySingleton<PlacesRepository>(
+    () => PlacesRepositoryImpl(
+      localDataSource: getIt<PlacesLocalDataSource>(),
+      remoteDataSource: getIt<PlacesRemoteDataSource>(),
+    ),
+  );
+
+  // ================= User Repository =================
+  getIt.registerLazySingleton<UserRepository>(
+    () => UserRepositoryImpl(getIt<SupabaseService>()),
+  );
+
+  // ================= Cubits =================
+  getIt.registerFactory(
+    () => PlacesCubit(repository: getIt<PlacesRepository>()),
+  );
+
+  getIt.registerFactory(() => UserCubit(getIt<UserRepository>()));
 }
-
-/// Example:
-///   final api = sl<ApiService>();
-T sl<T extends Object>() => getIt<T>();
-
-/* ===============================
-   📌 Usage Examples
-
-1. Initialization in main():
---------------------------------
-void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  setupServiceLocator();
-  runApp(MyApp());
-}
-
-2. Accessing registered services:
---------------------------------
-final dio = sl<Dio>();
-final api = sl<ApiService>();
-
-3. Registering custom services:
---------------------------------
-getIt.registerLazySingleton<AuthRepo>(
-  () => AuthRepoImpl(apiService: sl<ApiService>()),
-);
-
-getIt.registerFactory(() => AuthCubit(sl<AuthRepo>()));
-
-4. Using inside Cubit/Bloc:
---------------------------------
-class MyCubit extends Cubit<MyState> {
-  final AuthRepo authRepo;
-  MyCubit(this.authRepo) : super(MyInitial());
-}
-
-final myCubit = sl<MyCubit>();
-*/

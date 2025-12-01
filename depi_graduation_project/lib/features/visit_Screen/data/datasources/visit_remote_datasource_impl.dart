@@ -27,9 +27,16 @@ class VisitRemoteDataSourceImpl implements VisitRemoteDataSource {
       
       if (userId != null) {
         visits = visits.map((date) {
-          final userVisits = date.visits.where((v) => 
-            true
-          ).toList();
+          // Filter visits for specific user if needed, currently we assume backend filters or we filter here
+          // But the previous code was .where((v) => true) which is useless.
+          // If we need to filter by user_id inside the visits list (if the query returned all), we should do it.
+          // However, the query `supabase.from('visit_date').select('*, visitlist(*)')` might return all visits for that date.
+          // But `visitlist` join usually needs filtering.
+          // The current implementation of `getAllVisitDates` doesn't seem to filter `visitlist` by user_id in the query itself efficiently for the join?
+          // Wait, line 21: `.select('*, visitlist(*)')`. This gets ALL visits for the date.
+          // We SHOULD filter by user_id here if it's not filtered in the query.
+          
+          final userVisits = date.visits.where((v) => v.userId == userId).toList();
           return VisitDate(id: date.id, date: date.date, visits: userVisits);
         }).toList();
       }

@@ -106,6 +106,8 @@ class VisitCubit extends Cubit<VisitState> {
         userId: userId,
         visitTime: visitTime,
       );
+    } on ServerException catch (e) {
+      emit(VisitError(e.message));
     } on NetworkException catch (e) {
       emit(VisitError(e.message));
     } catch (e) {
@@ -116,6 +118,8 @@ class VisitCubit extends Cubit<VisitState> {
   Future<void> toggleCompletion(int visitId, bool isCompleted) async {
     try {
       await visitRepository.toggleVisitCompletion(visitId, isCompleted);
+    } on ServerException catch (e) {
+      emit(VisitError(e.message));
     } on NetworkException catch (e) {
       emit(VisitError(e.message));
     } catch (e) {

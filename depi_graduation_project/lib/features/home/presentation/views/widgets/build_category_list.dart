@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:skeletonizer/skeletonizer.dart';
 import 'package:whatsapp/features/home/presentation/cubit/places_cubit.dart';
 import 'package:whatsapp/features/home/presentation/views/places_list_view.dart';
 import 'package:whatsapp/features/home/presentation/views/widgets/build_category_item.dart';
+import 'package:whatsapp/features/home/presentation/views/widgets/category_shimmer.dart';
 
 class BuildCategoryList extends StatelessWidget {
   const BuildCategoryList({super.key});
@@ -13,49 +13,51 @@ class BuildCategoryList extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<PlacesCubit, PlacesState>(
       builder: (context, state) {
+        // Loading state - show shimmer
         if (state is PlacesLoading) {
-          return SizedBox(
-            height: 110.h,
-            child: ListView.builder(
-              scrollDirection: Axis.horizontal,
-              itemCount: 6,
-              itemBuilder: (context, index) {
-                return Skeletonizer(
-                  enabled: true,
-                  child: Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 8.w),
-                    child: const BuildCategoryItem(
-                      title: 'Loading...',
-                      image: 'assets/images/others.webp',
-                      count: 0,
-                    ),
-                  ),
-                );
-              },
-            ),
-          );
+          return const CategoryShimmer();
         }
 
+        // Loaded state - show categories
         if (state is PlacesLoaded) {
           final availableCategories = state.availableCategories;
 
+          // Empty state - no categories available
           if (availableCategories.isEmpty) {
             return SizedBox(
               height: 110.h,
               child: Center(
-                child: Text(
-                  'No Categories Found',
-                  style: TextStyle(fontSize: 14.sp, color: Colors.grey),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(
+                      Icons.category_outlined,
+                      size: 40.sp,
+                      color: Colors.grey[400],
+                    ),
+                    SizedBox(height: 8.h),
+                    Text(
+                      'No Categories Found',
+                      style: TextStyle(
+                        fontSize: 14.sp,
+                        color: Colors.grey[600],
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ],
                 ),
               ),
             );
           }
 
+          // Success state - display categories
           return SizedBox(
             height: 110.h,
             child: ListView.builder(
               scrollDirection: Axis.horizontal,
+              physics: const BouncingScrollPhysics(),
               itemCount: availableCategories.length,
+              padding: EdgeInsets.symmetric(horizontal: 8.w),
               itemBuilder: (context, index) {
                 final categoryKey = availableCategories.keys.elementAt(index);
                 final categoryName = availableCategories.values.elementAt(
@@ -79,10 +81,13 @@ class BuildCategoryList extends StatelessWidget {
                       ),
                     );
                   },
-                  child: BuildCategoryItem(
-                    title: categoryName,
-                    image: _getCategoryImage(categoryKey),
-                    count: count,
+                  child: Padding(
+                    padding: EdgeInsets.only(right: 8.w),
+                    child: BuildCategoryItem(
+                      title: categoryName,
+                      image: _getCategoryImage(categoryKey),
+                      count: count,
+                    ),
                   ),
                 );
               },
@@ -90,16 +95,36 @@ class BuildCategoryList extends StatelessWidget {
           );
         }
 
+        // Error state - show error message
         if (state is PlacesError) {
-          return Center(
-            child: Text(
-              'Error: ${state.failure.errMessage}',
-              style: TextStyle(fontSize: 14.sp, color: Colors.red),
+          return SizedBox(
+            height: 110.h,
+            child: Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    Icons.error_outline,
+                    size: 40.sp,
+                    color: Colors.red[400],
+                  ),
+                  SizedBox(height: 8.h),
+                  Text(
+                    'Failed to load categories',
+                    style: TextStyle(
+                      fontSize: 14.sp,
+                      color: Colors.red[600],
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ],
+              ),
             ),
           );
         }
 
-        return const SizedBox.shrink();
+        // Initial state - show shimmer
+        return const CategoryShimmer();
       },
     );
   }

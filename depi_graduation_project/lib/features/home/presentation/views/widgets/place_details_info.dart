@@ -1,4 +1,6 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:whatsapp/core/utils/colors/app_colors.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:whatsapp/features/home/data/models/item_model.dart';
 
@@ -38,12 +40,21 @@ class PlaceItemInfo extends StatelessWidget {
             ),
             child: Hero(
               tag: heroTag,
-              child: Image.network(
-                itemModel.image,
+              child: CachedNetworkImage(
+                imageUrl: itemModel.image,
                 width: double.infinity,
                 height: 100.h,
                 fit: BoxFit.cover,
-                errorBuilder: (context, error, stackTrace) {
+                placeholder: (context, url) => Container(
+                  height: 100.h,
+                  color: Colors.grey[300],
+                  child: const Center(
+                    child: CircularProgressIndicator(
+                      color: AppColors.darkBlue,
+                    ),
+                  ),
+                ),
+                errorWidget: (context, url, error) {
                   return Container(
                     height: 100.h,
                     color: Colors.grey[300],
