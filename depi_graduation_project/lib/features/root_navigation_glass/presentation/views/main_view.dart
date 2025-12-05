@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:whatsapp/features/FavouriteScreen/presentation/view/favourite_view.dart';
 import 'package:whatsapp/features/home/presentation/views/home_view.dart';
 import 'package:whatsapp/features/profile/presentation/views/profile_veiw.dart';
 import 'package:whatsapp/features/root_navigation_glass/presentation/views/widgets/custom_glass_nav_bar.dart';
-import 'package:whatsapp/features/visit_Screen/view/visit_view.dart';
-
-import '../../../../supabase_service.dart';
+import 'package:whatsapp/features/FavouriteScreen/presentation/view/favourite_view.dart';
+import 'package:whatsapp/supabase_service.dart';
+import 'package:whatsapp/features/visit_Screen/presentation/pages/visit_list_screen.dart';
 
 class MainView extends StatefulWidget {
   const MainView({super.key});
@@ -19,10 +18,8 @@ class _MainViewState extends State<MainView> {
 
   final List<Widget> _screens = [
     const HomeView(),
-    const VisitedView(),
-    
-FavouriteView(userId: SupabaseService.userId) ,
-
+    const VisitListScreen(),
+    FavouriteView(userId: SupabaseService.userId),
     const ProfileVeiw(),
   ];
 
@@ -30,7 +27,6 @@ FavouriteView(userId: SupabaseService.userId) ,
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: false,
-
       body: Stack(
         children: [
           _screens[currentIndex],

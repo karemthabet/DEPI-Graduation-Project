@@ -15,4 +15,5 @@ class RoutesName {
   static const String homePage2 = '/homePage2';
   static const String homePage1 = '/homePage1';
   static const String placesExample = '/PlacesExampleUsage';
+  static const String visitList = '/visitList';
 }

@@ -4,33 +4,33 @@ import 'package:whatsapp/core/utils/colors/app_colors.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class RecommendationCard extends StatelessWidget {
-  const RecommendationCard({
-    super.key,
-    required this.title,
-    required this.location,
-    required this.rating,
-    required this.imageUrl,
-    this.isFullWidth = false, // جديد
-  });
-
   final String title;
   final String location;
   final double rating;
   final String imageUrl;
   final bool isFullWidth;
 
+  const RecommendationCard({
+    super.key,
+    required this.title,
+    required this.location,
+    required this.rating,
+    required this.imageUrl,
+    this.isFullWidth = false,
+  });
+
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: isFullWidth ? double.infinity : 260.w, // تعديل
+      width: isFullWidth ? double.infinity : 260.w,
       decoration: BoxDecoration(
-        color: const Color(0xFFFEF9CF),
-        borderRadius: BorderRadius.circular(20.r),
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16.r),
         boxShadow: [
           BoxShadow(
-            color: Colors.grey.withOpacity(0.25),
-            blurRadius: 6,
-            offset: const Offset(0, 3),
+            color: Colors.grey.withOpacity(0.1),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
           ),
         ],
       ),
@@ -64,7 +64,6 @@ class RecommendationCard extends StatelessWidget {
               ),
             ),
             SizedBox(width: 10.w),
-
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
