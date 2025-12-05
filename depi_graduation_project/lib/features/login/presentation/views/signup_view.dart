@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';   
+import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:whatsapp/core/utils/router/routes_name.dart';
 import 'widgets/password_field.dart';
 
@@ -19,7 +19,7 @@ class _SignUpViewState extends State<SignUpView> {
   final TextEditingController passController = TextEditingController();
   final TextEditingController confirmPassController = TextEditingController();
 
-  final supabase = Supabase.instance.client; 
+  final supabase = Supabase.instance.client;
 
   @override
   void dispose() {
@@ -124,9 +124,7 @@ class _SignUpViewState extends State<SignUpView> {
       decoration: InputDecoration(
         prefixIcon: Icon(icon),
         hintText: hintText,
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(30),
-        ),
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(30)),
       ),
     );
   }
@@ -163,23 +161,20 @@ class _SignUpViewState extends State<SignUpView> {
             final response = await supabase.auth.signUp(
               email: email,
               password: password,
-              data: {
-                'name': name,
-              },
+              data: {'full_name': name},
             );
 
             // SUCCESS
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('Sign up successful')),
-            );
+            ScaffoldMessenger.of(
+              context,
+            ).showSnackBar(const SnackBar(content: Text('Sign up successful')));
 
             // Navigate when success
             context.go(RoutesName.mainView);
-
           } on AuthException catch (e) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text(e.message)),
-            );
+            ScaffoldMessenger.of(
+              context,
+            ).showSnackBar(SnackBar(content: Text(e.message)));
           }
         },
         style: ElevatedButton.styleFrom(
@@ -217,10 +212,7 @@ class _SignUpViewState extends State<SignUpView> {
       width: double.infinity,
       child: OutlinedButton.icon(
         onPressed: () {},
-        icon: Image.asset(
-          'assets/images/google_icon.png',
-          height: 24,
-        ),
+        icon: Image.asset('assets/images/google_icon.png', height: 24),
         label: Text(
           'Google',
           textAlign: TextAlign.center,
@@ -232,10 +224,7 @@ class _SignUpViewState extends State<SignUpView> {
         ),
         style: OutlinedButton.styleFrom(
           padding: const EdgeInsets.symmetric(vertical: 14),
-          side: const BorderSide(
-            color: Color(0xFF243E4B),
-            width: 1.2,
-          ),
+          side: const BorderSide(color: Color(0xFF243E4B), width: 1.2),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(30),
           ),

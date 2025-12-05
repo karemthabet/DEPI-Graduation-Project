@@ -65,7 +65,7 @@ class CustomTextFormField extends StatelessWidget {
       maxLines: maxLines,
       cursorColor: cursorColor ?? AppColors.darkBlue,
       onTapOutside: (event) => FocusScope.of(context).unfocus(),
-
+      readOnly: readOnly,
       style:
           textStyle ??
           theme.textTheme.bodyMedium?.copyWith(

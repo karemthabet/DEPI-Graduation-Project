@@ -18,8 +18,8 @@ class BuildProfileSection extends StatelessWidget {
         String? profileImage = 'assets/images/profile.png';
 
         if (state is UserLoaded) {
-          name = state.user.name;
-          profileImage = state.user.profileImage;
+          name = state.user.fullName;
+          profileImage = state.user.avatarUrl;
         }
 
         return Row(
@@ -30,10 +30,9 @@ class BuildProfileSection extends StatelessWidget {
               },
               child: CircleAvatar(
                 radius: 25.r,
-                backgroundImage:
-                    profileImage != null && profileImage.isNotEmpty
-                        ? NetworkImage(profileImage) as ImageProvider
-                        : const AssetImage('assets/images/profile.png'),
+                backgroundImage: profileImage != null && profileImage.isNotEmpty
+                    ? NetworkImage(profileImage) as ImageProvider
+                    : const AssetImage('assets/images/profile.png'),
               ),
             ),
             SizedBox(width: 14.w),

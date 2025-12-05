@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -19,8 +18,6 @@ import 'package:whatsapp/features/home/presentation/cubit/place_details_cubit.da
 import 'package:whatsapp/features/home/presentation/cubit/places_cubit.dart';
 import 'package:whatsapp/features/profile/presentation/cubit/user_cubit.dart';
 import 'package:whatsapp/supabase_service.dart';
-import 'package:whatsapp/my_app.dart';
-import 'package:whatsapp/core/services/setup_service_locator.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -59,9 +56,11 @@ void main() async {
       ],
       child: MultiBlocProvider(
         providers: [
-      BlocProvider(create: (context) => PlacesCubit(repository: getIt())),
+          BlocProvider(create: (context) => PlacesCubit(repository: getIt())),
           BlocProvider(create: (context) => PlaceDetailsCubit(getIt())),
-          BlocProvider(create: (context) => UserCubit(getIt())),
+          BlocProvider(
+            create: (context) => UserCubit(getIt())..loadUserProfile(),
+          ),
           BlocProvider<FavoritesCubit>(
             create: (context) => FavoritesCubit(
               repository: context.read<IFavoritesRepository>(),
@@ -91,3 +90,4 @@ class MyApp extends StatelessWidget {
     );
   }
 }
+     

@@ -2,8 +2,17 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
+typedef ImagePickedCallback = void Function(File? imageFile);
+
 class ProfileImagePicker extends StatefulWidget {
-  const ProfileImagePicker({super.key});
+  final ImagePickedCallback onImagePicked;
+  final String? initialAvatarUrl;
+
+  const ProfileImagePicker({
+    super.key,
+    required this.onImagePicked,
+    this.initialAvatarUrl,
+  });
 
   @override
   State<ProfileImagePicker> createState() => _ProfileImagePickerState();
@@ -17,7 +26,14 @@ class _ProfileImagePickerState extends State<ProfileImagePicker> {
     final pickedFile = await picker.pickImage(source: source);
     if (pickedFile != null) {
       setState(() => imageFile = File(pickedFile.path));
+      widget.onImagePicked(imageFile);
     }
+  }
+
+  void removeImage() {
+    setState(() => imageFile = null);
+    widget.onImagePicked(null);
+    Navigator.pop(context);
   }
 
   void showPickOptions(BuildContext context) {
@@ -47,10 +63,7 @@ class _ProfileImagePickerState extends State<ProfileImagePicker> {
           ListTile(
             leading: const Icon(Icons.delete),
             title: const Text('Remove Photo'),
-            onTap: () {
-              Navigator.pop(context);
-              setState(() => imageFile = null);
-            },
+            onTap: removeImage,
           ),
         ],
       ),
@@ -59,15 +72,21 @@ class _ProfileImagePickerState extends State<ProfileImagePicker> {
 
   @override
   Widget build(BuildContext context) {
+    ImageProvider imageProvider;
+
+    if (imageFile != null) {
+      imageProvider = FileImage(imageFile!);
+    } else if (widget.initialAvatarUrl != null &&
+        widget.initialAvatarUrl!.isNotEmpty) {
+      imageProvider = NetworkImage(widget.initialAvatarUrl!) as ImageProvider;
+    } else {
+      imageProvider = const AssetImage('assets/images/profile.png');
+    }
+
     return Stack(
       alignment: Alignment.bottomRight,
       children: [
-        CircleAvatar(
-          radius: 60,
-          backgroundImage: imageFile == null
-              ? const AssetImage('assets/images/profile.png')
-              : FileImage(imageFile!) as ImageProvider,
-        ),
+        CircleAvatar(radius: 60, backgroundImage: imageProvider),
         Positioned(
           bottom: 0,
           right: 4,

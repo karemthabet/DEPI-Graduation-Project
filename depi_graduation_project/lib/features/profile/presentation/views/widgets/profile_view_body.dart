@@ -17,12 +17,10 @@ class ProfileViewBody extends StatefulWidget {
 }
 
 class _ProfileViewBodyState extends State<ProfileViewBody> {
-  //  استخدم ValueNotifier عشان نخزن اللغة المختارة
   final ValueNotifier<String> selectedLanguage = ValueNotifier('English');
 
   @override
   void dispose() {
-    // مهم جدًا نعمل dispose عشان نمنع memory leaks
     selectedLanguage.dispose();
     super.dispose();
   }
@@ -57,7 +55,7 @@ class _ProfileViewBodyState extends State<ProfileViewBody> {
                 ),
                 title: const Text('Arabic'),
                 onTap: () {
-                  selectedLanguage.value = 'Arabic'; // ✅ تحديث القيمة فقط
+                  selectedLanguage.value = 'Arabic';
                   Navigator.pop(context);
                 },
               ),
@@ -69,7 +67,7 @@ class _ProfileViewBodyState extends State<ProfileViewBody> {
                 ),
                 title: const Text('English'),
                 onTap: () {
-                  selectedLanguage.value = 'English'; // ✅ تحديث القيمة فقط
+                  selectedLanguage.value = 'English';
                   Navigator.pop(context);
                 },
               ),
@@ -82,6 +80,10 @@ class _ProfileViewBodyState extends State<ProfileViewBody> {
 
   @override
   Widget build(BuildContext context) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<UserCubit>().loadUserProfile();
+    });
+
     return BlocBuilder<UserCubit, UserState>(
       builder: (context, state) {
         String name = 'Guest';
@@ -89,11 +91,43 @@ class _ProfileViewBodyState extends State<ProfileViewBody> {
         String? profileImage = 'assets/images/profile.png';
 
         if (state is UserLoaded) {
-          name = state.user.name;
+          name = state.user.fullName;
           email = state.user.email;
-          profileImage = state.user.profileImage;
-        }
+          profileImage = state.user.avatarUrl;
+        } else if (state is UserLoading) {
+          return const Center(
+            child: CircularProgressIndicator(color: AppColors.darkBlue),
+          );
+        } else if (state is UserError) {
+          return Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Icon(Icons.lock_outline, size: 50, color: Colors.grey),
+                const SizedBox(height: 16),
 
+                Text(
+                  'Error loading profile: ${state.message} LogIn First',
+                  style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w500,
+                    color: AppColors.darkBlue,
+                  ),
+                ),
+                const SizedBox(height: 24),
+                ElevatedButton(
+                  onPressed: () {
+                    context.go(RoutesName.login);
+                  },
+                  child: const Text(
+                    'Go to Login',
+                    style: TextStyle(color: AppColors.darkBlue),
+                  ),
+                ),
+              ],
+            ),
+          );
+        }
         return Padding(
           padding: EdgeInsets.symmetric(vertical: 48.sp, horizontal: 16.sp),
           child: Column(
@@ -101,15 +135,14 @@ class _ProfileViewBodyState extends State<ProfileViewBody> {
               Row(
                 children: [
                   InkWell(
-                    onTap: () {
-                      // Optional: Show full image
-                    },
+                    onTap: () {},
                     child: CircleAvatar(
                       radius: 44.r,
                       backgroundImage:
                           profileImage != null && profileImage.isNotEmpty
-                          ? CachedNetworkImageProvider(profileImage) as ImageProvider
-                          : const AssetImage('assets/images/auth.png'),
+                          ? CachedNetworkImageProvider(profileImage)
+                                as ImageProvider
+                          : const AssetImage('assets/images/profile.png'),
                     ),
                   ),
                   SizedBox(width: 20.w),
@@ -155,7 +188,6 @@ class _ProfileViewBodyState extends State<ProfileViewBody> {
 
               SizedBox(height: 60.h),
 
-              // Language Option (بتتحدث لوحدها)
               ValueListenableBuilder<String>(
                 valueListenable: selectedLanguage,
                 builder: (context, language, _) {
