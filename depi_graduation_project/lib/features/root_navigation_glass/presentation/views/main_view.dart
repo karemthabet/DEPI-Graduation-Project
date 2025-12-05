@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:whatsapp/features/FavouriteScreen/presentation/view/favourite_view.dart';
 import 'package:whatsapp/features/home/presentation/views/home_view.dart';
 import 'package:whatsapp/features/profile/presentation/views/profile_veiw.dart';
 import 'package:whatsapp/features/root_navigation_glass/presentation/views/widgets/custom_glass_nav_bar.dart';
+import 'package:whatsapp/features/visit_Screen/view/visit_view.dart';
+
+import '../../../../supabase_service.dart';
 
 class MainView extends StatefulWidget {
   const MainView({super.key});
@@ -15,13 +19,10 @@ class _MainViewState extends State<MainView> {
 
   final List<Widget> _screens = [
     const HomeView(),
-    Center(child: IconButton(onPressed: () {}, icon: const Icon(Icons.menu))),
-    Center(
-      child: IconButton(
-        onPressed: () {},
-        icon: const Icon(Icons.favorite_border),
-      ),
-    ),
+    const VisitedView(),
+    
+FavouriteView(userId: SupabaseService.userId) ,
+
     const ProfileVeiw(),
   ];
 
@@ -29,14 +30,22 @@ class _MainViewState extends State<MainView> {
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: false,
-    
-      body: _screens[currentIndex],
-    
-      bottomNavigationBar: CustomBottomNavBar(
-        currentIndex: currentIndex,
-        onTap: (index) {
-          setState(() => currentIndex = index);
-        },
+
+      body: Stack(
+        children: [
+          _screens[currentIndex],
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: CustomBottomNavBar(
+              currentIndex: currentIndex,
+              onTap: (index) {
+                setState(() {
+                  currentIndex = index;
+                });
+              },
+            ),
+          ),
+        ],
       ),
     );
   }

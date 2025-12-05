@@ -6,10 +6,14 @@ import '../../../../core/utils/constants/app_constants.dart';
 
 part 'places_state.dart';
 
+
 class PlacesCubit extends Cubit<PlacesState> {
   final PlacesRepository repository;
 
   PlacesCubit({required this.repository}) : super(PlacesInitial());
+
+
+
 
   Future<void> loadPlaces() async {
     // Emit loading state

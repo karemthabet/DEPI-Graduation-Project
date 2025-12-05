@@ -17,7 +17,19 @@ class ItemModel {
     required this.description,
   });
 
-  // Add copyWith method for easier updates
+  factory ItemModel.fromMap(Map<String, dynamic> map) {
+    return ItemModel(
+      id: map['id'] as String?,
+      name: map['name'] ?? '',
+      location: map['location'] ?? '',
+      image: map['image'] ?? '',
+      rating: map['rating']?.toString() ?? '0',
+      openNow: map['openNow'] ?? false,
+      description: map['description'] ?? '',
+    );
+  }
+
+  // copyWith method
   ItemModel copyWith({
     String? id,
     String? name,
@@ -25,6 +37,7 @@ class ItemModel {
     String? rating,
     String? location,
     String? description,
+    bool? openNow,
   }) {
     return ItemModel(
       id: id ?? this.id,
@@ -32,7 +45,7 @@ class ItemModel {
       location: location ?? this.location,
       image: image ?? this.image,
       rating: rating ?? this.rating,
-      openNow: openNow,
+      openNow: openNow ?? this.openNow,
       description: description ?? this.description,
     );
   }
