@@ -1,3 +1,5 @@
+import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:intl/intl.dart';
 class VisitService {
   static final VisitService _instance = VisitService._internal();
   factory VisitService() => _instance;

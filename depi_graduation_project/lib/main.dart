@@ -7,6 +7,7 @@ import 'package:whatsapp/features/home/presentation/cubit/place_details_cubit.da
 import 'package:whatsapp/features/home/presentation/cubit/places_cubit.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:whatsapp/core/services/notification_service.dart';
+import 'package:whatsapp/features/visit_Screen/presentation/cubit/visit_cubit.dart';
 import 'package:whatsapp/core/di/injection_container.dart' as di;
 
 void main() async {
@@ -23,6 +24,7 @@ void main() async {
       providers: [
         BlocProvider(create: (context) => PlacesCubit(getIt())),
         BlocProvider(create: (context) => PlaceDetailsCubit(getIt())),
+        BlocProvider(create: (context) => di.sl<VisitCubit>()),
       ],
       child: const MyApp(),
     ),

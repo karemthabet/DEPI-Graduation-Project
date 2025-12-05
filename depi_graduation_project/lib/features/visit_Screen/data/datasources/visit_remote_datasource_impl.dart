@@ -62,7 +62,6 @@ class VisitRemoteDataSourceImpl implements VisitRemoteDataSource {
         'user_id': userId,
         'visit_time': visitTime,
         'iscompleted': false,
-        'place_data': place.toJson(),
       });
     } on PostgrestException catch (e) {
       throw ServerException(e.message);

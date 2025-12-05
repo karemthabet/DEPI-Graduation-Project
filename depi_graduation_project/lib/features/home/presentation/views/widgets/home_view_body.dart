@@ -47,63 +47,66 @@ class _HomeViewBodyState extends State<HomeViewBody> {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: BlocBuilder<PlacesCubit, PlacesState>(
-        builder: (context, state) {
-          if (state is PlacesError) {
-            WidgetsBinding.instance.addPostFrameCallback((_) {
-              if (state.failure.errMessage.contains('إذن') || 
-                  state.failure.errMessage.contains('GPS')) {
-                _showLocationErrorDialog(context, state.failure.errMessage);
-              }
-            });
-          }
+    return Scaffold(
+      backgroundColor: Colors.white,
+      body: SafeArea(
+        child: BlocBuilder<PlacesCubit, PlacesState>(
+          builder: (context, state) {
+            if (state is PlacesError) {
+              WidgetsBinding.instance.addPostFrameCallback((_) {
+                if (state.failure.errMessage.contains('إذن') || 
+                    state.failure.errMessage.contains('GPS')) {
+                  _showLocationErrorDialog(context, state.failure.errMessage);
+                }
+              });
+            }
 
-          return SingleChildScrollView(
-            physics: const BouncingScrollPhysics(),
-            child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 20.h),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const BuildProfileSection(),
-                  SizedBox(height: 20.h),
+            return SingleChildScrollView(
+              physics: const BouncingScrollPhysics(),
+              child: Padding(
+                padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 20.h),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const BuildProfileSection(),
+                    SizedBox(height: 20.h),
 
-                  const BuildSearchBar(),
-                  SizedBox(height: 24.h),
+                    const BuildSearchBar(),
+                    SizedBox(height: 24.h),
 
-                  Text(
-                    'Browse By Category',
-                    style: TextStyle(fontSize: 18.sp, fontWeight: FontWeight.bold),
-                  ),
-                  SizedBox(height: 12.h),
+                    Text(
+                      'Browse By Category',
+                      style: TextStyle(fontSize: 18.sp, fontWeight: FontWeight.bold),
+                    ),
+                    SizedBox(height: 12.h),
 
-                  const BuildCategoryList(),
+                    const BuildCategoryList(),
 
-                  SizedBox(height: 20.h),
+                    SizedBox(height: 20.h),
 
-                  Text(
-                    'Top Recommendations',
-                    style: TextStyle(fontSize: 18.sp, fontWeight: FontWeight.bold),
-                  ),
-                  SizedBox(height: 10.h),
-                  const BuildRecommendationList(),
+                    Text(
+                      'Top Recommendations',
+                      style: TextStyle(fontSize: 18.sp, fontWeight: FontWeight.bold),
+                    ),
+                    SizedBox(height: 10.h),
+                    const BuildRecommendationList(),
 
-                  SizedBox(height: 20.h),
+                    SizedBox(height: 20.h),
 
-                  Text(
-                    'Recently Viewed',
-                    style: TextStyle(fontSize: 18.sp, fontWeight: FontWeight.bold),
-                  ),
-                  SizedBox(height: 10.h),
-                  const BuildRecentlyViewed(),
+                    Text(
+                      'Recently Viewed',
+                      style: TextStyle(fontSize: 18.sp, fontWeight: FontWeight.bold),
+                    ),
+                    SizedBox(height: 10.h),
+                    const BuildRecentlyViewed(),
 
-                  SizedBox(height: 20.h),
-                ],
+                    SizedBox(height: 20.h),
+                  ],
+                ),
               ),
-            ),
-          );
-        },
+            );
+          },
+        ),
       ),
     );
   }

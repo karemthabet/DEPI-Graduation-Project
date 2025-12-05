@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../domain/repositories/visit_repository.dart';
@@ -13,13 +14,16 @@ import '../../../../core/error/failures.dart';
 class VisitCubit extends Cubit<VisitState> {
   final VisitRepository visitRepository;
   String? _lastNotificationDate;
+  // ignore: cancel_subscriptions
+  StreamSubscription<List<VisitDate>>? _visitSubscription;
 
   VisitCubit({required this.visitRepository}) : super(VisitInitial());
 
   void loadVisits() {
     emit(VisitLoading());
     final userId = Supabase.instance.client.auth.currentUser?.id;
-    visitRepository.watchAllVisitDates(userId: userId).listen(
+    _visitSubscription?.cancel();
+    _visitSubscription = visitRepository.watchAllVisitDates(userId: userId).listen(
       (visitDates) {
         DateTime selectedDate = DateTime.now();
         if (state is VisitLoaded) {
@@ -45,12 +49,10 @@ class VisitCubit extends Cubit<VisitState> {
   // ... (selectDate, _getVisitsForDate, _checkAndNotifyTodayVisits remain same)
 
   void selectDate(DateTime date) {
-    print('VisitCubit: selectDate called with $date');
     if (state is VisitLoaded) {
       final currentState = state as VisitLoaded;
       // Normalize date to start of day
       final normalizedDate = DateTime(date.year, date.month, date.day);
-      print('VisitCubit: Normalized date to $normalizedDate');
       
       final filteredVisits = _getVisitsForDate(currentState.visitDates, normalizedDate);
       
@@ -58,8 +60,6 @@ class VisitCubit extends Cubit<VisitState> {
         selectedDate: normalizedDate,
         filteredVisits: filteredVisits,
       ));
-    } else {
-      print('VisitCubit: State is not VisitLoaded');
     }
   }
 
@@ -131,5 +131,11 @@ class VisitCubit extends Cubit<VisitState> {
     } catch (e) {
       emit(VisitError(e.toString()));
     }
+  }
+
+  @override
+  Future<void> close() {
+    _visitSubscription?.cancel();
+    return super.close();
   }
 }

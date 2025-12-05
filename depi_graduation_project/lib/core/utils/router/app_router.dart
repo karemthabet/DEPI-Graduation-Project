@@ -15,6 +15,9 @@ import 'package:whatsapp/features/onboarding1/onboarding_view.dart';
 import 'package:whatsapp/features/FavouriteScreen/view/favourite_view.dart';
 import 'package:whatsapp/features/splash/presentation/views/splash_view.dart';
 
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:whatsapp/core/di/injection_container.dart' as di;
+import 'package:whatsapp/features/visit_Screen/presentation/cubit/visit_cubit.dart';
 import 'package:whatsapp/features/visit_Screen/presentation/pages/visit_list_screen.dart';
 class AppRouter {
   static final router = GoRouter(
