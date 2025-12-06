@@ -16,24 +16,25 @@ class VisitRemoteDataSourceImpl implements VisitRemoteDataSource {
   @override
   Future<List<VisitDate>> getAllVisitDates({String? userId}) async {
     try {
-      var query = supabase
-          .from('visit_date')
-          .select('*, visitlist(*)');
-      
+      final query = supabase.from('visit_date').select('*, visitlist(*)');
+
       final response = await query.order('date', ascending: false);
 
       final data = response as List<dynamic>;
       var visits = data.map((e) => VisitDate.fromJson(e)).toList();
-      
+
       if (userId != null) {
-        visits = visits.map((date) {
-          final userVisits = date.visits.where((v) => 
-            true
-          ).toList();
-          return VisitDate(id: date.id, date: date.date, visits: userVisits);
-        }).toList();
+        visits =
+            visits.map((date) {
+              final userVisits = date.visits.where((v) => true).toList();
+              return VisitDate(
+                id: date.id,
+                date: date.date,
+                visits: userVisits,
+              );
+            }).toList();
       }
-      
+
       return visits;
     } on PostgrestException catch (e) {
       throw ServerException(e.message);
@@ -75,7 +76,8 @@ class VisitRemoteDataSourceImpl implements VisitRemoteDataSource {
     try {
       await supabase
           .from('visitlist')
-          .update({'iscompleted': isCompleted}).eq('id', visitId);
+          .update({'iscompleted': isCompleted})
+          .eq('id', visitId);
     } on PostgrestException catch (e) {
       throw ServerException(e.message);
     } catch (e) {
@@ -106,39 +108,42 @@ class VisitRemoteDataSourceImpl implements VisitRemoteDataSource {
       visitsQuery = visitsQuery.eq('user_id', userId);
     }
 
-    return Rx.combineLatest2<List<Map<String, dynamic>>, List<Map<String, dynamic>>, List<VisitDate>>(
-      datesStream,
-      visitsQuery,
-      (datesData, visitsData) {
-        final visitsByDateId = <int, List<VisitItem>>{};
-        
-        for (final visitMap in visitsData) {
-          final visit = VisitItem.fromJson(visitMap);
-          final dateId = visitMap['visited_date_id'] as int;
-          
-          if (!visitsByDateId.containsKey(dateId)) {
-            visitsByDateId[dateId] = [];
-          }
-          visitsByDateId[dateId]!.add(visit);
-        }
+    return Rx.combineLatest2<
+      List<Map<String, dynamic>>,
+      List<Map<String, dynamic>>,
+      List<VisitDate>
+    >(datesStream, visitsQuery, (datesData, visitsData) {
+      final visitsByDateId = <int, List<VisitItem>>{};
 
-        return datesData.map((dateMap) {
-          final dateId = dateMap['id'] as int;
-          final dateVisits = visitsByDateId[dateId] ?? [];
-          
-          return VisitDate(
-            id: dateId,
-            date: DateTime.parse(dateMap['date']),
-            visits: dateVisits,
-          );
-        }).where((date) {
-          if (userId != null) {
-            return date.visits.isNotEmpty;
-          }
-          return true;
-        }).toList();
-      },
-    ).handleError((error) {
+      for (final visitMap in visitsData) {
+        final visit = VisitItem.fromJson(visitMap);
+        final dateId = visitMap['visited_date_id'] as int;
+
+        if (!visitsByDateId.containsKey(dateId)) {
+          visitsByDateId[dateId] = [];
+        }
+        visitsByDateId[dateId]!.add(visit);
+      }
+
+      return datesData
+          .map((dateMap) {
+            final dateId = dateMap['id'] as int;
+            final dateVisits = visitsByDateId[dateId] ?? [];
+
+            return VisitDate(
+              id: dateId,
+              date: DateTime.parse(dateMap['date']),
+              visits: dateVisits,
+            );
+          })
+          .where((date) {
+            if (userId != null) {
+              return date.visits.isNotEmpty;
+            }
+            return true;
+          })
+          .toList();
+    }).handleError((error) {
       if (error is PostgrestException) {
         throw ServerException(error.message);
       } else {
@@ -151,22 +156,24 @@ class VisitRemoteDataSourceImpl implements VisitRemoteDataSource {
     final dateStr = DateFormat('yyyy-MM-dd').format(date);
 
     try {
-      final existing = await supabase
-          .from('visit_date')
-          .select()
-          .eq('date', dateStr)
-          .maybeSingle();
+      final existing =
+          await supabase
+              .from('visit_date')
+              .select()
+              .eq('date', dateStr)
+              .maybeSingle();
 
       if (existing != null) {
         return existing['id'];
       }
 
-      final newDate = await supabase
-          .from('visit_date')
-          .upsert({'date': dateStr}, onConflict: 'date')
-          .select()
-          .single();
-          
+      final newDate =
+          await supabase
+              .from('visit_date')
+              .upsert({'date': dateStr}, onConflict: 'date')
+              .select()
+              .single();
+
       return newDate['id'];
     } on PostgrestException catch (e) {
       throw ServerException(e.message);

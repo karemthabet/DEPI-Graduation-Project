@@ -1,6 +1,3 @@
-import 'package:dartz/dartz.dart';
-import '../../../../core/error/exceptions.dart';
-import '../../../../core/error/failures.dart';
 import '../../domain/repositories/visit_repository.dart';
 import '../datasources/visit_remote_datasource.dart';
 import '../model/place__model.dart';

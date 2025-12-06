@@ -116,7 +116,8 @@ class _SignInViewState extends State<SignInView> {
                     if (email.isEmpty || password.isEmpty) {
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(
-                            content: Text("Email and password are required")),
+                          content: Text('Email and password are required'),
+                        ),
                       );
                       return;
                     }
@@ -133,7 +134,7 @@ class _SignInViewState extends State<SignInView> {
                       if (user == null) {
                         // Sign-in failed
                         ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text("Invalid credentials")),
+                          const SnackBar(content: Text('Invalid credentials')),
                         );
                         return;
                       }
@@ -142,25 +143,26 @@ class _SignInViewState extends State<SignInView> {
                       if (user.emailConfirmedAt == null) {
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(
-                              content: Text(
-                                  "Please verify your email before signing in")),
+                            content: Text(
+                              'Please verify your email before signing in',
+                            ),
+                          ),
                         );
                         return;
                       }
 
                       // SUCCESS: Navigate to main view
                       ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text("Sign in successful")),
+                        const SnackBar(content: Text('Sign in successful')),
                       );
                       context.go(RoutesName.mainView);
-
                     } on AuthException catch (e) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text(e.message)),
-                      );
+                      ScaffoldMessenger.of(
+                        context,
+                      ).showSnackBar(SnackBar(content: Text(e.message)));
                     } catch (e) {
                       ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text("Unexpected error: $e")),
+                        SnackBar(content: Text('Unexpected error: $e')),
                       );
                     }
                   },

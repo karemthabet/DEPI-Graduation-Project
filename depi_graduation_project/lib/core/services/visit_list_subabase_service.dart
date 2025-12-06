@@ -1,5 +1,8 @@
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:intl/intl.dart';
+import 'package:whatsapp/features/visit_Screen/data/model/place__model.dart';
+import 'package:whatsapp/features/visit_Screen/data/model/visit_date.dart';
+
 class VisitService {
   static final VisitService _instance = VisitService._internal();
   factory VisitService() => _instance;
@@ -13,21 +16,23 @@ class VisitService {
     final dateStr = DateFormat('yyyy-MM-dd').format(date);
 
     // محاولة البحث عن التاريخ
-    final existing = await _supabase
-        .from('visit_date')
-        .select()
-        .eq('visit_date', dateStr)
-        .maybeSingle();
+    final existing =
+        await _supabase
+            .from('visit_date')
+            .select()
+            .eq('visit_date', dateStr)
+            .maybeSingle();
 
     if (existing != null) {
       return existing['id'];
     } else {
       // إذا لم يكن موجوداً، نقوم بإنشائه
-      final newDate = await _supabase
-          .from('visit_date')
-          .insert({'visit_date': dateStr})
-          .select()
-          .single();
+      final newDate =
+          await _supabase
+              .from('visit_date')
+              .insert({'visit_date': dateStr})
+              .select()
+              .single();
       return newDate['id'];
     }
   }
@@ -74,7 +79,8 @@ class VisitService {
   Future<void> toggleVisitCompletion(int visitId, bool isCompleted) async {
     await _supabase
         .from('visitlist')
-        .update({'is_completed': isCompleted}).eq('id', visitId);
+        .update({'is_completed': isCompleted})
+        .eq('id', visitId);
   }
 
   /// 5. حذف زيارة
@@ -91,7 +97,7 @@ class VisitService {
 
     // الاستماع للتغييرات
     final stream = _supabase.from('visitlist').stream(primaryKey: ['id']);
-    
+
     // عند كل تغيير في الجدول، نعيد جلب القائمة كاملة ومرتبة
     await for (final _ in stream) {
       yield await getAllVisitDates();

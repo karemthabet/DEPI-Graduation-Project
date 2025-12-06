@@ -1,6 +1,5 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:whatsapp/core/utils/colors/app_colors.dart';
 
 class CustomBottomNavBar extends StatelessWidget {
@@ -73,9 +72,8 @@ class CustomBottomNavBar extends StatelessWidget {
         width: 46,
         height: 46,
         decoration: BoxDecoration(
-          color: isSelected
-              ? AppColors.selectionNavBarColor
-              : Colors.transparent,
+          color:
+              isSelected ? AppColors.selectionNavBarColor : Colors.transparent,
           shape: BoxShape.circle,
         ),
         child: Center(child: iconWidget),

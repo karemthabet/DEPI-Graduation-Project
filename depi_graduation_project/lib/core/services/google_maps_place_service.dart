@@ -11,15 +11,15 @@ class GoogleMapsPlaceServic {
     required String input,
     required String sessiontoken,
   }) async {
-    var response = await http.get(
+    final response = await http.get(
       Uri.parse(
         '$baseUrl/autocomplete/json?key=$apikey&input=$input&sessiontoken=$sessiontoken&components=country:eg',
       ),
     );
 
     if (response.statusCode == 200) {
-      var data = jsonDecode(response.body)['predictions'];
-      List<PlaceAutocompleteModel> places = [];
+      final data = jsonDecode(response.body)['predictions'];
+      final List<PlaceAutocompleteModel> places = [];
 
       for (var item in data) {
         places.add(PlaceAutocompleteModel.fromJson(item));
@@ -31,12 +31,12 @@ class GoogleMapsPlaceServic {
   }
 
   Future<PlacesDetailsModel> getPlaceDetails({required String placeId}) async {
-    var response = await http.get(
+    final response = await http.get(
       Uri.parse('$baseUrl/details/json?key=$apikey&place_id=$placeId'),
     );
 
     if (response.statusCode == 200) {
-      var data = jsonDecode(response.body)['result'];
+      final data = jsonDecode(response.body)['result'];
 
       return PlacesDetailsModel.fromJson(data);
     } else {

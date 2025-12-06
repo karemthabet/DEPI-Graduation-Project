@@ -18,7 +18,6 @@ import 'package:whatsapp/features/home/presentation/cubit/place_details_cubit.da
 import 'package:whatsapp/features/home/presentation/cubit/places_cubit.dart';
 import 'package:whatsapp/features/profile/presentation/cubit/user_cubit.dart';
 import 'package:whatsapp/supabase_service.dart';
-import 'package:whatsapp/my_app.dart';
 import 'package:whatsapp/core/services/notification_service.dart';
 import 'package:whatsapp/features/visit_Screen/presentation/cubit/visit_cubit.dart';
 import 'package:whatsapp/core/di/injection_container.dart' as di;
@@ -67,10 +66,11 @@ void main() async {
           BlocProvider(create: (context) => UserCubit(getIt())),
           BlocProvider(create: (context) => di.sl<VisitCubit>()),
           BlocProvider<FavoritesCubit>(
-            create: (context) => FavoritesCubit(
-              repository: context.read<IFavoritesRepository>(),
-              userId: SupabaseService.userId,
-            )..loadFavorites(),
+            create:
+                (context) => FavoritesCubit(
+                  repository: context.read<IFavoritesRepository>(),
+                  userId: SupabaseService.userId,
+                )..loadFavorites(),
           ),
         ],
         child: const MyApp(),

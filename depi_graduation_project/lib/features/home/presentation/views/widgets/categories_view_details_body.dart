@@ -13,8 +13,6 @@ import 'package:whatsapp/core/utils/constants/api_constants.dart';
 import 'package:whatsapp/supabase_service.dart';
 import 'package:whatsapp/features/FavouriteScreen/presentation/cubit/favourite_cubit.dart';
 import 'package:whatsapp/features/FavouriteScreen/presentation/cubit/favourite_state.dart';
-import 'package:whatsapp/features/visit_Screen/presentation/cubit/visit_cubit.dart';
-import 'package:whatsapp/core/di/injection_container.dart';
 import 'package:whatsapp/features/visit_Screen/data/model/place__model.dart';
 import 'package:whatsapp/features/visit_Screen/presentation/widgets/add_to_visit_dialog.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -41,8 +39,8 @@ class _CategoriesViewDetailsBodyState extends State<CategoriesViewDetailsBody>
     if (widget.itemModel.id != null && widget.itemModel.id!.isNotEmpty) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         context.read<PlaceDetailsCubit>().loadPlaceDetails(
-              widget.itemModel.id!,
-            );
+          widget.itemModel.id!,
+        );
       });
     }
   }
@@ -100,8 +98,7 @@ class _CategoriesViewDetailsBodyState extends State<CategoriesViewDetailsBody>
             children: [
               _buildHeader(item, placeDetails, isLoading),
               _buildTabs(),
-              Expanded(
-                  child: _buildTabBarView(item, placeDetails, isLoading)),
+              Expanded(child: _buildTabBarView(item, placeDetails, isLoading)),
               _buildNavigationButton(),
             ],
           );
@@ -111,7 +108,10 @@ class _CategoriesViewDetailsBodyState extends State<CategoriesViewDetailsBody>
   }
 
   Widget _buildHeader(
-      ItemModel item, Map<String, dynamic>? placeDetails, bool isLoading) {
+    ItemModel item,
+    Map<String, dynamic>? placeDetails,
+    bool isLoading,
+  ) {
     return Stack(
       children: [
         _buildHeroImage(item, placeDetails),
@@ -144,13 +144,14 @@ class _CategoriesViewDetailsBodyState extends State<CategoriesViewDetailsBody>
           height: 330.h,
           width: double.infinity,
           fit: BoxFit.cover,
-          placeholder: (context, url) => Container(
-            height: 330.h,
-            color: Colors.grey[300],
-            child: const Center(
-              child: CircularProgressIndicator(color: AppColors.darkBlue),
-            ),
-          ),
+          placeholder:
+              (context, url) => Container(
+                height: 330.h,
+                color: Colors.grey[300],
+                child: const Center(
+                  child: CircularProgressIndicator(color: AppColors.darkBlue),
+                ),
+              ),
           errorWidget: (context, url, error) {
             return Container(
               height: 330.h,
@@ -163,45 +164,50 @@ class _CategoriesViewDetailsBodyState extends State<CategoriesViewDetailsBody>
     );
   }
 
-Widget _buildFavoriteButton(ItemModel item) {
-  final userId = SupabaseService.userId;
+  Widget _buildFavoriteButton(ItemModel item) {
+    final userId = SupabaseService.userId;
 
-  if (userId == null) return const SizedBox();
+    if (userId == null) return const SizedBox();
 
-  return Positioned(
-    top: 50,
-    right: 0,
-    child: BlocBuilder<FavoritesCubit, FavoritesState>(
-      builder: (context, state) {
-        final favoritesCubit = context.watch<FavoritesCubit>();
-        final isFav = favoritesCubit.isFavorite(item.id);
+    return Positioned(
+      top: 50,
+      right: 0,
+      child: BlocBuilder<FavoritesCubit, FavoritesState>(
+        builder: (context, state) {
+          final favoritesCubit = context.watch<FavoritesCubit>();
+          final isFav = favoritesCubit.isFavorite(item.id);
 
-        final favouritePlace = FavouriteModel(
-          id: '',
-          userId: userId,
-          placeId: item.id,
-          title: item.name,
-          location: item.location,
-          imageUrl: item.image,
-          rating: item.rating,
-        );
+          final favouritePlace = FavouriteModel(
+            id: '',
+            userId: userId,
+            placeId: item.id,
+            title: item.name,
+            location: item.location,
+            imageUrl: item.image,
+            rating: item.rating,
+          );
 
-        return IconButton(
-          onPressed: () {
-            context.read<FavoritesCubit>().toggleFavorite(favouritePlace);
-          },
-          icon: isFav
-              ? Image.asset(
-                  'assets/images/heartFilled.png',
-                  width: 24,
-                  height: 24,
-                )
-              : Image.asset('assets/images/heart.png', width: 24, height: 24),
-        );
-      },
-    ),
-  );
-}
+          return IconButton(
+            onPressed: () {
+              context.read<FavoritesCubit>().toggleFavorite(favouritePlace);
+            },
+            icon:
+                isFav
+                    ? Image.asset(
+                      'assets/images/heartFilled.png',
+                      width: 24,
+                      height: 24,
+                    )
+                    : Image.asset(
+                      'assets/images/heart.png',
+                      width: 24,
+                      height: 24,
+                    ),
+          );
+        },
+      ),
+    );
+  }
 
   Widget _buildBackButton() {
     return SafeArea(
@@ -219,7 +225,10 @@ Widget _buildFavoriteButton(ItemModel item) {
   }
 
   Widget _buildInfoCard(
-      ItemModel item, Map<String, dynamic>? placeDetails, bool isLoading) {
+    ItemModel item,
+    Map<String, dynamic>? placeDetails,
+    bool isLoading,
+  ) {
     final String name = placeDetails?['name'] ?? item.name;
     final String location = placeDetails?['formatted_address'] ?? item.location;
     final String rating = placeDetails?['rating']?.toString() ?? item.rating;
@@ -290,7 +299,9 @@ Widget _buildFavoriteButton(ItemModel item) {
   }
 
   Widget _buildOpeningHoursRow(
-      Map<String, dynamic>? placeDetails, bool isLoading) {
+    Map<String, dynamic>? placeDetails,
+    bool isLoading,
+  ) {
     if (isLoading) {
       return Row(
         children: [
@@ -354,16 +365,16 @@ Widget _buildFavoriteButton(ItemModel item) {
         labelColor: Colors.black,
         unselectedLabelColor: Colors.grey,
         labelStyle: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w600),
-        tabs: const [
-          Tab(text: 'Description'),
-          Tab(text: 'Reviews'),
-        ],
+        tabs: const [Tab(text: 'Description'), Tab(text: 'Reviews')],
       ),
     );
   }
 
   Widget _buildTabBarView(
-      ItemModel item, Map<String, dynamic>? placeDetails, bool isLoading) {
+    ItemModel item,
+    Map<String, dynamic>? placeDetails,
+    bool isLoading,
+  ) {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 10.h),
       child: TabBarView(
@@ -377,7 +388,10 @@ Widget _buildFavoriteButton(ItemModel item) {
   }
 
   Widget _buildDescriptionTab(
-      ItemModel item, Map<String, dynamic>? placeDetails, bool isLoading) {
+    ItemModel item,
+    Map<String, dynamic>? placeDetails,
+    bool isLoading,
+  ) {
     if (isLoading) {
       return const Center(
         child: CircularProgressIndicator(color: Color(0xFFFFE66D)),
@@ -385,9 +399,7 @@ Widget _buildFavoriteButton(ItemModel item) {
     }
 
     if (placeDetails == null) {
-      return const Center(
-        child: Text('لا توجد بيانات متاحة'),
-      );
+      return const Center(child: Text('لا توجد بيانات متاحة'));
     }
 
     final result = placeDetails['result'] ?? placeDetails;
@@ -422,7 +434,10 @@ Widget _buildFavoriteButton(ItemModel item) {
                 SizedBox(width: 8.w),
                 Text(
                   '${result['rating']} من 5',
-                  style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w500),
+                  style: TextStyle(
+                    fontSize: 14.sp,
+                    fontWeight: FontWeight.w500,
+                  ),
                 ),
               ],
             ),
@@ -455,12 +470,13 @@ Widget _buildFavoriteButton(ItemModel item) {
 
     return SingleChildScrollView(
       child: Column(
-        children: reviews.take(5).map<Widget>((review) {
-          if (review is Map<String, dynamic>) {
-            return _buildReviewCard(review);
-          }
-          return const SizedBox.shrink();
-        }).toList(),
+        children:
+            reviews.take(5).map<Widget>((review) {
+              if (review is Map<String, dynamic>) {
+                return _buildReviewCard(review);
+              }
+              return const SizedBox.shrink();
+            }).toList(),
       ),
     );
   }
@@ -521,10 +537,7 @@ Widget _buildFavoriteButton(ItemModel item) {
           if (review['text'] != null && review['text'].toString().isNotEmpty)
             Text(
               review['text'],
-              style: TextStyle(
-                fontSize: 13.sp,
-                height: 1.4,
-              ),
+              style: TextStyle(fontSize: 13.sp, height: 1.4),
             ),
           if (review['translated'] == true)
             Padding(
@@ -634,10 +647,10 @@ Widget _buildFavoriteButton(ItemModel item) {
       imageUrl: widget.itemModel.image,
       rating: double.tryParse(widget.itemModel.rating) ?? 0.0,
       rawData: {
-         'name': widget.itemModel.name,
-         'vicinity': widget.itemModel.location,
-         'rating': widget.itemModel.rating,
-      }, 
+        'name': widget.itemModel.name,
+        'vicinity': widget.itemModel.location,
+        'rating': widget.itemModel.rating,
+      },
     );
 
     await showDialog(

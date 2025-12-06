@@ -43,7 +43,7 @@ dependencies:
   skeletonizer: ^2.1.0+1
   supabase_flutter: ^2.10.3
   url_launcher: ">=6.3.2 <7.0.0"
-  liquid_glass_renderer: ^0.2.0-dev.4
+  liquid_glass_renderer: ^0.1.0
   intl: ^0.20.2
   flutter_local_notifications: ^19.5.0
   rxdart: ^0.28.0

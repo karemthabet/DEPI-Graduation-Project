@@ -76,8 +76,9 @@ class ServerFailure extends Failure {
   static String? _extractFromErrors(dynamic errors) {
     if (errors is Map && errors.isNotEmpty) {
       final firstError = errors.values.first;
-      if (firstError is List && firstError.isNotEmpty)
+      if (firstError is List && firstError.isNotEmpty) {
         return firstError.first.toString();
+      }
       if (firstError is String) return firstError;
     }
     return null;

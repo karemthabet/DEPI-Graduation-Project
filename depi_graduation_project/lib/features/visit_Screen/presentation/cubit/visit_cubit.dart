@@ -9,7 +9,6 @@ import 'visit_state.dart';
 import 'package:intl/intl.dart';
 import '../../../../core/error/exceptions.dart';
 import 'package:whatsapp/core/services/notification_service.dart';
-import '../../../../core/error/failures.dart';
 
 class VisitCubit extends Cubit<VisitState> {
   final VisitRepository visitRepository;
@@ -23,27 +22,31 @@ class VisitCubit extends Cubit<VisitState> {
     emit(VisitLoading());
     final userId = Supabase.instance.client.auth.currentUser?.id;
     _visitSubscription?.cancel();
-    _visitSubscription = visitRepository.watchAllVisitDates(userId: userId).listen(
-      (visitDates) {
-        DateTime selectedDate = DateTime.now();
-        if (state is VisitLoaded) {
-          selectedDate = (state as VisitLoaded).selectedDate;
-        }
+    _visitSubscription = visitRepository
+        .watchAllVisitDates(userId: userId)
+        .listen(
+          (visitDates) {
+            DateTime selectedDate = DateTime.now();
+            if (state is VisitLoaded) {
+              selectedDate = (state as VisitLoaded).selectedDate;
+            }
 
-        final filteredVisits = _getVisitsForDate(visitDates, selectedDate);
+            final filteredVisits = _getVisitsForDate(visitDates, selectedDate);
 
-        emit(VisitLoaded(
-          visitDates: visitDates,
-          selectedDate: selectedDate,
-          filteredVisits: filteredVisits,
-        ));
-        
-        _checkAndNotifyTodayVisits(visitDates);
-      },
-      onError: (error) {
-        emit(VisitError(error.toString()));
-      },
-    );
+            emit(
+              VisitLoaded(
+                visitDates: visitDates,
+                selectedDate: selectedDate,
+                filteredVisits: filteredVisits,
+              ),
+            );
+
+            _checkAndNotifyTodayVisits(visitDates);
+          },
+          onError: (error) {
+            emit(VisitError(error.toString()));
+          },
+        );
   }
 
   // ... (selectDate, _getVisitsForDate, _checkAndNotifyTodayVisits remain same)
@@ -53,13 +56,18 @@ class VisitCubit extends Cubit<VisitState> {
       final currentState = state as VisitLoaded;
       // Normalize date to start of day
       final normalizedDate = DateTime(date.year, date.month, date.day);
-      
-      final filteredVisits = _getVisitsForDate(currentState.visitDates, normalizedDate);
-      
-      emit(currentState.copyWith(
-        selectedDate: normalizedDate,
-        filteredVisits: filteredVisits,
-      ));
+
+      final filteredVisits = _getVisitsForDate(
+        currentState.visitDates,
+        normalizedDate,
+      );
+
+      emit(
+        currentState.copyWith(
+          selectedDate: normalizedDate,
+          filteredVisits: filteredVisits,
+        ),
+      );
     }
   }
 
@@ -74,13 +82,17 @@ class VisitCubit extends Cubit<VisitState> {
 
   void _checkAndNotifyTodayVisits(List<VisitDate> visitDates) {
     final todayStr = DateFormat('yyyy-MM-dd').format(DateTime.now());
-    
+
     if (_lastNotificationDate == todayStr) return;
 
-    final todayVisits = visitDates.where((vd) => 
-      DateFormat('yyyy-MM-dd').format(vd.date) == todayStr && 
-      vd.visits.isNotEmpty
-    ).toList();
+    final todayVisits =
+        visitDates
+            .where(
+              (vd) =>
+                  DateFormat('yyyy-MM-dd').format(vd.date) == todayStr &&
+                  vd.visits.isNotEmpty,
+            )
+            .toList();
 
     if (todayVisits.isNotEmpty) {
       final count = todayVisits.first.visits.length;

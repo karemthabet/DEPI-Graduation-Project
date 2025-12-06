@@ -28,7 +28,7 @@ class _VisitListScreenState extends State<VisitListScreen> {
       backgroundColor: Colors.white,
       appBar: AppBar(
         title: Text(
-          "Visit List",
+          'Visit List',
           style: TextStyle(
             color: Colors.black,
             fontSize: 20.sp,
@@ -65,9 +65,10 @@ class _VisitListScreenState extends State<VisitListScreen> {
                     separatorBuilder: (context, index) => SizedBox(width: 12.w),
                     itemBuilder: (context, index) {
                       final date = DateTime.now().add(Duration(days: index));
-                      final isSelected = DateFormat('yyyy-MM-dd').format(date) == 
-                                       DateFormat('yyyy-MM-dd').format(selectedDate);
-                      
+                      final isSelected =
+                          DateFormat('yyyy-MM-dd').format(date) ==
+                          DateFormat('yyyy-MM-dd').format(selectedDate);
+
                       return GestureDetector(
                         onTap: () {
                           context.read<VisitCubit>().selectDate(date);
@@ -75,9 +76,15 @@ class _VisitListScreenState extends State<VisitListScreen> {
                         child: Container(
                           width: 60.w,
                           decoration: BoxDecoration(
-                            color: isSelected ? const Color(0xFFFCD34D) : Colors.grey[100],
+                            color:
+                                isSelected
+                                    ? const Color(0xFFFCD34D)
+                                    : Colors.grey[100],
                             borderRadius: BorderRadius.circular(12.r),
-                            border: isSelected ? Border.all(color: Colors.orange, width: 2) : null,
+                            border:
+                                isSelected
+                                    ? Border.all(color: Colors.orange, width: 2)
+                                    : null,
                           ),
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
@@ -86,7 +93,8 @@ class _VisitListScreenState extends State<VisitListScreen> {
                                 DateFormat('MMM').format(date),
                                 style: TextStyle(
                                   fontSize: 12.sp,
-                                  color: isSelected ? Colors.black : Colors.grey,
+                                  color:
+                                      isSelected ? Colors.black : Colors.grey,
                                   fontWeight: FontWeight.w500,
                                 ),
                               ),
@@ -94,7 +102,10 @@ class _VisitListScreenState extends State<VisitListScreen> {
                                 date.day.toString(),
                                 style: TextStyle(
                                   fontSize: 18.sp,
-                                  color: isSelected ? Colors.black : Colors.black87,
+                                  color:
+                                      isSelected
+                                          ? Colors.black
+                                          : Colors.black87,
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
@@ -102,7 +113,8 @@ class _VisitListScreenState extends State<VisitListScreen> {
                                 DateFormat('E').format(date),
                                 style: TextStyle(
                                   fontSize: 12.sp,
-                                  color: isSelected ? Colors.black : Colors.grey,
+                                  color:
+                                      isSelected ? Colors.black : Colors.grey,
                                 ),
                               ),
                             ],
@@ -112,45 +124,55 @@ class _VisitListScreenState extends State<VisitListScreen> {
                     },
                   ),
                 ),
-                
+
                 const Divider(),
 
                 // Visits List
                 Expanded(
-                  child: visits.isEmpty
-                      ? Center(
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Icon(Icons.calendar_today, size: 60.sp, color: Colors.grey[300]),
-                              SizedBox(height: 16.h),
-                              Text(
-                                "No visits for this day",
-                                style: TextStyle(
-                                  fontSize: 16.sp,
-                                  color: Colors.grey[500],
+                  child:
+                      visits.isEmpty
+                          ? Center(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(
+                                  Icons.calendar_today,
+                                  size: 60.sp,
+                                  color: Colors.grey[300],
                                 ),
-                              ),
-                            ],
+                                SizedBox(height: 16.h),
+                                Text(
+                                  'No visits for this day',
+                                  style: TextStyle(
+                                    fontSize: 16.sp,
+                                    color: Colors.grey[500],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          )
+                          : ListView.builder(
+                            padding: EdgeInsets.all(16.w),
+                            itemCount: visits.length,
+                            itemBuilder: (context, index) {
+                              final visit = visits[index];
+                              return VisitTimelineCard(
+                                visit: visit,
+                                isLast: index == visits.length - 1,
+                                onDelete: () {
+                                  context.read<VisitCubit>().deleteVisit(
+                                    visit.id,
+                                  );
+                                },
+                                onStatusChanged: (val) {
+                                  context.read<VisitCubit>().toggleCompletion(
+                                    visit.id,
+                                    val ?? false,
+                                  );
+                                },
+                              );
+                            },
                           ),
-                        )
-                      : ListView.builder(
-                          padding: EdgeInsets.all(16.w),
-                          itemCount: visits.length,
-                          itemBuilder: (context, index) {
-                            final visit = visits[index];
-                            return VisitTimelineCard(
-                              visit: visit,
-                              isLast: index == visits.length - 1,
-                              onDelete: () {
-                                context.read<VisitCubit>().deleteVisit(visit.id);
-                              },
-                              onStatusChanged: (val) {
-                                context.read<VisitCubit>().toggleCompletion(visit.id, val ?? false);
-                              },
-                            );
-                          },
-                        ),
                 ),
               ],
             );

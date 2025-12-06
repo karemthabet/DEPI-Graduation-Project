@@ -13,7 +13,6 @@ import 'package:whatsapp/features/root_navigation_glass/presentation/views/main_
 import 'package:whatsapp/features/profile/presentation/views/edit_profile_view.dart';
 import 'package:whatsapp/features/profile/presentation/views/profile_veiw.dart';
 import 'package:whatsapp/features/onboarding1/onboarding_view.dart';
-import 'package:whatsapp/features/FavouriteScreen/presentation/view/favourite_view.dart';
 import 'package:whatsapp/features/splash/presentation/views/splash_view.dart';
 import 'package:whatsapp/features/visit_Screen/presentation/pages/visit_list_screen.dart';
 
