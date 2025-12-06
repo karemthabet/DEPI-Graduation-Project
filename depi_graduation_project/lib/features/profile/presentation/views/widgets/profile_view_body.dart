@@ -83,164 +83,176 @@ class _ProfileViewBodyState extends State<ProfileViewBody> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       context.read<UserCubit>().loadUserProfile();
     });
-
-    return BlocBuilder<UserCubit, UserState>(
-      builder: (context, state) {
-        String name = 'Guest';
-        String email = '';
-        String? profileImage = 'assets/images/profile.png';
-
-        if (state is UserLoaded) {
-          name = state.user.fullName;
-          email = state.user.email;
-          profileImage = state.user.avatarUrl;
-        } else if (state is UserLoading) {
-          return const Center(
-            child: CircularProgressIndicator(color: AppColors.darkBlue),
-          );
-        } else if (state is UserError) {
-          return Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Icon(Icons.lock_outline, size: 50, color: Colors.grey),
-                const SizedBox(height: 16),
-
-                Text(
-                  'Error loading profile: ${state.message} LogIn First',
-                  style: const TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w500,
-                    color: AppColors.darkBlue,
-                  ),
-                ),
-                const SizedBox(height: 24),
-                ElevatedButton(
-                  onPressed: () {
-                    context.go(RoutesName.login);
-                  },
-                  child: const Text(
-                    'Go to Login',
-                    style: TextStyle(color: AppColors.darkBlue),
-                  ),
-                ),
-              ],
-            ),
-          );
+    return BlocListener<UserCubit, UserState>(
+      listener: (context, state) {
+        if (state is UserLoggedOut) {
+          if (mounted) {
+            context.go(RoutesName.login);
+          }
         }
-        return Padding(
-          padding: EdgeInsets.symmetric(vertical: 48.sp, horizontal: 16.sp),
-          child: Column(
-            children: [
-              Row(
+      },
+
+      child: BlocBuilder<UserCubit, UserState>(
+        builder: (context, state) {
+          String name = 'Guest';
+          String email = '';
+          String? profileImage = 'assets/images/profile.png';
+
+          if (state is UserLoaded) {
+            name = state.user.fullName;
+            email = state.user.email;
+            profileImage = state.user.avatarUrl;
+          } else if (state is UserLoading) {
+            return const Center(
+              child: CircularProgressIndicator(color: AppColors.darkBlue),
+            );
+          } else if (state is UserError) {
+            return Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  InkWell(
-                    onTap: () {},
-                    child: CircleAvatar(
-                      radius: 44.r,
-                      backgroundImage:
-                          profileImage != null && profileImage.isNotEmpty
-                          ? CachedNetworkImageProvider(profileImage)
-                                as ImageProvider
-                          : const AssetImage('assets/images/profile.png'),
+                  const Icon(Icons.lock_outline, size: 50, color: Colors.grey),
+                  const SizedBox(height: 16),
+
+                  const Text(
+                    'Error loading profile LogIn First',
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w500,
+                      color: AppColors.darkBlue,
                     ),
                   ),
-                  SizedBox(width: 20.w),
-                  Expanded(
-                    child: InkWell(
-                      onTap: () => context.push(RoutesName.editProfileView),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                name,
-                                style: TextStyle(
-                                  fontWeight: FontWeight.w600,
-                                  fontSize: 16.sp,
-                                  color: AppColors.darkBlue,
-                                ),
-                              ),
-                              SizedBox(height: 3.h),
-                              Text(
-                                email,
-                                style: TextStyle(
-                                  fontWeight: FontWeight.w400,
-                                  fontSize: 12.sp,
-                                  color: AppColors.darkBlue,
-                                ),
-                              ),
-                            ],
-                          ),
-                          Icon(
-                            Icons.arrow_forward_ios,
-                            size: 16.sp,
-                            color: AppColors.darkBlue,
-                          ),
-                        ],
-                      ),
+                  const SizedBox(height: 24),
+                  ElevatedButton(
+                    onPressed: () {
+                      context.go(RoutesName.login);
+                    },
+                    child: const Text(
+                      'Go to Login',
+                      style: TextStyle(color: AppColors.darkBlue),
                     ),
                   ),
                 ],
               ),
-
-              SizedBox(height: 60.h),
-
-              ValueListenableBuilder<String>(
-                valueListenable: selectedLanguage,
-                builder: (context, language, _) {
-                  log('Language Tile rebuilt');
-                  return ListTile(
-                    contentPadding: EdgeInsets.zero,
-                    leading: Icon(
-                      Icons.language,
-                      size: 24.sp,
-                      color: AppColors.darkBlue,
-                    ),
-                    title: Text(
-                      'Language ($language)',
-                      style: TextStyle(
-                        fontWeight: FontWeight.w400,
-                        fontSize: 16.sp,
-                        color: AppColors.darkBlue,
+            );
+          }
+          return Padding(
+            padding: EdgeInsets.symmetric(vertical: 48.sp, horizontal: 16.sp),
+            child: Column(
+              children: [
+                Row(
+                  children: [
+                    InkWell(
+                      onTap: () {},
+                      child: CircleAvatar(
+                        radius: 44.r,
+                        backgroundImage:
+                            profileImage != null && profileImage.isNotEmpty
+                            ? CachedNetworkImageProvider(profileImage)
+                                  as ImageProvider
+                            : const AssetImage('assets/images/profile.png'),
                       ),
                     ),
-                    trailing: Icon(
-                      Icons.arrow_forward_ios,
-                      size: 16.sp,
-                      color: AppColors.darkBlue,
+                    SizedBox(width: 20.w),
+                    Expanded(
+                      child: InkWell(
+                        onTap: () => context.push(RoutesName.editProfileView),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  name,
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.w600,
+                                    fontSize: 16.sp,
+                                    color: AppColors.darkBlue,
+                                  ),
+                                ),
+                                SizedBox(height: 3.h),
+                                Text(
+                                  email,
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.w400,
+                                    fontSize: 12.sp,
+                                    color: AppColors.darkBlue,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            Icon(
+                              Icons.arrow_forward_ios,
+                              size: 16.sp,
+                              color: AppColors.darkBlue,
+                            ),
+                          ],
+                        ),
+                      ),
                     ),
-                    onTap: () => showLanguagePicker(context),
-                  );
-                },
-              ),
-
-              SizedBox(height: 16.h),
-
-              // 🚪 Log out
-              ListTile(
-                contentPadding: EdgeInsets.zero,
-                leading: Icon(
-                  Icons.logout,
-                  size: 24.sp,
-                  color: AppColors.darkBlue,
+                  ],
                 ),
-                title: Text(
-                  'Log out',
-                  style: TextStyle(
-                    fontWeight: FontWeight.w400,
-                    fontSize: 16.sp,
+
+                SizedBox(height: 60.h),
+
+                ValueListenableBuilder<String>(
+                  valueListenable: selectedLanguage,
+                  builder: (context, language, _) {
+                    log('Language Tile rebuilt');
+                    return ListTile(
+                      contentPadding: EdgeInsets.zero,
+                      leading: Icon(
+                        Icons.language,
+                        size: 24.sp,
+                        color: AppColors.darkBlue,
+                      ),
+                      title: Text(
+                        'Language ($language)',
+                        style: TextStyle(
+                          fontWeight: FontWeight.w400,
+                          fontSize: 16.sp,
+                          color: AppColors.darkBlue,
+                        ),
+                      ),
+                      trailing: Icon(
+                        Icons.arrow_forward_ios,
+                        size: 16.sp,
+                        color: AppColors.darkBlue,
+                      ),
+                      onTap: () => showLanguagePicker(context),
+                    );
+                  },
+                ),
+
+                SizedBox(height: 16.h),
+
+                // 🚪 Log out
+                ListTile(
+                  contentPadding: EdgeInsets.zero,
+                  leading: Icon(
+                    Icons.logout,
+                    size: 24.sp,
                     color: AppColors.darkBlue,
                   ),
+                  title: Text(
+                    'Log out',
+                    style: TextStyle(
+                      fontWeight: FontWeight.w400,
+                      fontSize: 16.sp,
+                      color: AppColors.darkBlue,
+                    ),
+                  ),
+                  onTap: () {
+                    context.read<UserCubit>().signOutUser();
+                    context.go(RoutesName.login);
+                  },
                 ),
-                onTap: () {},
-              ),
-            ],
-          ),
-        );
-      },
+              ],
+            ),
+          );
+        },
+      ),
     );
   }
 }

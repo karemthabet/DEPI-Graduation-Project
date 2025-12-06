@@ -28,6 +28,7 @@ class _EditProfileViewBodyState extends State<EditProfileViewBody> {
   final emailFocus = FocusNode();
   final passwordFocus = FocusNode();
   File? _newImageFile;
+  String? _currentAvatarUrl;
 
   @override
   void initState() {
@@ -36,6 +37,8 @@ class _EditProfileViewBodyState extends State<EditProfileViewBody> {
     if (state is UserLoaded) {
       nameController.text = state.user.fullName;
       emailController.text = state.user.email;
+      _currentAvatarUrl = state.user.avatarUrl;
+      passwordController.text = 'Password Obse';
     }
   }
 
@@ -101,7 +104,10 @@ class _EditProfileViewBodyState extends State<EditProfileViewBody> {
             children: [
               SizedBox(height: 10.h),
 
-              ProfileImagePicker(onImagePicked: _updatePickedImage),
+              ProfileImagePicker(
+                onImagePicked: _updatePickedImage,
+                initialAvatarUrl: _currentAvatarUrl,
+              ),
 
               SizedBox(height: 24.h),
 

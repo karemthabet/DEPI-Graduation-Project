@@ -7,6 +7,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 class UserRepositoryImpl implements UserRepository {
   final SupabaseService _supabaseService;
+  final supabase = Supabase.instance.client;
 
   UserRepositoryImpl(this._supabaseService);
 
@@ -25,7 +26,7 @@ class UserRepositoryImpl implements UserRepository {
 
   @override
   Future<UserModel?> getCurrentUser() async {
-    final User? authUser = Supabase.instance.client.auth.currentUser;
+    final User? authUser = supabase.auth.currentUser;
 
     if (authUser != null) {
       final userData = await _supabaseService.getUserProfile(authUser.id);
@@ -35,5 +36,9 @@ class UserRepositoryImpl implements UserRepository {
       }
     }
     return null;
+  }
+
+  Future<void> signOut() async {
+    await supabase.auth.signOut();
   }
 }

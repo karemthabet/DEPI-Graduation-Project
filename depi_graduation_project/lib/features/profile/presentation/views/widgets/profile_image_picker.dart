@@ -78,7 +78,7 @@ class _ProfileImagePickerState extends State<ProfileImagePicker> {
       imageProvider = FileImage(imageFile!);
     } else if (widget.initialAvatarUrl != null &&
         widget.initialAvatarUrl!.isNotEmpty) {
-      imageProvider = NetworkImage(widget.initialAvatarUrl!) as ImageProvider;
+      imageProvider = NetworkImage(widget.initialAvatarUrl!);
     } else {
       imageProvider = const AssetImage('assets/images/profile.png');
     }

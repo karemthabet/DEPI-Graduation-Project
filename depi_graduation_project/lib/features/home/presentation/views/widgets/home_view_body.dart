@@ -9,6 +9,7 @@ import 'package:whatsapp/features/home/presentation/views/widgets/build_category
 import 'package:whatsapp/features/home/presentation/views/widgets/build_profile_section.dart';
 import 'package:whatsapp/features/home/presentation/views/widgets/build_recommendation_list.dart';
 import 'package:whatsapp/features/home/presentation/views/widgets/build_search_bar.dart';
+import 'package:whatsapp/features/home/presentation/views/widgets/build_recently_viewed.dart'; // Add this import
 
 import 'package:whatsapp/features/profile/presentation/cubit/user_cubit.dart';
 
@@ -62,7 +63,6 @@ class _HomeViewBodyState extends State<HomeViewBody> {
     return SafeArea(
       child: BlocListener<PlacesCubit, PlacesState>(
         listener: (context, state) {
-          // Show location error dialog only for location-related errors
           if (state is PlacesError) {
             if (state.failure.errMessage.contains('إذن') ||
                 state.failure.errMessage.contains('GPS') ||
@@ -79,15 +79,10 @@ class _HomeViewBodyState extends State<HomeViewBody> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Profile Section
                 const BuildProfileSection(),
                 SizedBox(height: 20.h),
-
-                // Search Bar
                 BuildSearchBar(textEditingController: textEditingController),
                 SizedBox(height: 24.h),
-
-                // Categories Section
                 Text(
                   'Browse By Category',
                   style: TextStyle(
@@ -99,8 +94,6 @@ class _HomeViewBodyState extends State<HomeViewBody> {
                 SizedBox(height: 12.h),
                 const BuildCategoryList(),
                 SizedBox(height: 24.h),
-
-                // Recommendations Section
                 Text(
                   'Top Recommendations',
                   style: TextStyle(
@@ -111,6 +104,19 @@ class _HomeViewBodyState extends State<HomeViewBody> {
                 ),
                 SizedBox(height: 10.h),
                 const BuildRecommendationList(),
+                SizedBox(height: 20.h),
+                
+                // Recently Viewed Section (From Logic)
+                Text(
+                  'Recently Viewed',
+                  style: TextStyle(
+                    fontSize: 18.sp,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black87,
+                  ),
+                ),
+                SizedBox(height: 10.h),
+                const BuildRecentlyViewed(),
                 SizedBox(height: 20.h),
               ],
             ),
@@ -168,7 +174,6 @@ class _HomeViewBodyState extends State<HomeViewBody> {
                 onPressed: () async {
                   Navigator.pop(context);
                   await LocationService.instance.openLocationSettings();
-                  // إعادة التحقق بعد فترة قصيرة
                   await Future.delayed(const Duration(seconds: 1));
                   _checkLocationAndLoadPlaces();
                 },
