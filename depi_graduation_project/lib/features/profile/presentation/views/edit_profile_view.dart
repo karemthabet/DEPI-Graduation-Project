@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:whatsapp/core/utils/colors/app_colors.dart';
 
 import 'package:whatsapp/features/profile/presentation/views/widgets/edit_profile_view_body.dart';
+import 'package:whatsapp/l10n/app_localizations.dart';
 
 class EditProfileView extends StatelessWidget {
   const EditProfileView({super.key});
@@ -19,7 +20,7 @@ class EditProfileView extends StatelessWidget {
           onPressed: () => Navigator.pop(context),
         ),
         title: Text(
-          'Edit Profile',
+          AppLocalizations.of(context)!.editProfile,
           style: TextStyle(
             fontSize: 20.sp,
             fontWeight: FontWeight.w600,

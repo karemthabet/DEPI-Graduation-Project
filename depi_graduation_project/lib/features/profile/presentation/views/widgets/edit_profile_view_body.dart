@@ -1,17 +1,18 @@
-import 'dart:developer';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:go_router/go_router.dart';
+
 import 'package:whatsapp/core/utils/colors/app_colors.dart';
-import 'package:whatsapp/core/utils/router/routes_name.dart';
+
 import 'package:whatsapp/core/widgets/custom_text_form_field.dart';
 import 'package:whatsapp/core/widgets/password_field.dart';
 import 'package:whatsapp/features/profile/presentation/cubit/user_cubit.dart';
 import 'package:whatsapp/features/profile/presentation/cubit/user_state.dart';
 import 'package:whatsapp/features/profile/presentation/views/widgets/custom_button.dart';
 import 'package:whatsapp/features/profile/presentation/views/widgets/profile_image_picker.dart';
+
+import 'package:whatsapp/l10n/app_localizations.dart';
 
 class EditProfileViewBody extends StatefulWidget {
   const EditProfileViewBody({super.key});
@@ -38,7 +39,6 @@ class _EditProfileViewBodyState extends State<EditProfileViewBody> {
       nameController.text = state.user.fullName;
       emailController.text = state.user.email;
       _currentAvatarUrl = state.user.avatarUrl;
-      passwordController.text = 'Password Obse';
     }
   }
 
@@ -115,9 +115,9 @@ class _EditProfileViewBodyState extends State<EditProfileViewBody> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text(
-                      'Name',
-                      style: TextStyle(
+                    Text(
+                      AppLocalizations.of(context)!.name,
+                      style: const TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.w600,
                         color: AppColors.darkBlue,
@@ -127,14 +127,15 @@ class _EditProfileViewBodyState extends State<EditProfileViewBody> {
                       padding: const EdgeInsets.all(8.0),
                       child: CustomTextFormField(
                         controller: nameController,
-                        hintText: 'Name',
+                        hintText: AppLocalizations.of(context)!.name,
                         focusNode: nameFocus,
                       ),
                     ),
                     const SizedBox(height: 16),
-                    const Text(
-                      'Email',
-                      style: TextStyle(
+                    Text(
+                      AppLocalizations.of(context)!.emailLabel,
+
+                      style: const TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.w600,
                         color: AppColors.darkBlue,
@@ -144,15 +145,15 @@ class _EditProfileViewBodyState extends State<EditProfileViewBody> {
                       padding: const EdgeInsets.all(8.0),
                       child: CustomTextFormField(
                         controller: emailController,
-                        hintText: 'Email',
+                        hintText: AppLocalizations.of(context)!.emailLabel,
                         focusNode: emailFocus,
                         readOnly: true,
                       ),
                     ),
                     const SizedBox(height: 16),
-                    const Text(
-                      'Password',
-                      style: TextStyle(
+                    Text(
+                      AppLocalizations.of(context)!.passwordLabel,
+                      style: const TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.w600,
                         color: AppColors.darkBlue,
@@ -162,7 +163,7 @@ class _EditProfileViewBodyState extends State<EditProfileViewBody> {
                       padding: const EdgeInsets.all(8.0),
                       child: PasswordField(
                         controller: passwordController,
-                        hintText: 'Password',
+                        hintText: AppLocalizations.of(context)!.passwordLabel,
                         focusNode: passwordFocus,
                         readOnly: true,
                       ),
@@ -178,7 +179,7 @@ class _EditProfileViewBodyState extends State<EditProfileViewBody> {
                   Expanded(
                     child: CustomButton(
                       backGroungColor: AppColors.orange,
-                      text: 'Save',
+                      text: AppLocalizations.of(context)!.save,
                       textColor: Colors.white,
                       onPressed: _handleSave,
                     ),
@@ -187,7 +188,7 @@ class _EditProfileViewBodyState extends State<EditProfileViewBody> {
                   Expanded(
                     child: CustomButton(
                       backGroungColor: Colors.white,
-                      text: 'Cancel',
+                      text: AppLocalizations.of(context)!.cancel,
                       textColor: AppColors.darkBlue,
                       outLine: const BorderSide(
                         color: AppColors.darkBlue,

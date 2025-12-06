@@ -8,6 +8,8 @@ import 'package:whatsapp/core/utils/colors/app_colors.dart';
 import 'package:whatsapp/core/utils/router/routes_name.dart';
 import 'package:whatsapp/features/profile/presentation/cubit/user_cubit.dart';
 import 'package:whatsapp/features/profile/presentation/cubit/user_state.dart';
+import 'package:whatsapp/core/localization/cubit/locale_cubit.dart';
+import 'package:whatsapp/l10n/app_localizations.dart';
 
 class ProfileViewBody extends StatefulWidget {
   const ProfileViewBody({super.key});
@@ -17,14 +19,6 @@ class ProfileViewBody extends StatefulWidget {
 }
 
 class _ProfileViewBodyState extends State<ProfileViewBody> {
-  final ValueNotifier<String> selectedLanguage = ValueNotifier('English');
-
-  @override
-  void dispose() {
-    selectedLanguage.dispose();
-    super.dispose();
-  }
-
   void showLanguagePicker(BuildContext context) {
     showModalBottomSheet(
       context: context,
@@ -39,7 +33,7 @@ class _ProfileViewBodyState extends State<ProfileViewBody> {
             mainAxisSize: MainAxisSize.min,
             children: [
               Text(
-                'Choose Language',
+                AppLocalizations.of(context)!.chooseLanguage,
                 style: TextStyle(
                   fontSize: 18.sp,
                   fontWeight: FontWeight.bold,
@@ -53,9 +47,9 @@ class _ProfileViewBodyState extends State<ProfileViewBody> {
                   width: 32,
                   height: 32,
                 ),
-                title: const Text('Arabic'),
+                title: Text(AppLocalizations.of(context)!.arabic),
                 onTap: () {
-                  selectedLanguage.value = 'Arabic';
+                  context.read<LocaleCubit>().changeLocale(const Locale('ar'));
                   Navigator.pop(context);
                 },
               ),
@@ -65,9 +59,9 @@ class _ProfileViewBodyState extends State<ProfileViewBody> {
                   width: 32,
                   height: 32,
                 ),
-                title: const Text('English'),
+                title: Text(AppLocalizations.of(context)!.english),
                 onTap: () {
-                  selectedLanguage.value = 'English';
+                  context.read<LocaleCubit>().changeLocale(const Locale('en'));
                   Navigator.pop(context);
                 },
               ),
@@ -94,7 +88,7 @@ class _ProfileViewBodyState extends State<ProfileViewBody> {
 
       child: BlocBuilder<UserCubit, UserState>(
         builder: (context, state) {
-          String name = 'Guest';
+          String name = AppLocalizations.of(context)!.guest;
           String email = '';
           String? profileImage = 'assets/images/profile.png';
 
@@ -114,9 +108,9 @@ class _ProfileViewBodyState extends State<ProfileViewBody> {
                   const Icon(Icons.lock_outline, size: 50, color: Colors.grey),
                   const SizedBox(height: 16),
 
-                  const Text(
-                    'Error loading profile LogIn First',
-                    style: TextStyle(
+                  Text(
+                    AppLocalizations.of(context)!.errorLoadingProfile,
+                    style: const TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.w500,
                       color: AppColors.darkBlue,
@@ -127,9 +121,9 @@ class _ProfileViewBodyState extends State<ProfileViewBody> {
                     onPressed: () {
                       context.go(RoutesName.login);
                     },
-                    child: const Text(
-                      'Go to Login',
-                      style: TextStyle(color: AppColors.darkBlue),
+                    child: Text(
+                      AppLocalizations.of(context)!.goToLogin,
+                      style: const TextStyle(color: AppColors.darkBlue),
                     ),
                   ),
                 ],
@@ -196,10 +190,15 @@ class _ProfileViewBodyState extends State<ProfileViewBody> {
 
                 SizedBox(height: 60.h),
 
-                ValueListenableBuilder<String>(
-                  valueListenable: selectedLanguage,
-                  builder: (context, language, _) {
-                    log('Language Tile rebuilt');
+                BlocBuilder<LocaleCubit, LocaleState>(
+                  builder: (context, localeState) {
+                    final currentLocale = Localizations.localeOf(
+                      context,
+                    ).languageCode;
+                    final displayLanguage = currentLocale == 'ar'
+                        ? 'Arabic'
+                        : 'English';
+
                     return ListTile(
                       contentPadding: EdgeInsets.zero,
                       leading: Icon(
@@ -208,7 +207,9 @@ class _ProfileViewBodyState extends State<ProfileViewBody> {
                         color: AppColors.darkBlue,
                       ),
                       title: Text(
-                        'Language ($language)',
+                        AppLocalizations.of(
+                          context,
+                        )!.languageWithCode(displayLanguage),
                         style: TextStyle(
                           fontWeight: FontWeight.w400,
                           fontSize: 16.sp,
@@ -236,7 +237,7 @@ class _ProfileViewBodyState extends State<ProfileViewBody> {
                     color: AppColors.darkBlue,
                   ),
                   title: Text(
-                    'Log out',
+                    AppLocalizations.of(context)!.logOut,
                     style: TextStyle(
                       fontWeight: FontWeight.w400,
                       fontSize: 16.sp,

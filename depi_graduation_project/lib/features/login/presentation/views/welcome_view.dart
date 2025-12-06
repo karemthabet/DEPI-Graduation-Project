@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:whatsapp/features/login/presentation/views/sign_in_view.dart';
 import 'package:whatsapp/core/utils/router/routes_name.dart';
+import 'package:whatsapp/l10n/app_localizations.dart';
 
 class WelcomeView extends StatelessWidget {
   const WelcomeView({super.key});
@@ -15,7 +16,9 @@ class WelcomeView extends StatelessWidget {
       body: SafeArea(
         child: SingleChildScrollView(
           child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: 24.w), // Using ScreenUtil for responsive padding
+            padding: EdgeInsets.symmetric(
+              horizontal: 24.w,
+            ), // Using ScreenUtil for responsive padding
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -25,11 +28,11 @@ class WelcomeView extends StatelessWidget {
 
                 SizedBox(height: 30.h),
 
-                _buildTitle(),
+                _buildTitle(context),
 
                 SizedBox(height: 8.h),
 
-                _buildSubtitle(),
+                _buildSubtitle(context),
 
                 SizedBox(height: 56.h),
 
@@ -44,8 +47,8 @@ class WelcomeView extends StatelessWidget {
                   onTap: () {
                     context.push(RoutesName.mainView);
                   },
-                  child: const Text('Continue as Guest')),
-
+                  child: Text(AppLocalizations.of(context)!.continueGuest),
+                ),
 
                 SizedBox(height: 40.h),
               ],
@@ -67,9 +70,9 @@ class WelcomeView extends StatelessWidget {
   }
 
   // Widget for Title Text
-  Widget _buildTitle() {
+  Widget _buildTitle(BuildContext context) {
     return Text(
-      'Start Your Egyptian Journey',
+      AppLocalizations.of(context)!.startJourney,
       textAlign: TextAlign.center,
       style: GoogleFonts.inter(
         fontSize: 20.sp,
@@ -82,9 +85,9 @@ class WelcomeView extends StatelessWidget {
   }
 
   // Widget for Subtitle Text
-  Widget _buildSubtitle() {
+  Widget _buildSubtitle(BuildContext context) {
     return Text(
-      'Explore ancient wonders, hidden gems,\nand timeless treasures',
+      AppLocalizations.of(context)!.exploreSubtitle,
       textAlign: TextAlign.center,
       style: GoogleFonts.inter(
         fontSize: 14.sp,
@@ -103,9 +106,7 @@ class WelcomeView extends StatelessWidget {
         onPressed: () {
           Navigator.push(
             context,
-            MaterialPageRoute(
-              builder: (context) => const SignInView(),
-            ),
+            MaterialPageRoute(builder: (context) => const SignInView()),
           );
         },
         style: ElevatedButton.styleFrom(
@@ -118,7 +119,7 @@ class WelcomeView extends StatelessWidget {
           elevation: 0,
         ),
         child: Text(
-          'Log In',
+          AppLocalizations.of(context)!.login,
           style: GoogleFonts.inter(
             fontSize: 18.sp,
             fontWeight: FontWeight.w700,
@@ -139,16 +140,13 @@ class WelcomeView extends StatelessWidget {
         },
         style: OutlinedButton.styleFrom(
           padding: EdgeInsets.symmetric(vertical: 16.h),
-          side: const BorderSide(
-            color: Color(0xFFFFC552),
-            width: 1,
-          ),
+          side: const BorderSide(color: Color(0xFFFFC552), width: 1),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(30.r),
           ),
         ),
         child: Text(
-          'Sign Up',
+          AppLocalizations.of(context)!.signUp,
           style: GoogleFonts.inter(
             fontSize: 18.sp,
             fontWeight: FontWeight.w700,
@@ -158,5 +156,4 @@ class WelcomeView extends StatelessWidget {
       ),
     );
   }
-
 }

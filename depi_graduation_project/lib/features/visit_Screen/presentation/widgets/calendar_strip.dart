@@ -17,6 +17,7 @@ class CalendarStrip extends StatelessWidget {
     final days = List.generate(30, (index) {
       return DateTime.now().add(Duration(days: index));
     });
+    final locale = Localizations.localeOf(context).toString();
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -24,7 +25,7 @@ class CalendarStrip extends StatelessWidget {
         Padding(
           padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
           child: Text(
-            DateFormat('MMMM, yyyy').format(selectedDate),
+            DateFormat('MMMM, yyyy', locale).format(selectedDate),
             style: TextStyle(
               fontSize: 18.sp,
               fontWeight: FontWeight.bold,
@@ -72,7 +73,7 @@ class CalendarStrip extends StatelessWidget {
                       ),
                       SizedBox(height: 4.h),
                       Text(
-                        DateFormat('E').format(date),
+                        DateFormat('E', locale).format(date),
                         style: TextStyle(
                           fontSize: 12.sp,
                           fontWeight: FontWeight.w500,

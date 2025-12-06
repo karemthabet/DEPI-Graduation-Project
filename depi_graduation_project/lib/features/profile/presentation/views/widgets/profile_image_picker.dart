@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:whatsapp/l10n/app_localizations.dart';
 
 typedef ImagePickedCallback = void Function(File? imageFile);
 
@@ -46,7 +47,7 @@ class _ProfileImagePickerState extends State<ProfileImagePicker> {
         children: [
           ListTile(
             leading: const Icon(Icons.photo_library),
-            title: const Text('Choose from Gallery'),
+            title: Text(AppLocalizations.of(context)!.chooseFromGallery),
             onTap: () {
               Navigator.pop(context);
               pickImage(ImageSource.gallery);
@@ -54,7 +55,7 @@ class _ProfileImagePickerState extends State<ProfileImagePicker> {
           ),
           ListTile(
             leading: const Icon(Icons.camera_alt),
-            title: const Text('Take a Photo'),
+            title: Text(AppLocalizations.of(context)!.takePhoto),
             onTap: () {
               Navigator.pop(context);
               pickImage(ImageSource.camera);
@@ -62,7 +63,7 @@ class _ProfileImagePickerState extends State<ProfileImagePicker> {
           ),
           ListTile(
             leading: const Icon(Icons.delete),
-            title: const Text('Remove Photo'),
+            title: Text(AppLocalizations.of(context)!.removePhoto),
             onTap: removeImage,
           ),
         ],

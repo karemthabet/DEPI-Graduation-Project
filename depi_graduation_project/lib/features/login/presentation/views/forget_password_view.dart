@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:whatsapp/l10n/app_localizations.dart';
 
 const Color primaryColor = Color(0xFFFFE26D);
 const Color darkBlueColor = Color(0xFF243E4B);
@@ -28,9 +29,9 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
     final email = emailController.text.trim();
 
     if (email.isEmpty) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(const SnackBar(content: Text('Email is required')));
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(AppLocalizations.of(context)!.emailRequired)),
+      );
       return;
     }
 
@@ -42,11 +43,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
       //  final response = await supabase.auth.resetPasswordForEmail(email);
 
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text(
-            'If an account exists, a password reset link has been sent to your email',
-          ),
-        ),
+        SnackBar(content: Text(AppLocalizations.of(context)!.resetLinkSent)),
       );
 
       // Optionally, navigate back to login
@@ -86,7 +83,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
             children: [
               const SizedBox(height: 20),
               Text(
-                'Forgot password?',
+                AppLocalizations.of(context)!.forgotPasswordTitle,
                 style: GoogleFonts.inter(
                   fontSize: 32,
                   fontWeight: FontWeight.bold,
@@ -98,7 +95,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
               _buildEmailInputField(context),
               const SizedBox(height: 16),
               Text(
-                'We will send you a message to set or reset your new password',
+                AppLocalizations.of(context)!.forgotPasswordSubtitle,
                 style: GoogleFonts.inter(
                   fontSize: 14,
                   fontWeight: FontWeight.w400,
@@ -119,19 +116,16 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                     ),
                     foregroundColor: darkBlueColor,
                   ),
-                  child:
-                      _isLoading
-                          ? const CircularProgressIndicator(
+                  child: _isLoading
+                      ? const CircularProgressIndicator(color: darkBlueColor)
+                      : Text(
+                          AppLocalizations.of(context)!.submit,
+                          style: GoogleFonts.inter(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
                             color: darkBlueColor,
-                          )
-                          : Text(
-                            'Submit',
-                            style: GoogleFonts.inter(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                              color: darkBlueColor,
-                            ),
                           ),
+                        ),
                 ),
               ),
               const SizedBox(height: 40),
@@ -156,7 +150,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
           vertical: 16,
           horizontal: 16,
         ),
-        hintText: 'Email',
+        hintText: AppLocalizations.of(context)!.email,
         hintStyle: GoogleFonts.inter(
           color: darkBlueColor,
           fontSize: 16,
