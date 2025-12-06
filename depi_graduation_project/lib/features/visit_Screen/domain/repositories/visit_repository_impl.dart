@@ -1,9 +1,6 @@
 import '../../data/datasources/visit_remote_datasource.dart';
 import '../../data/model/place__model.dart';
 import '../../data/model/visit_date.dart';
-import 'package:whatsapp/features/visit_Screen/data/datasources/visit_remote_datasource.dart';
-import 'package:whatsapp/features/visit_Screen/data/model/place__model.dart';
-import 'package:whatsapp/features/visit_Screen/data/model/visit_date.dart';
 
 import '../../domain/repositories/visit_repository.dart';
 

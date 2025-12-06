@@ -15,8 +15,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get startJourney => 'ابدأ رحلتك المصرية';
 
   @override
-  String get exploreSubtitle =>
-      'استكشف العجائب القديمة والجواهر المخفية\nوالكنوز الخالدة';
+  String get exploreSubtitle => 'استكشف العجائب القديمة والجواهر المخفية\nوالكنوز الخالدة';
 
   @override
   String get login => 'تسجيل الدخول';
@@ -43,8 +42,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get forgotPasswordTitle => 'نسيت كلمة المرور؟';
 
   @override
-  String get forgotPasswordSubtitle =>
-      'سنرسل لك رسالة لتعيين أو إعادة تعيين كلمة مرور جديدة';
+  String get forgotPasswordSubtitle => 'سنرسل لك رسالة لتعيين أو إعادة تعيين كلمة مرور جديدة';
 
   @override
   String get authValidation => 'البريد الإلكتروني وكلمة المرور مطلوبان';
@@ -95,8 +93,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get emailRequired => 'البريد الإلكتروني مطلوب';
 
   @override
-  String get resetLinkSent =>
-      'إذا كان الحساب موجوداً، تم إرسال رابط إعادة تعيين كلمة المرور إلى بريدك الإلكتروني';
+  String get resetLinkSent => 'إذا كان الحساب موجوداً، تم إرسال رابط إعادة تعيين كلمة المرور إلى بريدك الإلكتروني';
 
   @override
   String get browseByCategory => 'تصفح حسب الفئة';
@@ -140,8 +137,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get locationServiceDisabledTitle => 'خدمة الموقع غير مفعلة';
 
   @override
-  String get locationServiceDisabledMessage =>
-      'يحتاج التطبيق إلى تفعيل خدمة الموقع (GPS) لعرض الأماكن القريبة منك.\n\nهل تريد تفعيل خدمة الموقع الآن؟';
+  String get locationServiceDisabledMessage => 'يحتاج التطبيق إلى تفعيل خدمة الموقع (GPS) لعرض الأماكن القريبة منك.\n\nهل تريد تفعيل خدمة الموقع الآن؟';
 
   @override
   String get later => 'لاحقاً';
@@ -153,8 +149,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get permissionDeniedTitle => 'إذن الوصول للموقع';
 
   @override
-  String get permissionDeniedMessage =>
-      'يحتاج التطبيق إلى إذن الوصول لموقعك لعرض الأماكن القريبة منك.\n\nهل تريد منح الإذن؟';
+  String get permissionDeniedMessage => 'يحتاج التطبيق إلى إذن الوصول لموقعك لعرض الأماكن القريبة منك.\n\nهل تريد منح الإذن؟';
 
   @override
   String get deny => 'رفض';
@@ -166,15 +161,13 @@ class AppLocalizationsAr extends AppLocalizations {
   String get permissionDeniedForeverTitle => 'تم رفض إذن الموقع';
 
   @override
-  String get permissionDeniedForeverMessage =>
-      'تم رفض إذن الوصول للموقع بشكل نهائي.\n\nيرجى الذهاب إلى إعدادات التطبيق وتفعيل إذن الموقع يدوياً.';
+  String get permissionDeniedForeverMessage => 'تم رفض إذن الوصول للموقع بشكل نهائي.\n\nيرجى الذهاب إلى إعدادات التطبيق وتفعيل إذن الموقع يدوياً.';
 
   @override
   String get openSettings => 'فتح الإعدادات';
 
   @override
-  String get permissionDeniedSnackBar =>
-      'تم رفض إذن الوصول للموقع. لن يتمكن التطبيق من عرض الأماكن القريبة.';
+  String get permissionDeniedSnackBar => 'تم رفض إذن الوصول للموقع. لن يتمكن التطبيق من عرض الأماكن القريبة.';
 
   @override
   String get profile => 'الملف الشخصي';
@@ -192,8 +185,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get arabic => 'العربية';
 
   @override
-  String get errorLoadingProfile =>
-      'خطأ في تحميل الملف الشخصي. يرجى تسجيل الدخول أولاً.';
+  String get errorLoadingProfile => 'خطأ في تحميل الملف الشخصي. يرجى تسجيل الدخول أولاً.';
 
   @override
   String get goToLogin => 'الذهاب لتسجيل الدخول';

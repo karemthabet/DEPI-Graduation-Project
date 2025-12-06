@@ -6,7 +6,7 @@ publish_to: 'none' # Prevent publishing to pub.dev for now
 version: 1.0.0+1
 
 environment:
-  sdk: ^3.8.0-262.0.dev
+  sdk: ">=3.8.0-262.0.dev <4.0.0"
 
 dependencies:
   flutter:

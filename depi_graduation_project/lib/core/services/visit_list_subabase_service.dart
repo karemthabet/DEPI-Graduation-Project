@@ -4,9 +4,6 @@ import 'package:whatsapp/features/visit_Screen/data/model/place__model.dart';
 import 'package:whatsapp/features/visit_Screen/data/model/visit_date.dart';
 
 
-import '../../features/visit_Screen/data/model/place__model.dart';
-import '../../features/visit_Screen/data/model/visit_date.dart';
-
 class VisitService {
   static final VisitService _instance = VisitService._internal();
   factory VisitService() => _instance;
