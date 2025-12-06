@@ -1,9 +1,19 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:whatsapp/l10n/app_localizations.dart';
+
+typedef ImagePickedCallback = void Function(File? imageFile);
 
 class ProfileImagePicker extends StatefulWidget {
-  const ProfileImagePicker({super.key});
+  final ImagePickedCallback onImagePicked;
+  final String? initialAvatarUrl;
+
+  const ProfileImagePicker({
+    super.key,
+    required this.onImagePicked,
+    this.initialAvatarUrl,
+  });
 
   @override
   State<ProfileImagePicker> createState() => _ProfileImagePickerState();
@@ -17,7 +27,14 @@ class _ProfileImagePickerState extends State<ProfileImagePicker> {
     final pickedFile = await picker.pickImage(source: source);
     if (pickedFile != null) {
       setState(() => imageFile = File(pickedFile.path));
+      widget.onImagePicked(imageFile);
     }
+  }
+
+  void removeImage() {
+    setState(() => imageFile = null);
+    widget.onImagePicked(null);
+    Navigator.pop(context);
   }
 
   void showPickOptions(BuildContext context) {
@@ -30,7 +47,7 @@ class _ProfileImagePickerState extends State<ProfileImagePicker> {
         children: [
           ListTile(
             leading: const Icon(Icons.photo_library),
-            title: const Text('Choose from Gallery'),
+            title: Text(AppLocalizations.of(context)!.chooseFromGallery),
             onTap: () {
               Navigator.pop(context);
               pickImage(ImageSource.gallery);
@@ -38,7 +55,7 @@ class _ProfileImagePickerState extends State<ProfileImagePicker> {
           ),
           ListTile(
             leading: const Icon(Icons.camera_alt),
-            title: const Text('Take a Photo'),
+            title: Text(AppLocalizations.of(context)!.takePhoto),
             onTap: () {
               Navigator.pop(context);
               pickImage(ImageSource.camera);
@@ -46,11 +63,8 @@ class _ProfileImagePickerState extends State<ProfileImagePicker> {
           ),
           ListTile(
             leading: const Icon(Icons.delete),
-            title: const Text('Remove Photo'),
-            onTap: () {
-              Navigator.pop(context);
-              setState(() => imageFile = null);
-            },
+            title: Text(AppLocalizations.of(context)!.removePhoto),
+            onTap: removeImage,
           ),
         ],
       ),
@@ -59,15 +73,21 @@ class _ProfileImagePickerState extends State<ProfileImagePicker> {
 
   @override
   Widget build(BuildContext context) {
+    ImageProvider imageProvider;
+
+    if (imageFile != null) {
+      imageProvider = FileImage(imageFile!);
+    } else if (widget.initialAvatarUrl != null &&
+        widget.initialAvatarUrl!.isNotEmpty) {
+      imageProvider = NetworkImage(widget.initialAvatarUrl!);
+    } else {
+      imageProvider = const AssetImage('assets/images/profile.png');
+    }
+
     return Stack(
       alignment: Alignment.bottomRight,
       children: [
-        CircleAvatar(
-          radius: 60,
-          backgroundImage: imageFile == null
-              ? const AssetImage('assets/images/profile.png')
-              : FileImage(imageFile!) as ImageProvider,
-        ),
+        CircleAvatar(radius: 60, backgroundImage: imageProvider),
         Positioned(
           bottom: 0,
           right: 4,

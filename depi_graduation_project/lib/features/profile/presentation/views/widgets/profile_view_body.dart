@@ -8,6 +8,8 @@ import 'package:whatsapp/core/utils/colors/app_colors.dart';
 import 'package:whatsapp/core/utils/router/routes_name.dart';
 import 'package:whatsapp/features/profile/presentation/cubit/user_cubit.dart';
 import 'package:whatsapp/features/profile/presentation/cubit/user_state.dart';
+import 'package:whatsapp/core/localization/cubit/locale_cubit.dart';
+import 'package:whatsapp/l10n/app_localizations.dart';
 
 class ProfileViewBody extends StatefulWidget {
   const ProfileViewBody({super.key});
@@ -17,16 +19,6 @@ class ProfileViewBody extends StatefulWidget {
 }
 
 class _ProfileViewBodyState extends State<ProfileViewBody> {
-  //  استخدم ValueNotifier عشان نخزن اللغة المختارة
-  final ValueNotifier<String> selectedLanguage = ValueNotifier('English');
-
-  @override
-  void dispose() {
-    // مهم جدًا نعمل dispose عشان نمنع memory leaks
-    selectedLanguage.dispose();
-    super.dispose();
-  }
-
   void showLanguagePicker(BuildContext context) {
     showModalBottomSheet(
       context: context,
@@ -41,7 +33,7 @@ class _ProfileViewBodyState extends State<ProfileViewBody> {
             mainAxisSize: MainAxisSize.min,
             children: [
               Text(
-                'Choose Language',
+                AppLocalizations.of(context)!.chooseLanguage,
                 style: TextStyle(
                   fontSize: 18.sp,
                   fontWeight: FontWeight.bold,
@@ -55,9 +47,9 @@ class _ProfileViewBodyState extends State<ProfileViewBody> {
                   width: 32,
                   height: 32,
                 ),
-                title: const Text('Arabic'),
+                title: Text(AppLocalizations.of(context)!.arabic),
                 onTap: () {
-                  selectedLanguage.value = 'Arabic'; // ✅ تحديث القيمة فقط
+                  context.read<LocaleCubit>().changeLocale(const Locale('ar'));
                   Navigator.pop(context);
                 },
               ),
@@ -67,9 +59,9 @@ class _ProfileViewBodyState extends State<ProfileViewBody> {
                   width: 32,
                   height: 32,
                 ),
-                title: const Text('English'),
+                title: Text(AppLocalizations.of(context)!.english),
                 onTap: () {
-                  selectedLanguage.value = 'English'; // ✅ تحديث القيمة فقط
+                  context.read<LocaleCubit>().changeLocale(const Locale('en'));
                   Navigator.pop(context);
                 },
               ),
@@ -82,133 +74,186 @@ class _ProfileViewBodyState extends State<ProfileViewBody> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<UserCubit, UserState>(
-      builder: (context, state) {
-        String name = 'Guest';
-        String email = '';
-        String? profileImage = 'assets/images/profile.png';
-
-        if (state is UserLoaded) {
-          name = state.user.name;
-          email = state.user.email;
-          profileImage = state.user.profileImage;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<UserCubit>().loadUserProfile();
+    });
+    return BlocListener<UserCubit, UserState>(
+      listener: (context, state) {
+        if (state is UserLoggedOut) {
+          if (mounted) {
+            context.go(RoutesName.login);
+          }
         }
+      },
 
-        return Padding(
-          padding: EdgeInsets.symmetric(vertical: 48.sp, horizontal: 16.sp),
-          child: Column(
-            children: [
-              Row(
+      child: BlocBuilder<UserCubit, UserState>(
+        builder: (context, state) {
+          String name = AppLocalizations.of(context)!.guest;
+          String email = '';
+          String? profileImage = 'assets/images/profile.png';
+
+          if (state is UserLoaded) {
+            name = state.user.fullName;
+            email = state.user.email;
+            profileImage = state.user.avatarUrl;
+          } else if (state is UserLoading) {
+            return const Center(
+              child: CircularProgressIndicator(color: AppColors.darkBlue),
+            );
+          } else if (state is UserError) {
+            return Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  InkWell(
-                    onTap: () {
-                      // Optional: Show full image
-                    },
-                    child: CircleAvatar(
-                      radius: 44.r,
-                      backgroundImage:
-                          profileImage != null && profileImage.isNotEmpty
-                          ? CachedNetworkImageProvider(profileImage) as ImageProvider
-                          : const AssetImage('assets/images/auth.png'),
+                  const Icon(Icons.lock_outline, size: 50, color: Colors.grey),
+                  const SizedBox(height: 16),
+
+                  Text(
+                    AppLocalizations.of(context)!.errorLoadingProfile,
+                    style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w500,
+                      color: AppColors.darkBlue,
                     ),
                   ),
-                  SizedBox(width: 20.w),
-                  Expanded(
-                    child: InkWell(
-                      onTap: () => context.push(RoutesName.editProfileView),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                name,
-                                style: TextStyle(
-                                  fontWeight: FontWeight.w600,
-                                  fontSize: 16.sp,
-                                  color: AppColors.darkBlue,
-                                ),
-                              ),
-                              SizedBox(height: 3.h),
-                              Text(
-                                email,
-                                style: TextStyle(
-                                  fontWeight: FontWeight.w400,
-                                  fontSize: 12.sp,
-                                  color: AppColors.darkBlue,
-                                ),
-                              ),
-                            ],
-                          ),
-                          Icon(
-                            Icons.arrow_forward_ios,
-                            size: 16.sp,
-                            color: AppColors.darkBlue,
-                          ),
-                        ],
-                      ),
+                  const SizedBox(height: 24),
+                  ElevatedButton(
+                    onPressed: () {
+                      context.go(RoutesName.login);
+                    },
+                    child: Text(
+                      AppLocalizations.of(context)!.goToLogin,
+                      style: const TextStyle(color: AppColors.darkBlue),
                     ),
                   ),
                 ],
               ),
-
-              SizedBox(height: 60.h),
-
-              // Language Option (بتتحدث لوحدها)
-              ValueListenableBuilder<String>(
-                valueListenable: selectedLanguage,
-                builder: (context, language, _) {
-                  log('Language Tile rebuilt');
-                  return ListTile(
-                    contentPadding: EdgeInsets.zero,
-                    leading: Icon(
-                      Icons.language,
-                      size: 24.sp,
-                      color: AppColors.darkBlue,
-                    ),
-                    title: Text(
-                      'Language ($language)',
-                      style: TextStyle(
-                        fontWeight: FontWeight.w400,
-                        fontSize: 16.sp,
-                        color: AppColors.darkBlue,
+            );
+          }
+          return Padding(
+            padding: EdgeInsets.symmetric(vertical: 48.sp, horizontal: 16.sp),
+            child: Column(
+              children: [
+                Row(
+                  children: [
+                    InkWell(
+                      onTap: () {},
+                      child: CircleAvatar(
+                        radius: 44.r,
+                        backgroundImage:
+                            profileImage != null && profileImage.isNotEmpty
+                            ? CachedNetworkImageProvider(profileImage)
+                                  as ImageProvider
+                            : const AssetImage('assets/images/profile.png'),
                       ),
                     ),
-                    trailing: Icon(
-                      Icons.arrow_forward_ios,
-                      size: 16.sp,
-                      color: AppColors.darkBlue,
+                    SizedBox(width: 20.w),
+                    Expanded(
+                      child: InkWell(
+                        onTap: () => context.push(RoutesName.editProfileView),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  name,
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.w600,
+                                    fontSize: 16.sp,
+                                    color: AppColors.darkBlue,
+                                  ),
+                                ),
+                                SizedBox(height: 3.h),
+                                Text(
+                                  email,
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.w400,
+                                    fontSize: 12.sp,
+                                    color: AppColors.darkBlue,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            Icon(
+                              Icons.arrow_forward_ios,
+                              size: 16.sp,
+                              color: AppColors.darkBlue,
+                            ),
+                          ],
+                        ),
+                      ),
                     ),
-                    onTap: () => showLanguagePicker(context),
-                  );
-                },
-              ),
-
-              SizedBox(height: 16.h),
-
-              // 🚪 Log out
-              ListTile(
-                contentPadding: EdgeInsets.zero,
-                leading: Icon(
-                  Icons.logout,
-                  size: 24.sp,
-                  color: AppColors.darkBlue,
+                  ],
                 ),
-                title: Text(
-                  'Log out',
-                  style: TextStyle(
-                    fontWeight: FontWeight.w400,
-                    fontSize: 16.sp,
+
+                SizedBox(height: 60.h),
+
+                BlocBuilder<LocaleCubit, LocaleState>(
+                  builder: (context, localeState) {
+                    final currentLocale = Localizations.localeOf(
+                      context,
+                    ).languageCode;
+                    final displayLanguage = currentLocale == 'ar'
+                        ? 'Arabic'
+                        : 'English';
+
+                    return ListTile(
+                      contentPadding: EdgeInsets.zero,
+                      leading: Icon(
+                        Icons.language,
+                        size: 24.sp,
+                        color: AppColors.darkBlue,
+                      ),
+                      title: Text(
+                        AppLocalizations.of(
+                          context,
+                        )!.languageWithCode(displayLanguage),
+                        style: TextStyle(
+                          fontWeight: FontWeight.w400,
+                          fontSize: 16.sp,
+                          color: AppColors.darkBlue,
+                        ),
+                      ),
+                      trailing: Icon(
+                        Icons.arrow_forward_ios,
+                        size: 16.sp,
+                        color: AppColors.darkBlue,
+                      ),
+                      onTap: () => showLanguagePicker(context),
+                    );
+                  },
+                ),
+
+                SizedBox(height: 16.h),
+
+                // 🚪 Log out
+                ListTile(
+                  contentPadding: EdgeInsets.zero,
+                  leading: Icon(
+                    Icons.logout,
+                    size: 24.sp,
                     color: AppColors.darkBlue,
                   ),
+                  title: Text(
+                    AppLocalizations.of(context)!.logOut,
+                    style: TextStyle(
+                      fontWeight: FontWeight.w400,
+                      fontSize: 16.sp,
+                      color: AppColors.darkBlue,
+                    ),
+                  ),
+                  onTap: () {
+                    context.read<UserCubit>().signOutUser();
+                    context.go(RoutesName.login);
+                  },
                 ),
-                onTap: () {},
-              ),
-            ],
-          ),
-        );
-      },
+              ],
+            ),
+          );
+        },
+      ),
     );
   }
 }

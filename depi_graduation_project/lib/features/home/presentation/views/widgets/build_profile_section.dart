@@ -6,6 +6,7 @@ import 'package:whatsapp/core/utils/router/routes_name.dart';
 import 'package:whatsapp/core/utils/styles/app_text_styles.dart';
 import 'package:whatsapp/features/profile/presentation/cubit/user_cubit.dart';
 import 'package:whatsapp/features/profile/presentation/cubit/user_state.dart';
+import 'package:whatsapp/l10n/app_localizations.dart';
 
 class BuildProfileSection extends StatelessWidget {
   const BuildProfileSection({super.key});
@@ -14,12 +15,12 @@ class BuildProfileSection extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<UserCubit, UserState>(
       builder: (context, state) {
-        String name = 'Guest';
+        String name = AppLocalizations.of(context)!.guest;
         String? profileImage = 'assets/images/profile.png';
 
         if (state is UserLoaded) {
-          name = state.user.name;
-          profileImage = state.user.profileImage;
+          name = state.user.fullName;
+          profileImage = state.user.avatarUrl;
         }
 
         return Row(
@@ -30,10 +31,9 @@ class BuildProfileSection extends StatelessWidget {
               },
               child: CircleAvatar(
                 radius: 25.r,
-                backgroundImage:
-                    profileImage != null && profileImage.isNotEmpty
-                        ? NetworkImage(profileImage) as ImageProvider
-                        : const AssetImage('assets/images/profile.png'),
+                backgroundImage: profileImage != null && profileImage.isNotEmpty
+                    ? NetworkImage(profileImage) as ImageProvider
+                    : const AssetImage('assets/images/profile.png'),
               ),
             ),
             SizedBox(width: 14.w),
@@ -41,14 +41,14 @@ class BuildProfileSection extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Hello, $name',
+                  AppLocalizations.of(context)!.helloUser(name),
                   style: AppTextStyles.titleMedium(
                     context,
                   ).copyWith(fontSize: 20.sp, fontWeight: FontWeight.w600),
                 ),
                 SizedBox(height: 4.h),
                 Text(
-                  'Welcome to Guidee',
+                  AppLocalizations.of(context)!.welcomeToGuidee,
                   style: AppTextStyles.bodyMedium(context).copyWith(
                     color: Colors.grey,
                     fontSize: 13.sp,

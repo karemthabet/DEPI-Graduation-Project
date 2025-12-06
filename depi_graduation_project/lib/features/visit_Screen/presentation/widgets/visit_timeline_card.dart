@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:whatsapp/features/visit_Screen/data/model/visit_items.dart';
+import 'package:whatsapp/l10n/app_localizations.dart';
 
 class VisitTimelineCard extends StatelessWidget {
   final VisitItem visit;
@@ -36,15 +37,11 @@ class VisitTimelineCard extends StatelessWidget {
                 ),
               ),
               if (!isLast)
-                Expanded(
-                  child: CustomPaint(
-                    painter: DashedLinePainter(),
-                  ),
-                ),
+                Expanded(child: CustomPaint(painter: DashedLinePainter())),
             ],
           ),
           SizedBox(width: 12.w),
-          
+
           // Card Content
           Expanded(
             child: Container(
@@ -96,10 +93,15 @@ class VisitTimelineCard extends StatelessWidget {
                           children: [
                             Row(
                               children: [
-                                Icon(Icons.access_time, size: 14.sp, color: const Color(0xFF2C3E50)),
+                                Icon(
+                                  Icons.access_time,
+                                  size: 14.sp,
+                                  color: const Color(0xFF2C3E50),
+                                ),
                                 SizedBox(width: 4.w),
                                 Text(
-                                  visit.visitTime ?? 'Anytime',
+                                  visit.visitTime ??
+                                      AppLocalizations.of(context)!.anytime,
                                   style: TextStyle(
                                     fontSize: 12.sp,
                                     color: const Color(0xFF2C3E50),
@@ -111,29 +113,52 @@ class VisitTimelineCard extends StatelessWidget {
                             PopupMenuButton(
                               padding: EdgeInsets.zero,
                               constraints: const BoxConstraints(),
-                              icon: Icon(Icons.more_vert, size: 20.sp, color: const Color(0xFF2C3E50)),
+                              icon: Icon(
+                                Icons.more_vert,
+                                size: 20.sp,
+                                color: const Color(0xFF2C3E50),
+                              ),
                               itemBuilder: (context) => [
                                 PopupMenuItem(
                                   onTap: onDelete,
                                   child: Row(
                                     children: [
-                                      Icon(Icons.delete, color: Colors.red, size: 20.sp),
+                                      Icon(
+                                        Icons.delete,
+                                        color: Colors.red,
+                                        size: 20.sp,
+                                      ),
                                       SizedBox(width: 8.w),
-                                      Text('Delete', style: TextStyle(fontSize: 14.sp)),
+                                      Text(
+                                        AppLocalizations.of(context)!.delete,
+                                        style: TextStyle(fontSize: 14.sp),
+                                      ),
                                     ],
                                   ),
                                 ),
                                 PopupMenuItem(
-                                  onTap: () => onStatusChanged(!visit.isCompleted),
+                                  onTap: () =>
+                                      onStatusChanged(!visit.isCompleted),
                                   child: Row(
                                     children: [
                                       Icon(
-                                        visit.isCompleted ? Icons.close : Icons.check,
+                                        visit.isCompleted
+                                            ? Icons.close
+                                            : Icons.check,
                                         color: Colors.green,
                                         size: 20.sp,
                                       ),
                                       SizedBox(width: 8.w),
-                                      Text(visit.isCompleted ? 'Mark Undone' : 'Mark Done', style: TextStyle(fontSize: 14.sp)),
+                                      Text(
+                                        visit.isCompleted
+                                            ? AppLocalizations.of(
+                                                context,
+                                              )!.markUndone
+                                            : AppLocalizations.of(
+                                                context,
+                                              )!.markDone,
+                                        style: TextStyle(fontSize: 14.sp),
+                                      ),
                                     ],
                                   ),
                                 ),

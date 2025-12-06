@@ -1,9 +1,10 @@
+import 'dart:io';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:whatsapp/features/profile/data/model/user_model.dart';
 import 'package:whatsapp/features/profile/data/repositories/user_repository.dart';
 import 'package:whatsapp/features/profile/presentation/cubit/user_state.dart';
 
-// Cubit
 class UserCubit extends Cubit<UserState> {
   final UserRepository _userRepository;
 
@@ -23,11 +24,24 @@ class UserCubit extends Cubit<UserState> {
     }
   }
 
-  Future<void> updateUserProfile(UserModel user) async {
+  Future<void> updateUserProfile(UserModel user, File? newImageFile) async {
     emit(UserLoading());
     try {
-      await _userRepository.updateUserProfile(user);
-      emit(UserLoaded(user));
+      await _userRepository.updateUserProfile(user, newImageFile);
+
+      await loadUserProfile();
+      emit(const UserUpdateSuccess('Profile updated successfully!'));
+    } catch (e) {
+      emit(UserError(e.toString()));
+    }
+  }
+
+  Future<void> signOutUser() async {
+    try {
+      emit(UserLoading());
+      await _userRepository.signOut();
+
+      emit(const UserLoggedOut());
     } catch (e) {
       emit(UserError(e.toString()));
     }

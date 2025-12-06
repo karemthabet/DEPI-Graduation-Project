@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';   
+import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:whatsapp/core/utils/router/routes_name.dart';
+import 'package:whatsapp/l10n/app_localizations.dart';
 import 'widgets/password_field.dart';
 
 class SignUpView extends StatefulWidget {
@@ -19,7 +20,7 @@ class _SignUpViewState extends State<SignUpView> {
   final TextEditingController passController = TextEditingController();
   final TextEditingController confirmPassController = TextEditingController();
 
-  final supabase = Supabase.instance.client; 
+  final supabase = Supabase.instance.client;
 
   @override
   void dispose() {
@@ -52,7 +53,7 @@ class _SignUpViewState extends State<SignUpView> {
               const SizedBox(height: 10),
 
               Text(
-                "Let's get\nstarted",
+                AppLocalizations.of(context)!.letsGetStarted,
                 style: GoogleFonts.inter(
                   fontSize: 32,
                   fontWeight: FontWeight.w800,
@@ -66,20 +67,20 @@ class _SignUpViewState extends State<SignUpView> {
               _buildTextField(
                 controller: nameController,
                 icon: Icons.person_outline,
-                hintText: 'Name',
+                hintText: AppLocalizations.of(context)!.name,
               ),
               const SizedBox(height: 16),
 
               _buildTextField(
                 controller: emailController,
                 icon: Icons.email_outlined,
-                hintText: 'Email',
+                hintText: AppLocalizations.of(context)!.email,
               ),
               const SizedBox(height: 16),
 
               PasswordField(
                 controller: passController,
-                hintText: 'Password',
+                hintText: AppLocalizations.of(context)!.password,
                 icon: Icons.lock_outline,
                 isPassword: true,
               ),
@@ -87,7 +88,7 @@ class _SignUpViewState extends State<SignUpView> {
 
               PasswordField(
                 controller: confirmPassController,
-                hintText: 'Confirm Password',
+                hintText: AppLocalizations.of(context)!.confirmPassword,
                 icon: Icons.lock_outline,
                 isConfirmPassword: true,
               ),
@@ -124,9 +125,7 @@ class _SignUpViewState extends State<SignUpView> {
       decoration: InputDecoration(
         prefixIcon: Icon(icon),
         hintText: hintText,
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(30),
-        ),
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(30)),
       ),
     );
   }
@@ -147,14 +146,18 @@ class _SignUpViewState extends State<SignUpView> {
           // Basic validation
           if (name.isEmpty || email.isEmpty || password.isEmpty) {
             ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('All fields are required')),
+              SnackBar(
+                content: Text(AppLocalizations.of(context)!.allFieldsRequired),
+              ),
             );
             return;
           }
 
           if (password != confirmPassword) {
             ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('Passwords do not match')),
+              SnackBar(
+                content: Text(AppLocalizations.of(context)!.passwordsNoMatch),
+              ),
             );
             return;
           }
@@ -163,23 +166,22 @@ class _SignUpViewState extends State<SignUpView> {
             final response = await supabase.auth.signUp(
               email: email,
               password: password,
-              data: {
-                'name': name,
-              },
+              data: {'full_name': name},
             );
 
             // SUCCESS
             ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('Sign up successful')),
+              SnackBar(
+                content: Text(AppLocalizations.of(context)!.signupSuccess),
+              ),
             );
 
             // Navigate when success
             context.go(RoutesName.mainView);
-
           } on AuthException catch (e) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text(e.message)),
-            );
+            ScaffoldMessenger.of(
+              context,
+            ).showSnackBar(SnackBar(content: Text(e.message)));
           }
         },
         style: ElevatedButton.styleFrom(
@@ -190,19 +192,19 @@ class _SignUpViewState extends State<SignUpView> {
             borderRadius: BorderRadius.circular(30),
           ),
         ),
-        child: const Text(
-          'Sign Up',
-          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
+        child: Text(
+          AppLocalizations.of(context)!.signUp,
+          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
         ),
       ),
     );
   }
 
   Widget _buildContinueWithText() {
-    return const Center(
+    return Center(
       child: Text(
-        'Or continue with',
-        style: TextStyle(
+        AppLocalizations.of(context)!.orContinue,
+        style: const TextStyle(
           fontSize: 12,
           fontWeight: FontWeight.w600,
           color: Color(0xFF243E4B),
@@ -217,12 +219,9 @@ class _SignUpViewState extends State<SignUpView> {
       width: double.infinity,
       child: OutlinedButton.icon(
         onPressed: () {},
-        icon: Image.asset(
-          'assets/images/google_icon.png',
-          height: 24,
-        ),
+        icon: Image.asset('assets/images/google_icon.png', height: 24),
         label: Text(
-          'Google',
+          AppLocalizations.of(context)!.google,
           textAlign: TextAlign.center,
           style: GoogleFonts.inter(
             fontSize: 14,
@@ -232,10 +231,7 @@ class _SignUpViewState extends State<SignUpView> {
         ),
         style: OutlinedButton.styleFrom(
           padding: const EdgeInsets.symmetric(vertical: 14),
-          side: const BorderSide(
-            color: Color(0xFF243E4B),
-            width: 1.2,
-          ),
+          side: const BorderSide(color: Color(0xFF243E4B), width: 1.2),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(30),
           ),
@@ -248,17 +244,17 @@ class _SignUpViewState extends State<SignUpView> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        const Text(
-          'Already have an account? ',
-          style: TextStyle(color: Color(0xFF243E4B)),
+        Text(
+          AppLocalizations.of(context)!.alreadyHaveAccount,
+          style: const TextStyle(color: Color(0xFF243E4B)),
         ),
         GestureDetector(
           onTap: () {
             Navigator.pop(context);
           },
-          child: const Text(
-            'Sign In',
-            style: TextStyle(
+          child: Text(
+            AppLocalizations.of(context)!.login,
+            style: const TextStyle(
               color: Color(0xFFFECD27),
               fontWeight: FontWeight.bold,
             ),

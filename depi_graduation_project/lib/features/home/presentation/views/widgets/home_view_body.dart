@@ -9,9 +9,10 @@ import 'package:whatsapp/features/home/presentation/views/widgets/build_category
 import 'package:whatsapp/features/home/presentation/views/widgets/build_profile_section.dart';
 import 'package:whatsapp/features/home/presentation/views/widgets/build_recommendation_list.dart';
 import 'package:whatsapp/features/home/presentation/views/widgets/build_search_bar.dart';
-import 'package:whatsapp/features/home/presentation/views/widgets/build_recently_viewed.dart'; // Add this import
+import 'package:whatsapp/features/home/presentation/views/widgets/build_recently_viewed.dart';
 
 import 'package:whatsapp/features/profile/presentation/cubit/user_cubit.dart';
+import 'package:whatsapp/l10n/app_localizations.dart';
 
 class HomeViewBody extends StatefulWidget {
   const HomeViewBody({super.key});
@@ -84,7 +85,7 @@ class _HomeViewBodyState extends State<HomeViewBody> {
                 BuildSearchBar(textEditingController: textEditingController),
                 SizedBox(height: 24.h),
                 Text(
-                  'Browse By Category',
+                  AppLocalizations.of(context)!.browseByCategory,
                   style: TextStyle(
                     fontSize: 18.sp,
                     fontWeight: FontWeight.bold,
@@ -95,7 +96,7 @@ class _HomeViewBodyState extends State<HomeViewBody> {
                 const BuildCategoryList(),
                 SizedBox(height: 24.h),
                 Text(
-                  'Top Recommendations',
+                  AppLocalizations.of(context)!.topRecommendations,
                   style: TextStyle(
                     fontSize: 18.sp,
                     fontWeight: FontWeight.bold,
@@ -105,10 +106,10 @@ class _HomeViewBodyState extends State<HomeViewBody> {
                 SizedBox(height: 10.h),
                 const BuildRecommendationList(),
                 SizedBox(height: 20.h),
-                
+
                 // Recently Viewed Section (From Logic)
                 Text(
-                  'Recently Viewed',
+                  AppLocalizations.of(context)!.recentlyViewed,
                   style: TextStyle(
                     fontSize: 18.sp,
                     fontWeight: FontWeight.bold,
@@ -129,26 +130,25 @@ class _HomeViewBodyState extends State<HomeViewBody> {
   void _showLocationErrorDialog(BuildContext context, String message) {
     showDialog(
       context: context,
-      builder:
-          (context) => AlertDialog(
-            title: const Text('خطأ في الموقع'),
-            content: Text(message),
-            actions: [
-              TextButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                child: const Text('إلغاء'),
-              ),
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                  context.read<PlacesCubit>().loadPlaces();
-                },
-                child: const Text('إعادة المحاولة'),
-              ),
-            ],
+      builder: (context) => AlertDialog(
+        title: Text(AppLocalizations.of(context)!.locationErrorTitle),
+        content: Text(message),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            child: Text(AppLocalizations.of(context)!.cancel),
           ),
+          ElevatedButton(
+            onPressed: () {
+              Navigator.pop(context);
+              context.read<PlacesCubit>().loadPlaces();
+            },
+            child: Text(AppLocalizations.of(context)!.retry),
+          ),
+        ],
+      ),
     );
   }
 
@@ -156,31 +156,30 @@ class _HomeViewBodyState extends State<HomeViewBody> {
     showDialog(
       context: context,
       barrierDismissible: false,
-      builder:
-          (context) => AlertDialog(
-            icon: Icon(Icons.location_off, size: 48.sp, color: Colors.red),
-            title: const Text('خدمة الموقع غير مفعلة'),
-            content: const Text(
-              'يحتاج التطبيق إلى تفعيل خدمة الموقع (GPS) لعرض الأماكن القريبة منك.\n\nهل تريد تفعيل خدمة الموقع الآن؟',
-            ),
-            actions: [
-              TextButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                child: const Text('لاحقاً'),
-              ),
-              ElevatedButton(
-                onPressed: () async {
-                  Navigator.pop(context);
-                  await LocationService.instance.openLocationSettings();
-                  await Future.delayed(const Duration(seconds: 1));
-                  _checkLocationAndLoadPlaces();
-                },
-                child: const Text('تفعيل الموقع'),
-              ),
-            ],
+      builder: (context) => AlertDialog(
+        icon: Icon(Icons.location_off, size: 48.sp, color: Colors.red),
+        title: Text(AppLocalizations.of(context)!.locationServiceDisabledTitle),
+        content: Text(
+          AppLocalizations.of(context)!.locationServiceDisabledMessage,
+        ),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            child: Text(AppLocalizations.of(context)!.later),
           ),
+          ElevatedButton(
+            onPressed: () async {
+              Navigator.pop(context);
+              await LocationService.instance.openLocationSettings();
+              await Future.delayed(const Duration(seconds: 1));
+              _checkLocationAndLoadPlaces();
+            },
+            child: Text(AppLocalizations.of(context)!.enableLocation),
+          ),
+        ],
+      ),
     );
   }
 
@@ -188,40 +187,33 @@ class _HomeViewBodyState extends State<HomeViewBody> {
     showDialog(
       context: context,
       barrierDismissible: false,
-      builder:
-          (context) => AlertDialog(
-            icon: Icon(
-              Icons.location_searching,
-              size: 48.sp,
-              color: Colors.orange,
-            ),
-            title: const Text('إذن الوصول للموقع'),
-            content: const Text(
-              'يحتاج التطبيق إلى إذن الوصول لموقعك لعرض الأماكن القريبة منك.\n\nهل تريد منح الإذن؟',
-            ),
-            actions: [
-              TextButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                child: const Text('رفض'),
-              ),
-              ElevatedButton(
-                onPressed: () async {
-                  Navigator.pop(context);
-                  final permission =
-                      await LocationService.instance.requestPermission();
-                  if (permission == LocationPermission.whileInUse ||
-                      permission == LocationPermission.always) {
-                    _checkLocationAndLoadPlaces();
-                  } else {
-                    _showPermissionDeniedMessage();
-                  }
-                },
-                child: const Text('منح الإذن'),
-              ),
-            ],
+      builder: (context) => AlertDialog(
+        icon: Icon(Icons.location_searching, size: 48.sp, color: Colors.orange),
+        title: Text(AppLocalizations.of(context)!.permissionDeniedTitle),
+        content: Text(AppLocalizations.of(context)!.permissionDeniedMessage),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            child: Text(AppLocalizations.of(context)!.deny),
           ),
+          ElevatedButton(
+            onPressed: () async {
+              Navigator.pop(context);
+              final permission = await LocationService.instance
+                  .requestPermission();
+              if (permission == LocationPermission.whileInUse ||
+                  permission == LocationPermission.always) {
+                _checkLocationAndLoadPlaces();
+              } else {
+                _showPermissionDeniedMessage();
+              }
+            },
+            child: Text(AppLocalizations.of(context)!.grantPermission),
+          ),
+        ],
+      ),
     );
   }
 
@@ -229,29 +221,28 @@ class _HomeViewBodyState extends State<HomeViewBody> {
     showDialog(
       context: context,
       barrierDismissible: false,
-      builder:
-          (context) => AlertDialog(
-            icon: Icon(Icons.block, size: 48.sp, color: Colors.red),
-            title: const Text('تم رفض إذن الموقع'),
-            content: const Text(
-              'تم رفض إذن الوصول للموقع بشكل نهائي.\n\nيرجى الذهاب إلى إعدادات التطبيق وتفعيل إذن الموقع يدوياً.',
-            ),
-            actions: [
-              TextButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                child: const Text('إلغاء'),
-              ),
-              ElevatedButton(
-                onPressed: () async {
-                  Navigator.pop(context);
-                  await LocationService.instance.openAppSettings();
-                },
-                child: const Text('فتح الإعدادات'),
-              ),
-            ],
+      builder: (context) => AlertDialog(
+        icon: Icon(Icons.block, size: 48.sp, color: Colors.red),
+        title: Text(AppLocalizations.of(context)!.permissionDeniedForeverTitle),
+        content: Text(
+          AppLocalizations.of(context)!.permissionDeniedForeverMessage,
+        ),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            child: Text(AppLocalizations.of(context)!.cancel),
           ),
+          ElevatedButton(
+            onPressed: () async {
+              Navigator.pop(context);
+              await LocationService.instance.openAppSettings();
+            },
+            child: Text(AppLocalizations.of(context)!.openSettings),
+          ),
+        ],
+      ),
     );
   }
 
@@ -259,11 +250,9 @@ class _HomeViewBodyState extends State<HomeViewBody> {
     if (!mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: const Text(
-          'تم رفض إذن الوصول للموقع. لن يتمكن التطبيق من عرض الأماكن القريبة.',
-        ),
+        content: Text(AppLocalizations.of(context)!.permissionDeniedSnackBar),
         action: SnackBarAction(
-          label: 'إعادة المحاولة',
+          label: AppLocalizations.of(context)!.retry,
           onPressed: _checkLocationAndLoadPlaces,
         ),
         duration: const Duration(seconds: 5),

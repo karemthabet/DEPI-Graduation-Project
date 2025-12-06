@@ -17,10 +17,12 @@ import 'package:whatsapp/features/home/data/models/place_model.dart';
 import 'package:whatsapp/features/home/presentation/cubit/place_details_cubit.dart';
 import 'package:whatsapp/features/home/presentation/cubit/places_cubit.dart';
 import 'package:whatsapp/features/profile/presentation/cubit/user_cubit.dart';
+import 'package:whatsapp/l10n/app_localizations.dart';
 import 'package:whatsapp/supabase_service.dart';
 import 'package:whatsapp/core/services/notification_service.dart';
 import 'package:whatsapp/features/visit_Screen/presentation/cubit/visit_cubit.dart';
 import 'package:whatsapp/core/di/injection_container.dart' as di;
+import 'package:whatsapp/core/localization/cubit/locale_cubit.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -61,8 +63,13 @@ void main() async {
       ],
       child: MultiBlocProvider(
         providers: [
+          BlocProvider(create: (context) => LocaleCubit()),
           BlocProvider(create: (context) => PlacesCubit(repository: getIt())),
           BlocProvider(create: (context) => PlaceDetailsCubit(getIt())),
+          BlocProvider(
+            create: (context) => UserCubit(getIt())..loadUserProfile(),
+          ),
+
           BlocProvider(create: (context) => UserCubit(getIt())),
           BlocProvider(create: (context) => di.sl<VisitCubit>()),
           BlocProvider<FavoritesCubit>(
@@ -89,13 +96,27 @@ class MyApp extends StatelessWidget {
       minTextAdapt: true,
       splitScreenMode: true,
       builder: (context, child) {
-        return MaterialApp.router(
-          debugShowCheckedModeBanner: false,
-          routerConfig: AppRouter.router,
-          theme: ThemeData(
-            primarySwatch: Colors.blue,
-            scaffoldBackgroundColor: Colors.white,
-          ),
+        return BlocBuilder<LocaleCubit, LocaleState>(
+          builder: (context, state) {
+            Locale? locale;
+            if (state is LocaleChanged) {
+              locale = state.locale;
+            } else if (state is LocaleInitial) {
+              locale = state.locale;
+            }
+
+            return MaterialApp.router(
+              localizationsDelegates: AppLocalizations.localizationsDelegates,
+              supportedLocales: AppLocalizations.supportedLocales,
+              locale: locale,
+              debugShowCheckedModeBanner: false,
+              routerConfig: AppRouter.router,
+              theme: ThemeData(
+                primarySwatch: Colors.blue,
+                scaffoldBackgroundColor: Colors.white,
+              ),
+            );
+          },
         );
       },
     );

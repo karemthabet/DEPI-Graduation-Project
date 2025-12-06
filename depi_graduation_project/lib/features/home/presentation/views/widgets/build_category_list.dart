@@ -5,6 +5,7 @@ import 'package:whatsapp/features/home/presentation/cubit/places_cubit.dart';
 import 'package:whatsapp/features/home/presentation/views/places_list_view.dart';
 import 'package:whatsapp/features/home/presentation/views/widgets/build_category_item.dart';
 import 'package:whatsapp/features/home/presentation/views/widgets/category_shimmer.dart';
+import 'package:whatsapp/l10n/app_localizations.dart';
 
 class BuildCategoryList extends StatelessWidget {
   const BuildCategoryList({super.key});
@@ -37,7 +38,7 @@ class BuildCategoryList extends StatelessWidget {
                     ),
                     SizedBox(height: 8.h),
                     Text(
-                      'No Categories Found',
+                      AppLocalizations.of(context)!.noCategoriesFound,
                       style: TextStyle(
                         fontSize: 14.sp,
                         color: Colors.grey[600],
@@ -70,14 +71,13 @@ class BuildCategoryList extends StatelessWidget {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder:
-                            (_) => BlocProvider.value(
-                              value: context.read<PlacesCubit>(),
-                              child: PlacesListView(
-                                categoryKey: categoryKey,
-                                categoryName: categoryName,
-                              ),
-                            ),
+                        builder: (_) => BlocProvider.value(
+                          value: context.read<PlacesCubit>(),
+                          child: PlacesListView(
+                            categoryKey: categoryKey,
+                            categoryName: categoryName,
+                          ),
+                        ),
                       ),
                     );
                   },
@@ -110,7 +110,7 @@ class BuildCategoryList extends StatelessWidget {
                   ),
                   SizedBox(height: 8.h),
                   Text(
-                    'Failed to load categories',
+                    AppLocalizations.of(context)!.failedToLoadCategories,
                     style: TextStyle(
                       fontSize: 14.sp,
                       color: Colors.red[600],

@@ -4,6 +4,7 @@ import 'package:uuid/uuid.dart';
 import 'package:whatsapp/core/services/google_maps_place_service.dart';
 import 'package:whatsapp/core/utils/styles/app_text_styles.dart';
 import 'package:whatsapp/features/home/data/models/item_model.dart';
+import 'package:whatsapp/l10n/app_localizations.dart';
 import 'package:whatsapp/models/place_autocomplete_model/place_autocomplete_model.dart';
 import 'package:whatsapp/features/home/presentation/views/widgets/categories_view_details_body.dart';
 import 'package:whatsapp/models/places_details_model/places_details_model.dart';
@@ -76,7 +77,7 @@ class _BuildSearchBarState extends State<BuildSearchBar> {
                   ),
 
                   decoration: InputDecoration(
-                    hintText: 'Find things you\'re interested in',
+                    hintText: AppLocalizations.of(context)!.searchHint,
                     hintStyle: AppTextStyles.bodyMedium(context).copyWith(
                       color: Colors.grey,
                       fontSize: 13.sp,
@@ -156,8 +157,8 @@ class customlistview extends StatelessWidget {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder:
-                        (context) => CategoriesViewDetailsBody(itemModel: item),
+                    builder: (context) =>
+                        CategoriesViewDetailsBody(itemModel: item),
                   ),
                 ).then((_) {
                   onPlaceSelection(placeDetails);

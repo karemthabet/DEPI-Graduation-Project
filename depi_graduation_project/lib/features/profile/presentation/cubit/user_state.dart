@@ -21,6 +21,14 @@ class UserLoaded extends UserState {
   List<Object?> get props => [user];
 }
 
+class UserUpdateSuccess extends UserState {
+  final String message;
+  const UserUpdateSuccess(this.message);
+
+  @override
+  List<Object?> get props => [message];
+}
+
 class UserError extends UserState {
   final String message;
 
@@ -28,4 +36,11 @@ class UserError extends UserState {
 
   @override
   List<Object?> get props => [message];
+}
+
+class UserLoggedOut extends UserState {
+  const UserLoggedOut();
+
+  @override
+  List<Object?> get props => [];
 }

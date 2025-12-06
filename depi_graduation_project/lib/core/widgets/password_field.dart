@@ -55,7 +55,7 @@ class _PasswordFieldState extends State<PasswordField> {
       keyboardType: widget.textInputType,
       obscureText: !isPasswordVisible,
       onTapOutside: (event) => FocusScope.of(context).unfocus(),
-
+      readOnly: widget.readOnly,
       cursorColor: widget.cursorColor ?? AppColors.darkBlue,
 
       style:
@@ -96,7 +96,7 @@ class _PasswordFieldState extends State<PasswordField> {
           splashRadius: 20,
           onPressed: () {
             setState(() {
-              isPasswordVisible = !isPasswordVisible;
+              isPasswordVisible = isPasswordVisible;
             });
           },
           icon: Icon(

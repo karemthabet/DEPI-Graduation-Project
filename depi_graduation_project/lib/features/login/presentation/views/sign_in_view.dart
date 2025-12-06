@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:whatsapp/core/utils/router/routes_name.dart';
 import 'package:whatsapp/features/login/presentation/views/widgets/password_field.dart';
+import 'package:whatsapp/l10n/app_localizations.dart';
 import 'signup_view.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'forget_password_view.dart';
@@ -48,7 +49,7 @@ class _SignInViewState extends State<SignInView> {
 
               // Header text
               Text(
-                'Hey,\nWelcome \nBack',
+                AppLocalizations.of(context)!.welcomeBack,
                 style: GoogleFonts.inter(
                   fontSize: 32,
                   fontWeight: FontWeight.w700,
@@ -64,7 +65,7 @@ class _SignInViewState extends State<SignInView> {
                 controller: emailController,
                 decoration: InputDecoration(
                   prefixIcon: const Icon(Icons.email_outlined),
-                  hintText: 'Email',
+                  hintText: AppLocalizations.of(context)!.email,
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(30),
                   ),
@@ -74,7 +75,7 @@ class _SignInViewState extends State<SignInView> {
 
               // Password field
               PasswordField(
-                hintText: 'Password',
+                hintText: AppLocalizations.of(context)!.password,
                 icon: Icons.lock_outline,
                 controller: passwordController,
                 isPassword: true,
@@ -92,9 +93,9 @@ class _SignInViewState extends State<SignInView> {
                       ),
                     );
                   },
-                  child: const Text(
-                    'Forget Password?',
-                    style: TextStyle(
+                  child: Text(
+                    AppLocalizations.of(context)!.forgotPassword,
+                    style: const TextStyle(
                       color: Colors.grey,
                       decoration: TextDecoration.underline,
                     ),
@@ -115,8 +116,10 @@ class _SignInViewState extends State<SignInView> {
                     // Basic validation
                     if (email.isEmpty || password.isEmpty) {
                       ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text('Email and password are required'),
+                        SnackBar(
+                          content: Text(
+                            AppLocalizations.of(context)!.authValidation,
+                          ),
                         ),
                       );
                       return;
@@ -134,7 +137,11 @@ class _SignInViewState extends State<SignInView> {
                       if (user == null) {
                         // Sign-in failed
                         ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('Invalid credentials')),
+                          SnackBar(
+                            content: Text(
+                              AppLocalizations.of(context)!.invalidCredentials,
+                            ),
+                          ),
                         );
                         return;
                       }
@@ -142,9 +149,9 @@ class _SignInViewState extends State<SignInView> {
                       // Check email verification
                       if (user.emailConfirmedAt == null) {
                         ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
+                          SnackBar(
                             content: Text(
-                              'Please verify your email before signing in',
+                              AppLocalizations.of(context)!.verifyEmail,
                             ),
                           ),
                         );
@@ -153,7 +160,11 @@ class _SignInViewState extends State<SignInView> {
 
                       // SUCCESS: Navigate to main view
                       ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('Sign in successful')),
+                        SnackBar(
+                          content: Text(
+                            AppLocalizations.of(context)!.loginSuccess,
+                          ),
+                        ),
                       );
                       context.go(RoutesName.mainView);
                     } on AuthException catch (e) {
@@ -176,7 +187,7 @@ class _SignInViewState extends State<SignInView> {
                     elevation: 0,
                   ),
                   child: Text(
-                    'Log In',
+                    AppLocalizations.of(context)!.login,
                     style: GoogleFonts.inter(
                       fontSize: 18,
                       fontWeight: FontWeight.w700,
@@ -188,7 +199,7 @@ class _SignInViewState extends State<SignInView> {
 
               const SizedBox(height: 20),
 
-              const Center(child: Text('Or continue with')),
+              Center(child: Text(AppLocalizations.of(context)!.orContinue)),
               const SizedBox(height: 15),
 
               SizedBox(
@@ -200,7 +211,7 @@ class _SignInViewState extends State<SignInView> {
                     height: 24,
                   ),
                   label: Text(
-                    'Google',
+                    AppLocalizations.of(context)!.google,
                     style: GoogleFonts.inter(
                       fontSize: 14,
                       fontWeight: FontWeight.w700,
@@ -225,7 +236,7 @@ class _SignInViewState extends State<SignInView> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Text("Don't have an account? "),
+                  Text(AppLocalizations.of(context)!.noAccount),
                   GestureDetector(
                     onTap: () {
                       Navigator.push(
@@ -233,9 +244,9 @@ class _SignInViewState extends State<SignInView> {
                         MaterialPageRoute(builder: (_) => const SignUpView()),
                       );
                     },
-                    child: const Text(
-                      'Sign Up',
-                      style: TextStyle(
+                    child: Text(
+                      AppLocalizations.of(context)!.signUp,
+                      style: const TextStyle(
                         color: Color(0xFFFECD27),
                         fontWeight: FontWeight.bold,
                       ),

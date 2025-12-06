@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart'; // Assuming screenutil is used
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:whatsapp/l10n/app_localizations.dart';
 import '../../data/model/place__model.dart';
 import '../cubit/visit_cubit.dart';
 
@@ -36,7 +37,7 @@ class _AddToVisitDialogState extends State<AddToVisitDialog> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Text(
-                'Add To Visit List',
+                AppLocalizations.of(context)!.addToVisitList,
                 style: TextStyle(
                   fontSize: 18.sp,
                   fontWeight: FontWeight.bold,
@@ -49,7 +50,7 @@ class _AddToVisitDialogState extends State<AddToVisitDialog> {
               Align(
                 alignment: Alignment.centerLeft,
                 child: Text(
-                  'Date',
+                  AppLocalizations.of(context)!.date,
                   style: TextStyle(
                     fontWeight: FontWeight.w600,
                     fontSize: 14.sp,
@@ -88,7 +89,7 @@ class _AddToVisitDialogState extends State<AddToVisitDialog> {
               Align(
                 alignment: Alignment.centerLeft,
                 child: Text(
-                  'Time',
+                  AppLocalizations.of(context)!.time,
                   style: TextStyle(
                     fontWeight: FontWeight.w600,
                     fontSize: 14.sp,
@@ -146,7 +147,7 @@ class _AddToVisitDialogState extends State<AddToVisitDialog> {
                         padding: EdgeInsets.symmetric(vertical: 12.h),
                       ),
                       child: Text(
-                        'Add',
+                        AppLocalizations.of(context)!.add,
                         style: TextStyle(
                           color: Colors.black,
                           fontWeight: FontWeight.bold,
@@ -167,7 +168,7 @@ class _AddToVisitDialogState extends State<AddToVisitDialog> {
                         padding: EdgeInsets.symmetric(vertical: 12.h),
                       ),
                       child: Text(
-                        'Cancel',
+                        AppLocalizations.of(context)!.cancel,
                         style: TextStyle(
                           color: Colors.black,
                           fontWeight: FontWeight.bold,
@@ -205,21 +206,20 @@ class _AddToVisitDialogState extends State<AddToVisitDialog> {
           icon: const Icon(Icons.keyboard_arrow_down, size: 20),
           isExpanded: true,
           onChanged: onChanged,
-          items:
-              items.map((item) {
-                return DropdownMenuItem<T>(
-                  value: item,
-                  child: Center(
-                    child: Text(
-                      itemLabel != null ? itemLabel(item) : item.toString(),
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 14.sp,
-                      ),
-                    ),
+          items: items.map((item) {
+            return DropdownMenuItem<T>(
+              value: item,
+              child: Center(
+                child: Text(
+                  itemLabel != null ? itemLabel(item) : item.toString(),
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 14.sp,
                   ),
-                );
-              }).toList(),
+                ),
+              ),
+            );
+          }).toList(),
         ),
       ),
     );
@@ -264,9 +264,9 @@ class _AddToVisitDialogState extends State<AddToVisitDialog> {
   void _addToVisitList() {
     final userId = Supabase.instance.client.auth.currentUser?.id;
     if (userId == null) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(const SnackBar(content: Text('Please login first')));
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(AppLocalizations.of(context)!.pleaseLoginFirst)),
+      );
       return;
     }
 
@@ -282,8 +282,8 @@ class _AddToVisitDialogState extends State<AddToVisitDialog> {
     );
 
     Navigator.pop(context);
-    ScaffoldMessenger.of(
-      context,
-    ).showSnackBar(const SnackBar(content: Text('Added to Visit List')));
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(AppLocalizations.of(context)!.addedToVisitList)),
+    );
   }
 }
