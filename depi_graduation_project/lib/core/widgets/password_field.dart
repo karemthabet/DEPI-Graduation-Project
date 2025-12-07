@@ -96,7 +96,7 @@ class _PasswordFieldState extends State<PasswordField> {
           splashRadius: 20,
           onPressed: () {
             setState(() {
-              isPasswordVisible = isPasswordVisible;
+              isPasswordVisible = !isPasswordVisible;
             });
           },
           icon: Icon(

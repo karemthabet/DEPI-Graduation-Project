@@ -16,37 +16,47 @@ class _OnboardingViewBodyState extends State<OnboardingViewBody> {
   final PageController _pageController = PageController();
   int _currentPage = 0;
 
-  final List<Map<String, String>> onboardingData = [
-    {
-      'image': 'assets/images/onboardingimg1.jpg',
-      'title': 'onboarding_title_1', // مفتاح الترجمة
-      'desc': 'onboarding_desc_1',   // مفتاح الترجمة
-    },
-    {
-      'image': 'assets/images/onboardingimg2.jpg',
-      'title': 'onboarding_title_2', // مفتاح الترجمة
-      'desc': 'onboarding_desc_2',   // مفتاح الترجمة
-    },
-    {
-      'image': 'assets/images/onboarding3.jpg',
-      'title': 'onboarding_title_3', // مفتاح الترجمة
-      'desc': 'onboarding_desc_3',   // مفتاح الترجمة
-    },
-  ];
-
-  void _nextPage() {
-    if (_currentPage < onboardingData.length - 1) {
-      _pageController.nextPage(
-        duration: const Duration(milliseconds: 400),
-        curve: Curves.easeInOut,
-      );
-    } else {
-      context.go(RoutesName.welcome);
-    }
+  List<Map<String, String>> getOnboardingData(BuildContext context) {
+    return [
+      {
+        'image': 'assets/images/onboardingimg1.jpg',
+        'title': AppLocalizations.of(context)!.onboardingTitle1,
+        'desc': AppLocalizations.of(context)!.onboardingDesc1,
+      },
+      {
+        'image': 'assets/images/onboardingimg2.jpg',
+        'title': AppLocalizations.of(context)!.onboardingTitle2,
+        'desc': AppLocalizations.of(context)!.onboardingDesc2,
+      },
+      {
+        'image': 'assets/images/onboarding3.jpg',
+        'title': AppLocalizations.of(context)!.onboardingTitle3,
+        'desc': AppLocalizations.of(context)!.onboardingDesc3,
+      },
+    ];
   }
 
   @override
   Widget build(BuildContext context) {
+    final onboardingData = getOnboardingData(context);
+
+    // Need to define _nextPage here or make it accept data/context if needed,
+    // but _pageController is part of state, so it's fine.
+    // However, _nextPage used onboardingData.length.
+    // I can just check _currentPage against hardcoded 3 or get length from local var.
+    // Better to define _nextPage closure or method that checks the local data length.
+
+    void nextPage() {
+      if (_currentPage < onboardingData.length - 1) {
+        _pageController.nextPage(
+          duration: const Duration(milliseconds: 400),
+          curve: Curves.easeInOut,
+        );
+      } else {
+        context.go(RoutesName.welcome);
+      }
+    }
+
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
@@ -66,7 +76,10 @@ class _OnboardingViewBodyState extends State<OnboardingViewBody> {
                   children: [
                     /// IMAGE SECTION
                     Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 20.h),
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 24.w,
+                        vertical: 20.h,
+                      ),
                       child: Center(
                         child: Image.asset(
                           item['image']!,
@@ -83,7 +96,9 @@ class _OnboardingViewBodyState extends State<OnboardingViewBody> {
                               ),
                               child: Center(
                                 child: Text(
-                                  'Illustration Missing',
+                                  AppLocalizations.of(
+                                    context,
+                                  )!.illustrationMissing,
                                   style: TextStyle(fontSize: 14.sp),
                                 ),
                               ),
@@ -96,7 +111,9 @@ class _OnboardingViewBodyState extends State<OnboardingViewBody> {
                     /// DOTS INDICATOR
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
-                      children: List.generate(onboardingData.length, (dotIndex) {
+                      children: List.generate(onboardingData.length, (
+                        dotIndex,
+                      ) {
                         return AnimatedContainer(
                           duration: const Duration(milliseconds: 300),
                           margin: EdgeInsets.symmetric(horizontal: 4.w),
@@ -161,7 +178,7 @@ class _OnboardingViewBodyState extends State<OnboardingViewBody> {
                             /// NEXT BUTTON
                             Center(
                               child: GestureDetector(
-                                onTap: _nextPage,
+                                onTap: nextPage,
                                 child: Container(
                                   width: 64.w,
                                   height: 64.w,
@@ -206,8 +223,7 @@ class _OnboardingViewBodyState extends State<OnboardingViewBody> {
                   context.go(RoutesName.welcome);
                 },
                 child: Text(
-                  
-                  '', // الطريقة الصحيحة للحصول على النص
+                  AppLocalizations.of(context)!.skip,
                   style: TextStyle(
                     color: AppColors.primaryBlue,
                     fontWeight: FontWeight.w600,

@@ -21,12 +21,12 @@ class UserLoaded extends UserState {
   List<Object?> get props => [user];
 }
 
-class UserUpdateSuccess extends UserState {
+class UserUpdateSuccess extends UserLoaded {
   final String message;
-  const UserUpdateSuccess(this.message);
+  const UserUpdateSuccess(super.user, this.message);
 
   @override
-  List<Object?> get props => [message];
+  List<Object?> get props => [user, message];
 }
 
 class UserError extends UserState {

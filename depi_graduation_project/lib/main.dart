@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -19,6 +20,8 @@ import 'package:whatsapp/features/home/presentation/cubit/places_cubit.dart';
 import 'package:whatsapp/features/profile/presentation/cubit/user_cubit.dart';
 import 'package:whatsapp/l10n/app_localizations.dart';
 import 'package:whatsapp/supabase_service.dart';
+import 'package:whatsapp/features/profile/data/model/user_model.dart';
+import 'package:whatsapp/my_app.dart';
 import 'package:whatsapp/core/services/notification_service.dart';
 import 'package:whatsapp/features/visit_Screen/presentation/cubit/visit_cubit.dart';
 import 'package:whatsapp/core/di/injection_container.dart' as di;
@@ -26,6 +29,7 @@ import 'package:whatsapp/core/localization/cubit/locale_cubit.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await GetStorage.init();
 
   // Initialize Hive
   await Hive.initFlutter();
@@ -35,11 +39,13 @@ void main() async {
   Hive.registerAdapter(ReviewModelAdapter());
   Hive.registerAdapter(CachedLocationModelAdapter());
   Hive.registerAdapter(CachedPlaceDetailsModelAdapter());
+  Hive.registerAdapter(UserModelAdapter());
 
   // Open Hive boxes
   await Hive.openBox<CachedPlaceDetailsModel>('place_details_cache');
   await Hive.openBox<CachedPlacesModel>('places_cache');
   await Hive.openBox<CachedLocationModel>('location_cache');
+  await Hive.openBox<UserModel>('user_cache');
 
   // Initialize Supabase
   await Supabase.initialize(
@@ -73,11 +79,9 @@ void main() async {
           BlocProvider(create: (context) => UserCubit(getIt())),
           BlocProvider(create: (context) => di.sl<VisitCubit>()),
           BlocProvider<FavoritesCubit>(
-            create:
-                (context) => FavoritesCubit(
-                  repository: context.read<IFavoritesRepository>(),
-                  userId: SupabaseService.userId,
-                )..loadFavorites(),
+            create: (context) =>
+                FavoritesCubit(repository: context.read<IFavoritesRepository>())
+                  ..loadFavorites(),
           ),
         ],
         child: const MyApp(),

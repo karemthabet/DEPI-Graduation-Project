@@ -6,7 +6,10 @@ class CustomButton extends StatelessWidget {
   final String text;
   final Color textColor;
   final BorderSide? outLine;
+  final Widget? icon;
+
   final VoidCallback? onPressed;
+
   const CustomButton({
     super.key,
     required this.backGroungColor,
@@ -14,6 +17,7 @@ class CustomButton extends StatelessWidget {
     required this.textColor,
     required this.onPressed,
     this.outLine,
+    this.icon,
   });
 
   @override
@@ -26,15 +30,16 @@ class CustomButton extends StatelessWidget {
         padding: const EdgeInsets.symmetric(vertical: 14),
         side: outLine,
       ),
-      child: Text(
-        text,
-
-        style: TextStyle(
-          color: textColor,
-          fontWeight: FontWeight.w600,
-          fontSize: 20.sp,
-        ),
-      ),
+      child:
+          icon ??
+          Text(
+            text,
+            style: TextStyle(
+              color: textColor,
+              fontWeight: FontWeight.w600,
+              fontSize: 20.sp,
+            ),
+          ),
     );
   }
 }

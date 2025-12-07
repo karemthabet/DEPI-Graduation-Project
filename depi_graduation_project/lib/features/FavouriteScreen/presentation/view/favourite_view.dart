@@ -3,9 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:whatsapp/features/FavouriteScreen/presentation/view/widgets/favourite_view_body.dart';
 
 class FavouriteView extends StatelessWidget {
-  final String? userId;
 
-  const FavouriteView({super.key,  this.userId});
+  const FavouriteView({super.key});
 
   @override
   Widget build(BuildContext context) {
