@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:whatsapp/core/utils/colors/app_colors.dart';
 import 'package:whatsapp/core/utils/router/routes_name.dart';
+import 'package:whatsapp/l10n/app_localizations.dart';
 
 class OnboardingViewBody extends StatefulWidget {
   const OnboardingViewBody({super.key});
@@ -18,18 +19,18 @@ class _OnboardingViewBodyState extends State<OnboardingViewBody> {
   final List<Map<String, String>> onboardingData = [
     {
       'image': 'assets/images/onboardingimg1.jpg',
-      'title': 'Discover Famous\nLandmarks',
-      'desc': 'Explore Egypt’s iconic attractions, \n from ancient wonders to modern gems'
+      'title': 'onboarding_title_1', // مفتاح الترجمة
+      'desc': 'onboarding_desc_1',   // مفتاح الترجمة
     },
     {
       'image': 'assets/images/onboardingimg2.jpg',
-      'title': 'Plan Your Journey',
-      'desc': 'Create and customize your own visit list with museums, malls, hidden gems, and iconic landmarks.',
+      'title': 'onboarding_title_2', // مفتاح الترجمة
+      'desc': 'onboarding_desc_2',   // مفتاح الترجمة
     },
     {
       'image': 'assets/images/onboarding3.jpg',
-      'title': 'Navigate With Ease',
-      'desc': 'Get map directions, live alerts, and instant notifications when you’re near a landmark.',
+      'title': 'onboarding_title_3', // مفتاح الترجمة
+      'desc': 'onboarding_desc_3',   // مفتاح الترجمة
     },
   ];
 
@@ -40,8 +41,7 @@ class _OnboardingViewBodyState extends State<OnboardingViewBody> {
         curve: Curves.easeInOut,
       );
     } else {
-                      context.go(RoutesName.welcome);
-
+      context.go(RoutesName.welcome);
     }
   }
 
@@ -136,7 +136,7 @@ class _OnboardingViewBodyState extends State<OnboardingViewBody> {
                           children: [
                             /// TITLE
                             Text(
-                              item['title']!,
+                            ''  , // الطريقة الصحيحة للحصول على النص
                               style: TextStyle(
                                 fontSize: 28.sp,
                                 fontWeight: FontWeight.w800,
@@ -148,7 +148,7 @@ class _OnboardingViewBodyState extends State<OnboardingViewBody> {
 
                             /// DESCRIPTION
                             Text(
-                              item['desc']!,
+                              '', // الطريقة الصحيحة للحصول على النص
                               style: TextStyle(
                                 fontSize: 18.sp,
                                 color: AppColors.darkText.withOpacity(0.8),
@@ -203,10 +203,11 @@ class _OnboardingViewBodyState extends State<OnboardingViewBody> {
               right: 10.w,
               child: TextButton(
                 onPressed: () {
-                 context.go(RoutesName.welcome);
+                  context.go(RoutesName.welcome);
                 },
                 child: Text(
-                  'Skip',
+                  
+                  '', // الطريقة الصحيحة للحصول على النص
                   style: TextStyle(
                     color: AppColors.primaryBlue,
                     fontWeight: FontWeight.w600,

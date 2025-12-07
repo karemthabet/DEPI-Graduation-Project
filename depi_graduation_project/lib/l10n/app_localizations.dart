@@ -611,6 +611,42 @@ abstract class AppLocalizations {
   /// **'Email'**
   String get emailLabel;
 
+  /// No description provided for @onboarding_title1.
+  ///
+  /// In en, this message translates to:
+  /// **'Discover Famous\nLandmarks'**
+  String get onboarding_title1;
+
+  /// No description provided for @onboarding_desc1.
+  ///
+  /// In en, this message translates to:
+  /// **'Explore Egypt’s iconic attractions, \n from ancient wonders to modern gems'**
+  String get onboarding_desc1;
+
+  /// No description provided for @onboarding_title2.
+  ///
+  /// In en, this message translates to:
+  /// **'Plan Your Journey'**
+  String get onboarding_title2;
+
+  /// No description provided for @onboarding_desc2.
+  ///
+  /// In en, this message translates to:
+  /// **'Create and customize your own visit list with museums, malls, hidden gems, and iconic landmarks.'**
+  String get onboarding_desc2;
+
+  /// No description provided for @onboarding_title3.
+  ///
+  /// In en, this message translates to:
+  /// **'Navigate With Ease'**
+  String get onboarding_title3;
+
+  /// No description provided for @onboarding_desc3.
+  ///
+  /// In en, this message translates to:
+  /// **'Get map directions, live alerts, and instant notifications when you’re near a landmark.'**
+  String get onboarding_desc3;
+
   /// No description provided for @passwordLabel.
   ///
   /// In en, this message translates to:

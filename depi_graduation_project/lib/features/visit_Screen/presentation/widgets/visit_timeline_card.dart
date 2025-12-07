@@ -52,7 +52,7 @@ class VisitTimelineCard extends StatelessWidget {
                 borderRadius: BorderRadius.circular(16.r),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.grey.withOpacity(0.1),
+                    color: Colors.grey.withValues(alpha: 0.1),
                     blurRadius: 10,
                     offset: const Offset(0, 4),
                   ),
@@ -68,17 +68,19 @@ class VisitTimelineCard extends StatelessWidget {
                       width: 90.w,
                       height: 90.w,
                       fit: BoxFit.cover,
-                      placeholder: (context, url) => Container(
-                        width: 90.w,
-                        height: 90.w,
-                        color: Colors.grey[200],
-                      ),
-                      errorWidget: (context, url, error) => Container(
-                        width: 90.w,
-                        height: 90.w,
-                        color: Colors.grey[300],
-                        child: const Icon(Icons.image_not_supported),
-                      ),
+                      placeholder:
+                          (context, url) => Container(
+                            width: 90.w,
+                            height: 90.w,
+                            color: Colors.grey[200],
+                          ),
+                      errorWidget:
+                          (context, url, error) => Container(
+                            width: 90.w,
+                            height: 90.w,
+                            color: Colors.grey[300],
+                            child: const Icon(Icons.image_not_supported),
+                          ),
                     ),
                   ),
                   SizedBox(width: 16.w),
@@ -118,51 +120,56 @@ class VisitTimelineCard extends StatelessWidget {
                                 size: 20.sp,
                                 color: const Color(0xFF2C3E50),
                               ),
-                              itemBuilder: (context) => [
-                                PopupMenuItem(
-                                  onTap: onDelete,
-                                  child: Row(
-                                    children: [
-                                      Icon(
-                                        Icons.delete,
-                                        color: Colors.red,
-                                        size: 20.sp,
+                              itemBuilder:
+                                  (context) => [
+                                    PopupMenuItem(
+                                      onTap: onDelete,
+                                      child: Row(
+                                        children: [
+                                          Icon(
+                                            Icons.delete,
+                                            color: Colors.red,
+                                            size: 20.sp,
+                                          ),
+                                          SizedBox(width: 8.w),
+                                          Text(
+                                            AppLocalizations.of(
+                                              context,
+                                            )!.delete,
+                                            style: TextStyle(fontSize: 14.sp),
+                                          ),
+                                        ],
                                       ),
-                                      SizedBox(width: 8.w),
-                                      Text(
-                                        AppLocalizations.of(context)!.delete,
-                                        style: TextStyle(fontSize: 14.sp),
+                                    ),
+                                    PopupMenuItem(
+                                      onTap:
+                                          () => onStatusChanged(
+                                            !visit.isCompleted,
+                                          ),
+                                      child: Row(
+                                        children: [
+                                          Icon(
+                                            visit.isCompleted
+                                                ? Icons.close
+                                                : Icons.check,
+                                            color: Colors.green,
+                                            size: 20.sp,
+                                          ),
+                                          SizedBox(width: 8.w),
+                                          Text(
+                                            visit.isCompleted
+                                                ? AppLocalizations.of(
+                                                  context,
+                                                )!.markUndone
+                                                : AppLocalizations.of(
+                                                  context,
+                                                )!.markDone,
+                                            style: TextStyle(fontSize: 14.sp),
+                                          ),
+                                        ],
                                       ),
-                                    ],
-                                  ),
-                                ),
-                                PopupMenuItem(
-                                  onTap: () =>
-                                      onStatusChanged(!visit.isCompleted),
-                                  child: Row(
-                                    children: [
-                                      Icon(
-                                        visit.isCompleted
-                                            ? Icons.close
-                                            : Icons.check,
-                                        color: Colors.green,
-                                        size: 20.sp,
-                                      ),
-                                      SizedBox(width: 8.w),
-                                      Text(
-                                        visit.isCompleted
-                                            ? AppLocalizations.of(
-                                                context,
-                                              )!.markUndone
-                                            : AppLocalizations.of(
-                                                context,
-                                              )!.markDone,
-                                        style: TextStyle(fontSize: 14.sp),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ],
+                                    ),
+                                  ],
                             ),
                           ],
                         ),
@@ -209,9 +216,10 @@ class DashedLinePainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     double dashHeight = 5.h, dashSpace = 3.h, startY = 0;
-    final paint = Paint()
-      ..color = Colors.grey[400]!
-      ..strokeWidth = 1.w;
+    final paint =
+        Paint()
+          ..color = Colors.grey[400]!
+          ..strokeWidth = 1.w;
 
     while (startY < size.height) {
       canvas.drawLine(Offset(0, startY), Offset(0, startY + dashHeight), paint);

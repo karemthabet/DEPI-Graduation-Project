@@ -43,7 +43,7 @@ class FavouriteCard extends StatelessWidget {
                 width: screenWidth(context) / 0.3,
                 height: screenHeight(context) / 7,
                 decoration: BoxDecoration(
-                  color: AppColors.Cardcolor,
+                  color: AppColors.cardColor,
                   borderRadius: BorderRadius.circular(16.0),
                 ),
                 margin: const EdgeInsets.symmetric(
@@ -146,17 +146,18 @@ class FavouriteCard extends StatelessWidget {
                   onTap: () {
                     context.read<FavoritesCubit>().toggleFavorite(item);
                   },
-                  child: isFavorite
-                      ? Image.asset(
-                          'assets/images/heartFilled.png',
-                          width: 24,
-                          height: 24,
-                        )
-                      : Image.asset(
-                          'assets/images/heart.png',
-                          width: 24,
-                          height: 24,
-                        ),
+                  child:
+                      isFavorite
+                          ? Image.asset(
+                            'assets/images/heartFilled.png',
+                            width: 24,
+                            height: 24,
+                          )
+                          : Image.asset(
+                            'assets/images/heart.png',
+                            width: 24,
+                            height: 24,
+                          ),
                 ),
               ),
             ],

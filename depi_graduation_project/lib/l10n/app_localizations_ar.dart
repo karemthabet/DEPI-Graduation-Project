@@ -271,5 +271,23 @@ class AppLocalizationsAr extends AppLocalizations {
   String get emailLabel => 'البريد الإلكتروني';
 
   @override
+  String get onboarding_title1 => 'اكتشف المعالم الشهيرة';
+
+  @override
+  String get onboarding_desc1 => 'استمتع باستكشاف المعالم الشهيرة في مصر، \n من عجائب القدماء إلى الجواهر الحديثة';
+
+  @override
+  String get onboarding_title2 => 'خطط لرحلتك';
+
+  @override
+  String get onboarding_desc2 => 'أنشئ قائمة زيارتك الخاصة وقم بتخصيصها مع المتاحف والمولات والجواهر المخفية والمعالم الشهيرة.';
+
+  @override
+  String get onboarding_title3 => 'تنقل بسهولة';
+
+  @override
+  String get onboarding_desc3 => 'احصل على اتجاهات الخريطة، والتنبيهات الحية، والإشعارات الفورية عند اقترابك من معلم.';
+
+  @override
   String get passwordLabel => 'كلمة المرور';
 }

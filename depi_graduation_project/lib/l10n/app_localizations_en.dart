@@ -271,5 +271,23 @@ class AppLocalizationsEn extends AppLocalizations {
   String get emailLabel => 'Email';
 
   @override
+  String get onboarding_title1 => 'Discover Famous\nLandmarks';
+
+  @override
+  String get onboarding_desc1 => 'Explore Egypt’s iconic attractions, \n from ancient wonders to modern gems';
+
+  @override
+  String get onboarding_title2 => 'Plan Your Journey';
+
+  @override
+  String get onboarding_desc2 => 'Create and customize your own visit list with museums, malls, hidden gems, and iconic landmarks.';
+
+  @override
+  String get onboarding_title3 => 'Navigate With Ease';
+
+  @override
+  String get onboarding_desc3 => 'Get map directions, live alerts, and instant notifications when you’re near a landmark.';
+
+  @override
   String get passwordLabel => 'Password';
 }

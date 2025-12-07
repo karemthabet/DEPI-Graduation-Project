@@ -10,12 +10,13 @@ class SupabaseService {
   User? get currentUser => _client.auth.currentUser;
 
   Future<Map<String, dynamic>?> getUserProfile(String userId) async {
-    final response = await _client
-        // table: 'profiles'
-        .from('profiles')
-        .select('id, email, full_name, avatar_url')
-        .eq('id', userId)
-        .single();
+    final response =
+        await _client
+            // table: 'profiles'
+            .from('profiles')
+            .select('id, email, full_name, avatar_url')
+            .eq('id', userId)
+            .single();
     return response;
   }
 
@@ -32,10 +33,7 @@ class SupabaseService {
     final fileName = ' ${user.fullName}.$ext';
     final storagePath = '${user.id}/$fileName';
 
-    final uploadResponse = await _client.storage
-        .from('avatars')
-        .upload(storagePath, imageFile);
-    print('image uploaded');
+    await _client.storage.from('avatars').upload(storagePath, imageFile);
 
     final imageUrl = _client.storage.from('avatars').getPublicUrl(storagePath);
 

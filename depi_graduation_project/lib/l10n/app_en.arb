@@ -106,5 +106,13 @@
   "markDone": "Mark Done",
   "pleaseLoginFirst": "Please login first",
   "emailLabel": "Email",
+   "onboarding_title_1": "Discover Famous\nLandmarks",
+  "onboarding_desc_1": "Explore Egypt’s iconic attractions, \n from ancient wonders to modern gems",
+  "onboarding_title_2": "Plan Your Journey",
+  "onboarding_desc_2": "Create and customize your own visit list with museums, malls, hidden gems, and iconic landmarks.",
+  "onboarding_title_3": "Navigate With Ease",
+  "onboarding_desc_3": "Get map directions, live alerts, and instant notifications when you’re near a landmark.",
+  "skip": "Skip",
+
   "passwordLabel": "Password"
 }
