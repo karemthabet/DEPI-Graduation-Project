@@ -14,7 +14,7 @@ import 'package:whatsapp/supabase_service.dart';
 import 'package:whatsapp/features/FavouriteScreen/presentation/cubit/favourite_cubit.dart';
 import 'package:whatsapp/features/FavouriteScreen/presentation/cubit/favourite_state.dart';
 import 'package:whatsapp/features/visit_Screen/presentation/cubit/visit_cubit.dart';
-import 'package:whatsapp/core/di/injection_container.dart';
+import 'package:whatsapp/core/services/setup_service_locator.dart';
 import 'package:whatsapp/features/visit_Screen/data/model/place__model.dart';
 import 'package:whatsapp/features/visit_Screen/presentation/widgets/add_to_visit_dialog.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';

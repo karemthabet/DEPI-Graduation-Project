@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart'; // Assuming screenutil is used
-import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../data/model/place__model.dart';
 import '../cubit/visit_cubit.dart';
 
@@ -97,7 +96,6 @@ class _AddToVisitDialogState extends State<AddToVisitDialog> {
               ),
               SizedBox(height: 10.h),
 
-              // Time Picker Row
               Row(
                 children: [
                   _buildDropdown<int>(
@@ -190,7 +188,7 @@ class _AddToVisitDialogState extends State<AddToVisitDialog> {
        width: width,
        padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 4.h),
        decoration: BoxDecoration(
-          color: const Color(0xFFFDE68A), // Light orange/yellow
+          color: const Color(0xFFFDE68A), 
           borderRadius: BorderRadius.circular(20),
        ),
        child: DropdownButtonHideUnderline(
@@ -255,21 +253,12 @@ class _AddToVisitDialogState extends State<AddToVisitDialog> {
   }
 
   void _addToVisitList() {
-    final userId = Supabase.instance.client.auth.currentUser?.id;
-    if (userId == null) {
-       ScaffoldMessenger.of(context).showSnackBar(
-         const SnackBar(content: Text('Please login first')),
-       );
-       return;
-    }
-
     final formattedDate = _selectedDate;
     final timeString = "${_selectedHour.toString().padLeft(2, '0')}:${_selectedMinute.toString().padLeft(2, '0')} $_selectedPeriod";
 
     context.read<VisitCubit>().addVisit(
          place: widget.place,
          visitDate: formattedDate,
-         userId: userId,
          visitTime: timeString,
     );
     

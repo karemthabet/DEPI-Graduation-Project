@@ -9,6 +9,7 @@ abstract class VisitRepository {
     required String userId,
     String? visitTime,
   });
+  Future<void> updateVisitTime(int visitId, String visitTime);
   Future<void> toggleVisitCompletion(int visitId, bool isCompleted);
   Future<void> deleteVisit(int visitId);
   Stream<List<VisitDate>> watchAllVisitDates({String? userId});

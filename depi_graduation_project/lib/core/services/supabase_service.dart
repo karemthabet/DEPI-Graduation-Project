@@ -9,7 +9,6 @@ class SupabaseService {
 
   Future<Map<String, dynamic>?> getUserProfile(String userId) async {
     final response = await _client
-        //table
         .from('users')
         .select()
         .eq('id', userId)

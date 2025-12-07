@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:whatsapp/core/utils/time_utils.dart'; // Import TimeUtils
 import 'package:whatsapp/features/visit_Screen/data/model/visit_items.dart';
 
 class VisitTimelineCard extends StatelessWidget {
@@ -8,6 +9,7 @@ class VisitTimelineCard extends StatelessWidget {
   final bool isLast;
   final VoidCallback onDelete;
   final Function(bool?) onStatusChanged;
+  final Function(String) onTimeEdited;
 
   const VisitTimelineCard({
     super.key,
@@ -15,6 +17,7 @@ class VisitTimelineCard extends StatelessWidget {
     required this.isLast,
     required this.onDelete,
     required this.onStatusChanged,
+    required this.onTimeEdited,
   });
 
   @override
@@ -26,13 +29,21 @@ class VisitTimelineCard extends StatelessWidget {
           // Timeline Line
           Column(
             children: [
-              Container(
-                width: 12.w,
-                height: 12.w,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: const Color(0xFFFCD34D),
-                  border: Border.all(color: Colors.orange, width: 2),
+              GestureDetector(
+                onTap: () => onStatusChanged(!visit.isCompleted),
+                child: Container(
+                  width: 20.w,
+                  height: 20.w,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: visit.isCompleted ? Colors.green : Colors.white,
+                    border: Border.all(
+                        color: visit.isCompleted ? Colors.green : const Color(0xFFFCD34D),
+                        width: 2),
+                  ),
+                  child: visit.isCompleted
+                      ? Icon(Icons.check, size: 14.sp, color: Colors.white)
+                      : null,
                 ),
               ),
               if (!isLast)
@@ -45,17 +56,16 @@ class VisitTimelineCard extends StatelessWidget {
           ),
           SizedBox(width: 12.w),
           
-          // Card Content
           Expanded(
             child: Container(
               margin: EdgeInsets.only(bottom: 16.h),
               padding: EdgeInsets.all(12.w),
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: const Color(0xFFFFFBEB), 
                 borderRadius: BorderRadius.circular(16.r),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.grey.withOpacity(0.1),
+                    color: Colors.grey.withOpacity(0.05),
                     blurRadius: 10,
                     offset: const Offset(0, 4),
                   ),
@@ -63,7 +73,6 @@ class VisitTimelineCard extends StatelessWidget {
               ),
               child: Row(
                 children: [
-                  // Image
                   ClipRRect(
                     borderRadius: BorderRadius.circular(16.r),
                     child: CachedNetworkImage(
@@ -86,7 +95,6 @@ class VisitTimelineCard extends StatelessWidget {
                   ),
                   SizedBox(width: 16.w),
 
-                  // Details
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -94,25 +102,45 @@ class VisitTimelineCard extends StatelessWidget {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Row(
-                              children: [
-                                Icon(Icons.access_time, size: 14.sp, color: const Color(0xFF2C3E50)),
-                                SizedBox(width: 4.w),
-                                Text(
-                                  visit.visitTime ?? 'Anytime',
-                                  style: TextStyle(
-                                    fontSize: 12.sp,
-                                    color: const Color(0xFF2C3E50),
-                                    fontWeight: FontWeight.w500,
-                                  ),
+                            GestureDetector(
+                               onTap: () => _editTime(context),
+                               child: Container(
+                                padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
+                                decoration: BoxDecoration(
+                                  color: Colors.transparent,
+                                  borderRadius: BorderRadius.circular(8.r),
                                 ),
-                              ],
+                                child: Row(
+                                  children: [
+                                    Icon(Icons.access_time, size: 14.sp, color: const Color(0xFF1F2937)),
+                                    SizedBox(width: 4.w),
+                                    Text(
+                                      visit.visitTime ?? '00:00',
+                                      style: TextStyle(
+                                        fontSize: 12.sp,
+                                        color: const Color(0xFF1F2937),
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
                             ),
                             PopupMenuButton(
                               padding: EdgeInsets.zero,
                               constraints: const BoxConstraints(),
-                              icon: Icon(Icons.more_vert, size: 20.sp, color: const Color(0xFF2C3E50)),
+                              icon: Icon(Icons.more_vert, size: 20.sp, color: const Color(0xFF1F2937)),
                               itemBuilder: (context) => [
+                                PopupMenuItem(
+                                  onTap: () => Future.delayed(Duration.zero, () => _editTime(context)),
+                                  child: Row(
+                                    children: [
+                                      Icon(Icons.edit, color: Colors.blue, size: 20.sp),
+                                      SizedBox(width: 8.w),
+                                      Text('Edit Time', style: TextStyle(fontSize: 14.sp)),
+                                    ],
+                                  ),
+                                ),
                                 PopupMenuItem(
                                   onTap: onDelete,
                                   child: Row(
@@ -141,18 +169,18 @@ class VisitTimelineCard extends StatelessWidget {
                             ),
                           ],
                         ),
-                        SizedBox(height: 8.h),
+                        SizedBox(height: 4.h),
                         Text(
                           visit.placeName,
                           style: TextStyle(
-                            fontSize: 16.sp,
+                            fontSize: 14.sp,
                             fontWeight: FontWeight.bold,
-                            color: const Color(0xFF102A43),
+                            color: const Color(0xFF111827),
                           ),
-                          maxLines: 2,
+                          maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                         ),
-                        SizedBox(height: 8.h),
+                        SizedBox(height: 4.h),
                         Row(
                           children: [
                             Text(
@@ -160,7 +188,7 @@ class VisitTimelineCard extends StatelessWidget {
                               style: TextStyle(
                                 fontSize: 12.sp,
                                 fontWeight: FontWeight.bold,
-                                color: const Color(0xFF486581),
+                                color: const Color(0xFF4B5563),
                               ),
                             ),
                             SizedBox(width: 4.w),
@@ -178,6 +206,18 @@ class VisitTimelineCard extends StatelessWidget {
       ),
     );
   }
+
+  Future<void> _editTime(BuildContext context) async {
+    final TimeOfDay? picked = await showTimePicker(
+      context: context,
+      initialTime: TimeOfDay.now(),
+    );
+
+    if (picked != null) {
+      final formattedTime = TimeUtils.formatTimeOfDay(picked);
+      onTimeEdited(formattedTime);
+    }
+  }
 }
 
 class DashedLinePainter extends CustomPainter {
@@ -185,7 +225,7 @@ class DashedLinePainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     double dashHeight = 5.h, dashSpace = 3.h, startY = 0;
     final paint = Paint()
-      ..color = Colors.grey[400]!
+      ..color = Colors.grey[300]!
       ..strokeWidth = 1.w;
 
     while (startY < size.height) {

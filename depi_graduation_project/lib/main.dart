@@ -21,7 +21,6 @@ import 'package:whatsapp/supabase_service.dart';
 import 'package:whatsapp/my_app.dart';
 import 'package:whatsapp/core/services/notification_service.dart';
 import 'package:whatsapp/features/visit_Screen/presentation/cubit/visit_cubit.dart';
-import 'package:whatsapp/core/di/injection_container.dart' as di;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -50,7 +49,6 @@ void main() async {
 
   // Setup service locator
   setupServiceLocator();
-  await di.initGetIt();
   await NotificationService().init();
 
   runApp(
@@ -65,7 +63,7 @@ void main() async {
           BlocProvider(create: (context) => PlacesCubit(repository: getIt())),
           BlocProvider(create: (context) => PlaceDetailsCubit(getIt())),
           BlocProvider(create: (context) => UserCubit(getIt())),
-          BlocProvider(create: (context) => di.sl<VisitCubit>()),
+          BlocProvider(create: (context) => getIt<VisitCubit>()),
           BlocProvider<FavoritesCubit>(
             create: (context) => FavoritesCubit(
               repository: context.read<IFavoritesRepository>(),
