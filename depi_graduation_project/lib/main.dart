@@ -79,10 +79,9 @@ void main() async {
           BlocProvider(create: (context) => UserCubit(getIt())),
           BlocProvider(create: (context) => di.sl<VisitCubit>()),
           BlocProvider<FavoritesCubit>(
-            create: (context) => FavoritesCubit(
-              repository: context.read<IFavoritesRepository>(),
-              userId: SupabaseService.userId,
-            )..loadFavorites(),
+            create: (context) =>
+                FavoritesCubit(repository: context.read<IFavoritesRepository>())
+                  ..loadFavorites(),
           ),
         ],
         child: const MyApp(),

@@ -1,4 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../../../supabase_service.dart';
 import '../../data/models/favourite_model.dart';
 import '../../data/models/repositories/favourites_repository.dart';
 import 'favourite_state.dart';
@@ -6,12 +7,12 @@ import '../../../../core/errors/server_failure.dart';
 
 class FavoritesCubit extends Cubit<FavoritesState> {
   final IFavoritesRepository repository;
-  String? userId; // قابل للتغيير بعد تسجيل الدخول
 
-  FavoritesCubit({required this.repository, this.userId}) : super(FavoritesInitial());
+  FavoritesCubit({required this.repository}) : super(FavoritesInitial());
 
   Future<void> loadFavorites() async {
-    if (userId == null) {
+
+    if (SupabaseService.userId == null) {
       emit(FavoritesError(ServerFailure(errMessage: 'You must log in to see your favourites')));
       return;
     }
@@ -19,7 +20,7 @@ class FavoritesCubit extends Cubit<FavoritesState> {
     emit(FavoritesLoading());
 
     try {
-      final result = await repository.getFavorites(userId);
+      final result = await repository.getFavorites(SupabaseService.userId);
 
       result.fold(
         (failure) => emit(FavoritesError(failure)),
@@ -31,7 +32,7 @@ class FavoritesCubit extends Cubit<FavoritesState> {
   }
 
   Future<void> toggleFavorite(FavouriteModel place) async {
-    if (userId == null) {
+    if (SupabaseService.userId == null) {
       emit(FavoritesError(ServerFailure(errMessage: 'You must log in to update favourites')));
       return;
     }
@@ -42,7 +43,7 @@ class FavoritesCubit extends Cubit<FavoritesState> {
 
       try {
         if (isFav) {
-          await repository.removeFavorite(place.placeId, userId);
+          await repository.removeFavorite(place.placeId, SupabaseService.userId);
           final updated = currentState.favorites.where((f) => f.placeId != place.placeId).toList();
           emit(FavoritesLoaded(updated));
         } else {
@@ -61,5 +62,8 @@ class FavoritesCubit extends Cubit<FavoritesState> {
       return (state as FavoritesLoaded).favorites.any((f) => f.placeId == placeId);
     }
     return false;
+  }
+  void clearFavorites() {
+    emit(FavoritesInitial());
   }
 }
