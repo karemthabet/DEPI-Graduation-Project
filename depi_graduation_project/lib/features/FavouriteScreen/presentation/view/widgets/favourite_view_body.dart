@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
-import 'package:whatsapp/core/utils/colors/app_colors.dart';
 import 'package:whatsapp/l10n/app_localizations.dart';
 import '../../../../../core/utils/router/routes_name.dart';
 import '../../../../../supabase_service.dart';
@@ -17,37 +15,23 @@ class FavouriteViewBody extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final userId = SupabaseService.userId;
-    print('Current userId: $userId'); // للتأكد
 
     if (userId == null) {
       return Scaffold(
-        appBar: AppBar(
-          title: Text(AppLocalizations.of(context)!.favourites),
-          backgroundColor: Colors.white,
-        ),
+        appBar: AppBar(title: Text(AppLocalizations.of(context)!.favourites)),
         body: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               const Icon(Icons.lock_outline, size: 50, color: Colors.grey),
               const SizedBox(height: 16),
-              Text(
-                AppLocalizations.of(context)!.loginToSeeFavorites,
-                style: const TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w500,
-                  color: AppColors.darkBlue,
-                ),
-              ),
+              Text(AppLocalizations.of(context)!.loginToSeeFavorites),
               const SizedBox(height: 24),
               ElevatedButton(
                 onPressed: () {
                   context.go(RoutesName.login);
                 },
-                child: Text(
-                  AppLocalizations.of(context)!.goToLogin,
-                  style: const TextStyle(color: AppColors.darkBlue),
-                ),
+                child: Text(AppLocalizations.of(context)!.goToLogin),
               ),
             ],
           ),
@@ -55,31 +39,25 @@ class FavouriteViewBody extends StatelessWidget {
       );
     }
 
-    // إذا المستخدم مسجل دخول
+     WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<FavoritesCubit>().loadFavorites();
+    });
+
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: Text(
-          AppLocalizations.of(context)!.favourites,
-          style: const TextStyle(
-            fontSize: 24,
-            fontWeight: FontWeight.w600,
-            color: Color(0xFF243E4B),
-          ),
-        ),
+        title: Text(AppLocalizations.of(context)!.favourites),
+        centerTitle: true,
+        backgroundColor: Colors.white,
         actions: [
           IconButton(
             onPressed: () {
               Navigator.push(
-                context,
-                MaterialPageRoute(builder: (_) => const MainView()),
-              );
+                  context, MaterialPageRoute(builder: (_) => const MainView()));
             },
             icon: Image.asset('assets/images/plus.png', height: 24, width: 24),
           ),
         ],
-        centerTitle: true,
-        backgroundColor: Colors.white,
       ),
       body: BlocBuilder<FavoritesCubit, FavoritesState>(
         builder: (context, state) {
@@ -88,18 +66,13 @@ class FavouriteViewBody extends StatelessWidget {
           } else if (state is FavoritesLoaded) {
             final favorites = state.favorites;
             if (favorites.isEmpty) {
-              return Center(
-                child: Text(AppLocalizations.of(context)!.noFavouritesYet),
-              );
+              return Center(child: Text(AppLocalizations.of(context)!.noFavouritesYet));
             }
             return ListView.separated(
               padding: const EdgeInsets.only(top: 24, left: 16, right: 16),
               itemCount: favorites.length,
               separatorBuilder: (_, __) => const SizedBox(height: 16),
-              itemBuilder: (_, index) {
-                final fav = favorites[index];
-                return FavouriteCard(item: fav);
-              },
+              itemBuilder: (_, index) => FavouriteCard(item: favorites[index]),
             );
           } else if (state is FavoritesError) {
             return Center(
@@ -110,11 +83,6 @@ class FavouriteViewBody extends StatelessWidget {
                   const SizedBox(height: 24),
                   Text(
                     state.failure.errMessage,
-                    style: TextStyle(
-                      fontSize: 14.sp,
-                      fontWeight: FontWeight.w500,
-                      color: Colors.red,
-                    ),
                     textAlign: TextAlign.center,
                   ),
                   const SizedBox(height: 24),
@@ -124,7 +92,7 @@ class FavouriteViewBody extends StatelessWidget {
                     child: Text(AppLocalizations.of(context)!.retry),
                   ),
                 ],
-              ),
+              ), 
             );
           }
           return const SizedBox();

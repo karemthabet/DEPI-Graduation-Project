@@ -22,6 +22,7 @@ class UserCubit extends Cubit<UserState> {
     } catch (e) {
       emit(UserError(e.toString()));
     }
+    
   }
 
   Future<void> updateUserProfile(UserModel user, File? newImageFile) async {

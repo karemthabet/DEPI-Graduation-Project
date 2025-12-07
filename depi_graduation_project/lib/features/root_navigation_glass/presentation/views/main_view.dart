@@ -19,7 +19,7 @@ class _MainViewState extends State<MainView> {
   final List<Widget> _screens = [
     const HomeView(),
     const VisitListScreen(),
-    FavouriteView(userId: SupabaseService.userId),
+    const FavouriteView(),
     const ProfileVeiw(),
   ];
 

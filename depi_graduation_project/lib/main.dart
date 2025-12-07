@@ -76,8 +76,7 @@ void main() async {
             create:
                 (context) => FavoritesCubit(
                   repository: context.read<IFavoritesRepository>(),
-                  userId: SupabaseService.userId,
-                )..loadFavorites(),
+                ),
           ),
         ],
         child: const MyApp(),
