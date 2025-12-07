@@ -29,7 +29,7 @@ class SupabaseService {
   //upload profile image to bucket
   Future<String> uploadAvatar(File imageFile, UserModel user) async {
     final ext = imageFile.path.split('.').last;
-    final fileName = ' ${user.fullName}.$ext';
+    final fileName = '${user.fullName}.$ext';
     final storagePath = '${user.id}/$fileName';
 
     final uploadResponse = await _client.storage

@@ -15,6 +15,7 @@ import 'package:whatsapp/features/profile/presentation/views/profile_veiw.dart';
 import 'package:whatsapp/features/onboarding1/onboarding_view.dart';
 import 'package:whatsapp/features/splash/presentation/views/splash_view.dart';
 import 'package:whatsapp/features/visit_Screen/presentation/pages/visit_list_screen.dart';
+import 'package:whatsapp/features/profile/presentation/views/change_password_view.dart';
 
 class AppRouter {
   static final router = GoRouter(
@@ -91,6 +92,11 @@ class AppRouter {
         name: RoutesName.visitList,
         path: RoutesName.visitList,
         builder: (context, state) => const VisitListScreen(),
+      ),
+      GoRoute(
+        name: RoutesName.changePasswordView,
+        path: RoutesName.changePasswordView,
+        builder: (context, state) => const ChangePasswordView(),
       ),
     ],
   );

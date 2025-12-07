@@ -24,13 +24,18 @@ class UserCubit extends Cubit<UserState> {
     }
   }
 
-  Future<void> updateUserProfile(UserModel user, File? newImageFile) async {
+  Future<void> updateUserProfile(UserModel user, File? newImageFile, {bool isProfileImageRemoved = false}) async {
     emit(UserLoading());
     try {
-      await _userRepository.updateUserProfile(user, newImageFile);
+      await _userRepository.updateUserProfile(user, newImageFile, isProfileImageRemoved: isProfileImageRemoved);
 
-      await loadUserProfile();
-      emit(const UserUpdateSuccess('Profile updated successfully!'));
+      final updatedUser = await _userRepository.getCurrentUser();
+      
+      if (updatedUser != null) {
+        emit(UserUpdateSuccess(updatedUser, 'Profile updated successfully!'));
+      } else {
+        emit(const UserError('Failed to fetch updated profile'));
+      }
     } catch (e) {
       emit(UserError(e.toString()));
     }
@@ -44,6 +49,25 @@ class UserCubit extends Cubit<UserState> {
       emit(const UserLoggedOut());
     } catch (e) {
       emit(UserError(e.toString()));
+    }
+  }
+
+  Future<void> changePassword(String oldPassword, String newPassword) async {
+    emit(UserLoading());
+    try {
+      await _userRepository.changePassword(oldPassword, newPassword);
+      final currentUser = await _userRepository.getCurrentUser();
+      if (currentUser != null) {
+        emit(UserUpdateSuccess(currentUser, 'Password changed successfully'));
+      } else {
+        emit(const UserError('Password changed, but failed to reload profile'));
+      }
+    } catch (e) {
+      if (e.toString().contains('The old password is incorrect')) {
+        emit(const UserError('The old password is incorrect'));
+      } else {
+        emit(UserError(e.toString()));
+      }
     }
   }
 }

@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:whatsapp/core/utils/colors/app_colors.dart';
 import 'package:whatsapp/core/utils/router/routes_name.dart';
+import 'package:whatsapp/l10n/app_localizations.dart';
 
 class OnboardingViewBody extends StatefulWidget {
   const OnboardingViewBody({super.key});
@@ -15,38 +16,47 @@ class _OnboardingViewBodyState extends State<OnboardingViewBody> {
   final PageController _pageController = PageController();
   int _currentPage = 0;
 
-  final List<Map<String, String>> onboardingData = [
-    {
-      'image': 'assets/images/onboardingimg1.jpg',
-      'title': 'Discover Famous\nLandmarks',
-      'desc': 'Explore Egypt’s iconic attractions, \n from ancient wonders to modern gems'
-    },
-    {
-      'image': 'assets/images/onboardingimg2.jpg',
-      'title': 'Plan Your Journey',
-      'desc': 'Create and customize your own visit list with museums, malls, hidden gems, and iconic landmarks.',
-    },
-    {
-      'image': 'assets/images/onboarding3.jpg',
-      'title': 'Navigate With Ease',
-      'desc': 'Get map directions, live alerts, and instant notifications when you’re near a landmark.',
-    },
-  ];
-
-  void _nextPage() {
-    if (_currentPage < onboardingData.length - 1) {
-      _pageController.nextPage(
-        duration: const Duration(milliseconds: 400),
-        curve: Curves.easeInOut,
-      );
-    } else {
-                      context.go(RoutesName.welcome);
-
-    }
+  List<Map<String, String>> getOnboardingData(BuildContext context) {
+    return [
+      {
+        'image': 'assets/images/onboardingimg1.jpg',
+        'title': AppLocalizations.of(context)!.onboardingTitle1,
+        'desc': AppLocalizations.of(context)!.onboardingDesc1,
+      },
+      {
+        'image': 'assets/images/onboardingimg2.jpg',
+        'title': AppLocalizations.of(context)!.onboardingTitle2,
+        'desc': AppLocalizations.of(context)!.onboardingDesc2,
+      },
+      {
+        'image': 'assets/images/onboarding3.jpg',
+        'title': AppLocalizations.of(context)!.onboardingTitle3,
+        'desc': AppLocalizations.of(context)!.onboardingDesc3,
+      },
+    ];
   }
 
   @override
   Widget build(BuildContext context) {
+    final onboardingData = getOnboardingData(context);
+
+    // Need to define _nextPage here or make it accept data/context if needed,
+    // but _pageController is part of state, so it's fine.
+    // However, _nextPage used onboardingData.length.
+    // I can just check _currentPage against hardcoded 3 or get length from local var.
+    // Better to define _nextPage closure or method that checks the local data length.
+
+    void nextPage() {
+      if (_currentPage < onboardingData.length - 1) {
+        _pageController.nextPage(
+          duration: const Duration(milliseconds: 400),
+          curve: Curves.easeInOut,
+        );
+      } else {
+        context.go(RoutesName.welcome);
+      }
+    }
+
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
@@ -66,7 +76,10 @@ class _OnboardingViewBodyState extends State<OnboardingViewBody> {
                   children: [
                     /// IMAGE SECTION
                     Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 20.h),
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 24.w,
+                        vertical: 20.h,
+                      ),
                       child: Center(
                         child: Image.asset(
                           item['image']!,
@@ -83,7 +96,9 @@ class _OnboardingViewBodyState extends State<OnboardingViewBody> {
                               ),
                               child: Center(
                                 child: Text(
-                                  'Illustration Missing',
+                                  AppLocalizations.of(
+                                    context,
+                                  )!.illustrationMissing,
                                   style: TextStyle(fontSize: 14.sp),
                                 ),
                               ),
@@ -96,7 +111,9 @@ class _OnboardingViewBodyState extends State<OnboardingViewBody> {
                     /// DOTS INDICATOR
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
-                      children: List.generate(onboardingData.length, (dotIndex) {
+                      children: List.generate(onboardingData.length, (
+                        dotIndex,
+                      ) {
                         return AnimatedContainer(
                           duration: const Duration(milliseconds: 300),
                           margin: EdgeInsets.symmetric(horizontal: 4.w),
@@ -161,7 +178,7 @@ class _OnboardingViewBodyState extends State<OnboardingViewBody> {
                             /// NEXT BUTTON
                             Center(
                               child: GestureDetector(
-                                onTap: _nextPage,
+                                onTap: nextPage,
                                 child: Container(
                                   width: 64.w,
                                   height: 64.w,
@@ -203,10 +220,10 @@ class _OnboardingViewBodyState extends State<OnboardingViewBody> {
               right: 10.w,
               child: TextButton(
                 onPressed: () {
-                 context.go(RoutesName.welcome);
+                  context.go(RoutesName.welcome);
                 },
                 child: Text(
-                  'Skip',
+                  AppLocalizations.of(context)!.skip,
                   style: TextStyle(
                     color: AppColors.primaryBlue,
                     fontWeight: FontWeight.w600,

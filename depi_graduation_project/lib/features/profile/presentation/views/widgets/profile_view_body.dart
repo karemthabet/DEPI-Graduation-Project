@@ -228,6 +228,33 @@ class _ProfileViewBodyState extends State<ProfileViewBody> {
 
                 SizedBox(height: 16.h),
 
+                ListTile(
+                  contentPadding: EdgeInsets.zero,
+                  leading: Icon(
+                    Icons.lock_outline,
+                    size: 24.sp,
+                    color: AppColors.darkBlue,
+                  ),
+                  title: Text(
+                    AppLocalizations.of(context)!.changePassword,
+                    style: TextStyle(
+                      fontWeight: FontWeight.w400,
+                      fontSize: 16.sp,
+                      color: AppColors.darkBlue,
+                    ),
+                  ),
+                  trailing: Icon(
+                    Icons.arrow_forward_ios,
+                    size: 16.sp,
+                    color: AppColors.darkBlue,
+                  ),
+                  onTap: () {
+                    context.push(RoutesName.changePasswordView);
+                  },
+                ),
+
+                SizedBox(height: 16.h),
+
                 // 🚪 Log out
                 ListTile(
                   contentPadding: EdgeInsets.zero,

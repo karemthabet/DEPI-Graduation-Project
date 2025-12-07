@@ -21,18 +21,25 @@ class ProfileImagePicker extends StatefulWidget {
 
 class _ProfileImagePickerState extends State<ProfileImagePicker> {
   File? imageFile;
+  bool _isRemoved = false;
   final ImagePicker picker = ImagePicker();
 
   Future<void> pickImage(ImageSource source) async {
     final pickedFile = await picker.pickImage(source: source);
     if (pickedFile != null) {
-      setState(() => imageFile = File(pickedFile.path));
+      setState(() {
+        imageFile = File(pickedFile.path);
+        _isRemoved = false;
+      });
       widget.onImagePicked(imageFile);
     }
   }
 
   void removeImage() {
-    setState(() => imageFile = null);
+    setState(() {
+      imageFile = null;
+      _isRemoved = true;
+    });
     widget.onImagePicked(null);
     Navigator.pop(context);
   }
@@ -77,6 +84,8 @@ class _ProfileImagePickerState extends State<ProfileImagePicker> {
 
     if (imageFile != null) {
       imageProvider = FileImage(imageFile!);
+    } else if (_isRemoved) {
+      imageProvider = const AssetImage('assets/images/profile.png');
     } else if (widget.initialAvatarUrl != null &&
         widget.initialAvatarUrl!.isNotEmpty) {
       imageProvider = NetworkImage(widget.initialAvatarUrl!);

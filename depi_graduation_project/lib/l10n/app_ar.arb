@@ -87,5 +87,20 @@
   "markDone": "تعيين كمكتمل",
   "pleaseLoginFirst": "يرجى تسجيل الدخول أولاً",
   "emailLabel": "البريد الإلكتروني",
-  "passwordLabel": "كلمة المرور"
+  "passwordLabel": "كلمة المرور",
+  "onboardingTitle1": "اكتشف المعالم\nالشهيرة",
+  "onboardingDesc1": "استكشف معالم مصر الشهيرة، \n من العجائب القديمة إلى الجواهر الحديثة",
+  "onboardingTitle2": "خطط رحلتك",
+  "onboardingDesc2": "أنشئ وخصص قائمة زياراتك الخاصة بالمتاحف والمولات والجواهر المخفية والمعالم الشهيرة.",
+  "onboardingTitle3": "تنجل بسهولة",
+  "onboardingDesc3": "احصل على اتجاهات الخريطة والتنبيهات المباشرة وإشعارات فورية عندما تكون بالقرب من معلم.",
+  "illustrationMissing": "الصورة مفقودة",
+  "skip": "تخطي",
+  "changePassword": "تغيير كلمة المرور",
+  "oldPassword": "كلمة المرور القديمة",
+  "newPassword": "كلمة المرور الجديدة",
+  "confirmNewPassword": "تأكيد كلمة المرور الجديدة",
+  "passwordMismatch": "كلمات المرور غير متطابقة",
+  "noInternetConnection": "مفيش انترنت جرب مره اخري",
+  "incorrectPassword": "كلمة المرور القديمة غير صحيحة"
 }
