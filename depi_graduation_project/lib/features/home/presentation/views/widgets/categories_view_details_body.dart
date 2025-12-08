@@ -1,16 +1,19 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:whatsapp/core/utils/colors/app_colors.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:whatsapp/core/services/location_service.dart';
 import 'package:whatsapp/features/FavouriteScreen/data/models/favourite_model.dart';
 import 'package:whatsapp/features/home/data/models/item_model.dart';
 import 'package:whatsapp/features/home/presentation/cubit/place_details_cubit.dart';
 import 'package:whatsapp/core/utils/constants/api_constants.dart';
 import 'package:whatsapp/supabase_service.dart';
+import 'package:whatsapp/l10n/app_localizations.dart';
 import 'package:whatsapp/features/FavouriteScreen/presentation/cubit/favourite_cubit.dart';
 import 'package:whatsapp/features/FavouriteScreen/presentation/cubit/favourite_state.dart';
 import 'package:whatsapp/features/visit_Screen/data/model/place__model.dart';
@@ -39,8 +42,8 @@ class _CategoriesViewDetailsBodyState extends State<CategoriesViewDetailsBody>
     if (widget.itemModel.id != null && widget.itemModel.id!.isNotEmpty) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         context.read<PlaceDetailsCubit>().loadPlaceDetails(
-          widget.itemModel.id!,
-        );
+              widget.itemModel.id!,
+            );
       });
     }
   }
@@ -144,14 +147,13 @@ class _CategoriesViewDetailsBodyState extends State<CategoriesViewDetailsBody>
           height: 330.h,
           width: double.infinity,
           fit: BoxFit.cover,
-          placeholder:
-              (context, url) => Container(
-                height: 330.h,
-                color: Colors.grey[300],
-                child: const Center(
-                  child: CircularProgressIndicator(color: AppColors.darkBlue),
-                ),
-              ),
+          placeholder: (context, url) => Container(
+            height: 330.h,
+            color: Colors.grey[300],
+            child: const Center(
+              child: CircularProgressIndicator(color: AppColors.darkBlue),
+            ),
+          ),
           errorWidget: (context, url, error) {
             return Container(
               height: 330.h,
@@ -165,10 +167,6 @@ class _CategoriesViewDetailsBodyState extends State<CategoriesViewDetailsBody>
   }
 
   Widget _buildFavoriteButton(ItemModel item) {
-    final userId = SupabaseService.userId;
-
-    if (userId == null) return const SizedBox();
-
     return Positioned(
       top: 50,
       right: 0,
@@ -176,6 +174,7 @@ class _CategoriesViewDetailsBodyState extends State<CategoriesViewDetailsBody>
         builder: (context, state) {
           final favoritesCubit = context.watch<FavoritesCubit>();
           final isFav = favoritesCubit.isFavorite(item.id);
+          final userId = SupabaseService.userId ?? '';
 
           final favouritePlace = FavouriteModel(
             id: '',
@@ -189,20 +188,37 @@ class _CategoriesViewDetailsBodyState extends State<CategoriesViewDetailsBody>
 
           return IconButton(
             onPressed: () {
+              // Check if user is guest
+              final storage = GetStorage();
+              final bool isGuest = storage.read('isGuest') ?? false;
+
+              if (isGuest) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text(
+                      'You must login to add to favorites',
+                    ),
+                    backgroundColor: Colors.orange,
+                  ),
+                );
+                return;
+              }
+
+              if (userId.isEmpty) return;
+
               context.read<FavoritesCubit>().toggleFavorite(favouritePlace);
             },
-            icon:
-                isFav
-                    ? Image.asset(
-                      'assets/images/heartFilled.png',
-                      width: 24,
-                      height: 24,
-                    )
-                    : Image.asset(
-                      'assets/images/heart.png',
-                      width: 24,
-                      height: 24,
-                    ),
+            icon: isFav
+                ? Image.asset(
+                    'assets/images/heartFilled.png',
+                    width: 24,
+                    height: 24,
+                  )
+                : Image.asset(
+                    'assets/images/heart.png',
+                    width: 24,
+                    height: 24,
+                  ),
           );
         },
       ),
@@ -470,13 +486,12 @@ class _CategoriesViewDetailsBodyState extends State<CategoriesViewDetailsBody>
 
     return SingleChildScrollView(
       child: Column(
-        children:
-            reviews.take(5).map<Widget>((review) {
-              if (review is Map<String, dynamic>) {
-                return _buildReviewCard(review);
-              }
-              return const SizedBox.shrink();
-            }).toList(),
+        children: reviews.take(5).map<Widget>((review) {
+          if (review is Map<String, dynamic>) {
+            return _buildReviewCard(review);
+          }
+          return const SizedBox.shrink();
+        }).toList(),
       ),
     );
   }

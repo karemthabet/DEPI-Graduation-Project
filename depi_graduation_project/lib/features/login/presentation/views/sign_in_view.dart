@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:whatsapp/core/utils/router/routes_name.dart';
 import 'package:whatsapp/features/login/presentation/views/widgets/password_field.dart';
 import 'package:whatsapp/l10n/app_localizations.dart';
@@ -159,6 +160,9 @@ class _SignInViewState extends State<SignInView> {
                       }
 
                       // SUCCESS: Navigate to main view
+                      // Clear guest status
+                      GetStorage().write('isGuest', false);
+
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
                           content: Text(

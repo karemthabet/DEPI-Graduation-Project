@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:whatsapp/core/utils/colors/app_colors.dart';
 import 'package:whatsapp/core/utils/router/routes_name.dart';
 import 'package:whatsapp/features/profile/presentation/cubit/user_cubit.dart';
@@ -74,6 +75,55 @@ class _ProfileViewBodyState extends State<ProfileViewBody> {
 
   @override
   Widget build(BuildContext context) {
+    // Check if user is guest
+    final storage = GetStorage();
+    final bool isGuest = storage.read('isGuest') ?? false;
+
+    if (isGuest) {
+      return Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Icon(Icons.lock_outline, size: 60, color: Colors.grey),
+            const SizedBox(height: 16),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 32),
+              child: Text(
+                'You must login to see your profile ',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 16,
+                  color: Colors.grey[700],
+                ),
+              ),
+            ),
+            const SizedBox(height: 24),
+            ElevatedButton(
+              onPressed: () {
+                context.go(RoutesName.login);
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFFFFE26D),
+                foregroundColor: Colors.black,
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 32, vertical: 12),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20),
+                ),
+              ),
+              child: Text(
+                AppLocalizations.of(context)!.goToLogin,
+                style: const TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+
     WidgetsBinding.instance.addPostFrameCallback((_) {
       context.read<UserCubit>().loadUserProfile();
     });
@@ -85,7 +135,6 @@ class _ProfileViewBodyState extends State<ProfileViewBody> {
           }
         }
       },
-
       child: BlocBuilder<UserCubit, UserState>(
         builder: (context, state) {
           String name = AppLocalizations.of(context)!.guest;
@@ -107,7 +156,6 @@ class _ProfileViewBodyState extends State<ProfileViewBody> {
                 children: [
                   const Icon(Icons.lock_outline, size: 50, color: Colors.grey),
                   const SizedBox(height: 16),
-
                   Text(
                     AppLocalizations.of(context)!.errorLoadingProfile,
                     style: const TextStyle(
@@ -142,9 +190,9 @@ class _ProfileViewBodyState extends State<ProfileViewBody> {
                         radius: 44.r,
                         backgroundImage:
                             profileImage != null && profileImage.isNotEmpty
-                            ? CachedNetworkImageProvider(profileImage)
-                                  as ImageProvider
-                            : const AssetImage('assets/images/profile.png'),
+                                ? CachedNetworkImageProvider(profileImage)
+                                    as ImageProvider
+                                : const AssetImage('assets/images/profile.png'),
                       ),
                     ),
                     SizedBox(width: 20.w),
@@ -195,9 +243,8 @@ class _ProfileViewBodyState extends State<ProfileViewBody> {
                     final currentLocale = Localizations.localeOf(
                       context,
                     ).languageCode;
-                    final displayLanguage = currentLocale == 'ar'
-                        ? 'Arabic'
-                        : 'English';
+                    final displayLanguage =
+                        currentLocale == 'ar' ? 'Arabic' : 'English';
 
                     return ListTile(
                       contentPadding: EdgeInsets.zero,
@@ -209,7 +256,8 @@ class _ProfileViewBodyState extends State<ProfileViewBody> {
                       title: Text(
                         AppLocalizations.of(
                           context,
-                        )!.languageWithCode(displayLanguage),
+                        )!
+                            .languageWithCode(displayLanguage),
                         style: TextStyle(
                           fontWeight: FontWeight.w400,
                           fontSize: 16.sp,
@@ -273,6 +321,8 @@ class _ProfileViewBodyState extends State<ProfileViewBody> {
                   ),
                   onTap: () {
                     context.read<UserCubit>().signOutUser();
+                    GetStorage().write('isGuest', false);
+
                     context.go(RoutesName.login);
                   },
                 ),

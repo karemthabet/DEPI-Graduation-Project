@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:whatsapp/core/utils/router/routes_name.dart';
 import 'package:whatsapp/l10n/app_localizations.dart';
 import 'widgets/password_field.dart';
@@ -157,6 +158,9 @@ class _SignUpViewState extends State<SignUpView> {
             );
 
             // SUCCESS
+            // Clear guest status
+            GetStorage().write('isGuest', false);
+
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
                 content: Text(AppLocalizations.of(context)!.signupSuccess),

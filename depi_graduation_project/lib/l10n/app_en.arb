@@ -123,5 +123,8 @@
   "noInternetConnection": "No internet connection, please try again",
   "incorrectPassword": "The old password is incorrect",
   "editTime": "Edit Time",
-  "todayVisits": "Today Visits"
+  "todayVisits": "Today Visits",
+  "loginToSeeVisitList": "You must log in to see your visit list",
+  "loginToAddToVisitList": "You must log in to add places to your visit list",
+  "loginToAddToFavourites": "You must log in to add places to your favourites"
 }

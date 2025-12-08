@@ -323,4 +323,13 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get todayVisits => 'زيارات اليوم';
+
+  @override
+  String get loginToSeeVisitList => 'يجب تسجيل الدخول لرؤية قائمة الزيارات';
+
+  @override
+  String get loginToAddToVisitList => 'يجب تسجيل الدخول لإضافة أماكن إلى قائمة الزيارات';
+
+  @override
+  String get loginToAddToFavourites => 'يجب تسجيل الدخول لإضافة أماكن إلى المفضلة';
 }

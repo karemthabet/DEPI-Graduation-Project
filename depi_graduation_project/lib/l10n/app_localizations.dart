@@ -718,6 +718,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Today Visits'**
   String get todayVisits;
+
+  /// No description provided for @loginToSeeVisitList.
+  ///
+  /// In en, this message translates to:
+  /// **'You must log in to see your visit list'**
+  String get loginToSeeVisitList;
+
+  /// No description provided for @loginToAddToVisitList.
+  ///
+  /// In en, this message translates to:
+  /// **'You must log in to add places to your visit list'**
+  String get loginToAddToVisitList;
+
+  /// No description provided for @loginToAddToFavourites.
+  ///
+  /// In en, this message translates to:
+  /// **'You must log in to add places to your favourites'**
+  String get loginToAddToFavourites;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

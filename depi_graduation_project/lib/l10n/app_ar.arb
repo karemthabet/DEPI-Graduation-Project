@@ -104,5 +104,8 @@
   "noInternetConnection": "مفيش انترنت جرب مره اخري",
   "incorrectPassword": "كلمة المرور القديمة غير صحيحة",
   "editTime": "تعديل الوقت",
-  "todayVisits": "زيارات اليوم"
+  "todayVisits": "زيارات اليوم",
+  "loginToSeeVisitList": "يجب تسجيل الدخول لرؤية قائمة الزيارات",
+  "loginToAddToVisitList": "يجب تسجيل الدخول لإضافة أماكن إلى قائمة الزيارات",
+  "loginToAddToFavourites": "يجب تسجيل الدخول لإضافة أماكن إلى المفضلة"
 }

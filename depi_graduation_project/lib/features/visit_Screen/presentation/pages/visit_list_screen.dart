@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get_storage/get_storage.dart';
+import 'package:go_router/go_router.dart';
 import '../cubit/visit_cubit.dart';
 import '../cubit/visit_state.dart';
 import '../widgets/visit_date_selector.dart';
 import '../widgets/visit_list_view.dart';
 import 'package:whatsapp/l10n/app_localizations.dart';
+import 'package:whatsapp/core/utils/router/routes_name.dart';
+
 class VisitListScreen extends StatefulWidget {
   const VisitListScreen({super.key});
 
@@ -24,6 +28,72 @@ class _VisitListScreenState extends State<VisitListScreen> {
 
   @override
   Widget build(BuildContext context) {
+    // Check if user is guest
+    final storage = GetStorage();
+    final bool isGuest = storage.read('isGuest') ?? false;
+
+    if (isGuest) {
+      return Scaffold(
+        backgroundColor: Colors.white,
+        appBar: AppBar(
+          title: Text(
+            AppLocalizations.of(context)!.visitList,
+            style: TextStyle(
+              color: Colors.black,
+              fontSize: 20.sp,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          backgroundColor: Colors.white,
+          elevation: 0,
+          centerTitle: true,
+          iconTheme: const IconThemeData(color: Colors.black),
+        ),
+        body: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(Icons.lock_outline, size: 60.sp, color: Colors.grey),
+              SizedBox(height: 16.h),
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 32.w),
+                child: Text(
+                  'Please login to see visit list',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 16.sp,
+                    color: Colors.grey[700],
+                  ),
+                ),
+              ),
+              SizedBox(height: 24.h),
+              ElevatedButton(
+                onPressed: () {
+                  context.go(RoutesName.login);
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFFFFE26D),
+                  foregroundColor: Colors.black,
+                  padding:
+                      EdgeInsets.symmetric(horizontal: 32.w, vertical: 12.h),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                ),
+                child: Text(
+                  AppLocalizations.of(context)!.goToLogin,
+                  style: TextStyle(
+                    fontSize: 14.sp,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -65,13 +135,16 @@ class _VisitListScreenState extends State<VisitListScreen> {
                   SizedBox(height: 24.h),
                   ElevatedButton(
                     onPressed: () {
-                       context.read<VisitCubit>().loadVisits(showLoading: true);
+                      context.read<VisitCubit>().loadVisits(showLoading: true);
                     },
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFFF3F4F6), 
+                      backgroundColor: const Color(0xFFF3F4F6),
                       foregroundColor: const Color(0xFF6B7280),
                       elevation: 0,
-                      padding: EdgeInsets.symmetric(horizontal: 32.w, vertical: 12.h),
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 32.w,
+                        vertical: 12.h,
+                      ),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(20),
                       ),
@@ -100,7 +173,6 @@ class _VisitListScreenState extends State<VisitListScreen> {
                     context.read<VisitCubit>().selectDate(date);
                   },
                 ),
-
                 Padding(
                   padding: EdgeInsets.fromLTRB(16.w, 16.h, 16.w, 8.h),
                   child: Align(
@@ -115,14 +187,15 @@ class _VisitListScreenState extends State<VisitListScreen> {
                     ),
                   ),
                 ),
-
                 VisitListView(
                   visits: visits,
                   onDelete: (id) {
                     context.read<VisitCubit>().deleteVisit(id);
                   },
                   onStatusChanged: (id, isCompleted) {
-                    context.read<VisitCubit>().toggleCompletion(id, isCompleted);
+                    context
+                        .read<VisitCubit>()
+                        .toggleCompletion(id, isCompleted);
                   },
                   onTimeEdited: (id, newTime) {
                     context.read<VisitCubit>().updateTime(id, newTime);

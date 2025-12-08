@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:whatsapp/features/login/presentation/views/sign_in_view.dart';
 import 'package:whatsapp/core/utils/router/routes_name.dart';
 import 'package:whatsapp/l10n/app_localizations.dart';
@@ -23,33 +24,24 @@ class WelcomeView extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               children: [
                 SizedBox(height: 40.h),
-
                 _buildLogo(),
-
                 SizedBox(height: 30.h),
-
                 _buildTitle(context),
-
                 SizedBox(height: 8.h),
-
                 _buildSubtitle(context),
-
                 SizedBox(height: 56.h),
-
                 _buildLoginButton(context),
-
                 SizedBox(height: 30.h),
-
                 _buildSignUpButton(context),
-
                 SizedBox(height: 30.h),
                 GestureDetector(
                   onTap: () {
+                    // Save guest status
+                    GetStorage().write('isGuest', true);
                     context.push(RoutesName.mainView);
                   },
                   child: Text(AppLocalizations.of(context)!.continueGuest),
                 ),
-
                 SizedBox(height: 40.h),
               ],
             ),

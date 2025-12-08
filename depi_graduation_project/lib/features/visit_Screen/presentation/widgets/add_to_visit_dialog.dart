@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart'; 
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get_storage/get_storage.dart';
 import '../../data/model/place__model.dart';
 import '../cubit/visit_cubit.dart';
 import 'package:whatsapp/l10n/app_localizations.dart';
@@ -16,9 +17,9 @@ class AddToVisitDialog extends StatefulWidget {
 }
 
 class _AddToVisitDialogState extends State<AddToVisitDialog> {
-  DateTime _focusedDay = DateTime.now();
+  final DateTime _focusedDay = DateTime.now();
   DateTime _selectedDate = DateTime.now();
-  
+
   int _selectedHour = 11;
   int _selectedMinute = 30;
   String _selectedPeriod = 'AM';
@@ -27,7 +28,7 @@ class _AddToVisitDialogState extends State<AddToVisitDialog> {
   Widget build(BuildContext context) {
     return Dialog(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-      backgroundColor: const Color(0xFFFFF9DB), 
+      backgroundColor: const Color(0xFFFFF9DB),
       child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: SingleChildScrollView(
@@ -44,7 +45,7 @@ class _AddToVisitDialogState extends State<AddToVisitDialog> {
                 ),
               ),
               SizedBox(height: 20.h),
-              
+
               // Date Label
               Align(
                 alignment: Alignment.centerLeft,
@@ -67,7 +68,7 @@ class _AddToVisitDialogState extends State<AddToVisitDialog> {
                     BoxShadow(
                       color: Colors.black.withOpacity(0.05),
                       blurRadius: 10,
-                    )
+                    ),
                   ],
                 ),
                 child: CalendarDatePicker(
@@ -81,7 +82,7 @@ class _AddToVisitDialogState extends State<AddToVisitDialog> {
                   },
                 ),
               ),
-              
+
               SizedBox(height: 20.h),
 
               Align(
@@ -105,7 +106,13 @@ class _AddToVisitDialogState extends State<AddToVisitDialog> {
                     width: 70.w,
                   ),
                   SizedBox(width: 8.w),
-                  Text(":", style: TextStyle(fontSize: 18.sp, fontWeight: FontWeight.bold)),
+                  Text(
+                    ':',
+                    style: TextStyle(
+                      fontSize: 18.sp,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
                   SizedBox(width: 8.w),
                   _buildDropdown<int>(
                     value: _selectedMinute,
@@ -127,10 +134,10 @@ class _AddToVisitDialogState extends State<AddToVisitDialog> {
                   Expanded(
                     child: ElevatedButton(
                       onPressed: () {
-                         _addToVisitList();
+                        _addToVisitList();
                       },
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFFFCD34D), 
+                        backgroundColor: const Color(0xFFFCD34D),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(20),
                         ),
@@ -151,24 +158,24 @@ class _AddToVisitDialogState extends State<AddToVisitDialog> {
                     child: OutlinedButton(
                       onPressed: () => Navigator.pop(context),
                       style: OutlinedButton.styleFrom(
-                         shape: RoundedRectangleBorder(
+                        shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(20),
                         ),
-                         side: const BorderSide(color: Colors.black54),
-                         padding: EdgeInsets.symmetric(vertical: 12.h),
+                        side: const BorderSide(color: Colors.black54),
+                        padding: EdgeInsets.symmetric(vertical: 12.h),
                       ),
                       child: Text(
-                        AppLocalizations.of(context)!.cancel ,
+                        AppLocalizations.of(context)!.cancel,
                         style: TextStyle(
                           color: Colors.black,
                           fontWeight: FontWeight.bold,
-                           fontSize: 16.sp,
+                          fontSize: 16.sp,
                         ),
                       ),
                     ),
                   ),
                 ],
-              )
+              ),
             ],
           ),
         ),
@@ -184,53 +191,54 @@ class _AddToVisitDialogState extends State<AddToVisitDialog> {
     String Function(T)? itemLabel,
   }) {
     return Container(
-       width: width,
-       padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 4.h),
-       decoration: BoxDecoration(
-          color: const Color(0xFFFDE68A), 
-          borderRadius: BorderRadius.circular(20),
-       ),
-       child: DropdownButtonHideUnderline(
-         child: DropdownButton<T>(
-           value: value,
-           icon: const Icon(Icons.keyboard_arrow_down, size: 20),
-           isExpanded: true,
-           onChanged: onChanged,
-           items: items.map((item) {
-             return DropdownMenuItem<T>(
-               value: item,
-               child: Center(
-                 child: Text(
-                   itemLabel != null ? itemLabel(item) : item.toString(),
-                   style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14.sp),
-                 ),
-               ),
-             );
-           }).toList(),
-         ),
-       ),
+      width: width,
+      padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 4.h),
+      decoration: BoxDecoration(
+        color: const Color(0xFFFDE68A),
+        borderRadius: BorderRadius.circular(20),
+      ),
+      child: DropdownButtonHideUnderline(
+        child: DropdownButton<T>(
+          value: value,
+          icon: const Icon(Icons.keyboard_arrow_down, size: 20),
+          isExpanded: true,
+          onChanged: onChanged,
+          items: items.map((item) {
+            return DropdownMenuItem<T>(
+              value: item,
+              child: Center(
+                child: Text(
+                  itemLabel != null ? itemLabel(item) : item.toString(),
+                  style:
+                      TextStyle(fontWeight: FontWeight.bold, fontSize: 14.sp),
+                ),
+              ),
+            );
+          }).toList(),
+        ),
+      ),
     );
   }
 
   Widget _buildPeriodSelector() {
     return Container(
       decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(10),
-          border: Border.all(color: Colors.black12)
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(color: Colors.black12),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          _periodButton("AM"),
-          _periodButton("PM"),
+          _periodButton('AM'),
+          _periodButton('PM'),
         ],
       ),
     );
   }
 
   Widget _periodButton(String period) {
-    bool isSelected = _selectedPeriod == period;
+    final bool isSelected = _selectedPeriod == period;
     return GestureDetector(
       onTap: () => setState(() => _selectedPeriod = period),
       child: Container(
@@ -242,9 +250,9 @@ class _AddToVisitDialogState extends State<AddToVisitDialog> {
         child: Text(
           period,
           style: TextStyle(
-             fontWeight: FontWeight.bold,
-             color: isSelected ? Colors.black : Colors.black54,
-             fontSize: 12.sp,
+            fontWeight: FontWeight.bold,
+            color: isSelected ? Colors.black : Colors.black54,
+            fontSize: 12.sp,
           ),
         ),
       ),
@@ -252,6 +260,22 @@ class _AddToVisitDialogState extends State<AddToVisitDialog> {
   }
 
   Future<void> _addToVisitList() async {
+    // Check if user is guest
+    final storage = GetStorage();
+    final bool isGuest = storage.read('isGuest') ?? false;
+
+    if (isGuest) {
+      if (!mounted) return;
+      Navigator.pop(context);
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Please login to add to visit list'),
+          backgroundColor: Colors.orange,
+        ),
+      );
+      return;
+    }
+
     final hasInternet = await NetworkChecker.instance.isConnected();
     if (!mounted) return;
 
@@ -265,18 +289,19 @@ class _AddToVisitDialogState extends State<AddToVisitDialog> {
     }
 
     final formattedDate = _selectedDate;
-    final timeString = "${_selectedHour.toString().padLeft(2, '0')}:${_selectedMinute.toString().padLeft(2, '0')} $_selectedPeriod";
+    final timeString =
+        "${_selectedHour.toString().padLeft(2, '0')}:${_selectedMinute.toString().padLeft(2, '0')} $_selectedPeriod";
 
     if (!mounted) return;
     context.read<VisitCubit>().addVisit(
-         place: widget.place,
-         visitDate: formattedDate,
-         visitTime: timeString,
-    );
-    
+          place: widget.place,
+          visitDate: formattedDate,
+          visitTime: timeString,
+        );
+
     Navigator.pop(context);
     ScaffoldMessenger.of(context).showSnackBar(
-         SnackBar(content: Text(AppLocalizations.of(context)!.addedToVisitList)),
+      SnackBar(content: Text(AppLocalizations.of(context)!.addedToVisitList)),
     );
   }
 }

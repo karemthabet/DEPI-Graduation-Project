@@ -323,4 +323,13 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get todayVisits => 'Today Visits';
+
+  @override
+  String get loginToSeeVisitList => 'You must log in to see your visit list';
+
+  @override
+  String get loginToAddToVisitList => 'You must log in to add places to your visit list';
+
+  @override
+  String get loginToAddToFavourites => 'You must log in to add places to your favourites';
 }
