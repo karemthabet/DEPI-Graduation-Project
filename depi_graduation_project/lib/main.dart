@@ -21,7 +21,6 @@ import 'package:whatsapp/features/profile/presentation/cubit/user_cubit.dart';
 import 'package:whatsapp/l10n/app_localizations.dart';
 import 'package:whatsapp/supabase_service.dart';
 import 'package:whatsapp/features/profile/data/model/user_model.dart';
-import 'package:whatsapp/my_app.dart';
 import 'package:whatsapp/core/services/notification_service.dart';
 import 'package:whatsapp/features/visit_Screen/presentation/cubit/visit_cubit.dart';
 import 'package:whatsapp/core/di/injection_container.dart' as di;
