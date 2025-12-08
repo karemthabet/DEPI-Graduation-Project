@@ -3,7 +3,7 @@ import 'package:whatsapp/models/place_autocomplete_model/place_autocomplete_mode
 import 'package:http/http.dart' as http;
 import 'package:whatsapp/models/places_details_model/places_details_model.dart';
 
-class GoogleMapsPlaceServic {
+class GoogleMapsPlaceService {
   final String baseUrl = 'https://maps.googleapis.com/maps/api/place';
   final String apikey = 'AIzaSyA3FifUzz1TsB2bknK0VARH_45PT_AuyMw';
 

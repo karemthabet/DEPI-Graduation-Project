@@ -11,18 +11,24 @@ import '../../../../core/errors/custom_exception.dart';
 import 'package:whatsapp/core/services/notification_service.dart';
 import '../../../../core/errors/server_failure.dart';
 
+import 'package:whatsapp/features/profile/data/repositories/user_repository.dart';
+
 class VisitCubit extends Cubit<VisitState> {
   final VisitRepository visitRepository;
+  final UserRepository userRepository;
 
   StreamSubscription<List<VisitDate>>? _visitSubscription;
 
-  VisitCubit({required this.visitRepository}) : super(VisitInitial());
+  VisitCubit({required this.visitRepository, required this.userRepository}) : super(VisitInitial());
 
-  void loadVisits({bool showLoading = true}) {
+  void loadVisits({bool showLoading = true}) async {
     if (showLoading) {
       emit(VisitLoading());
     }
-    final userId = Supabase.instance.client.auth.currentUser?.id;
+    
+    final user = await userRepository.getCurrentUser();
+    final userId = user?.id; // Get ID from Profile
+    
     _visitSubscription?.cancel();
     _visitSubscription = visitRepository.watchAllVisitDates(userId: userId).listen(
       (visitDates) {
@@ -55,7 +61,6 @@ class VisitCubit extends Cubit<VisitState> {
   void selectDate(DateTime date) {
     if (state is VisitLoaded) {
       final currentState = state as VisitLoaded;
-      // Normalize date to start of day
       final normalizedDate = DateTime(date.year, date.month, date.day);
       
       final filteredVisits = _getVisitsForDate(currentState.visitDates, normalizedDate);
@@ -103,7 +108,9 @@ class VisitCubit extends Cubit<VisitState> {
     String? visitTime,
   }) async {
     try {
-      final userId = Supabase.instance.client.auth.currentUser?.id;
+      final user = await userRepository.getCurrentUser();
+      final userId = user?.id;
+      
       if (userId == null) {
           emit(VisitError(ServerFailure(errMessage: 'User not logged in')));
           return;
@@ -137,6 +144,7 @@ class VisitCubit extends Cubit<VisitState> {
   Future<void> deleteVisit(int visitId) async {
     try {
       await visitRepository.deleteVisit(visitId);
+      loadVisits(showLoading: false);
     } on NetworkException catch (e) {
       emit(VisitError(ServerFailure(errMessage: e.message)));
     } catch (e) {

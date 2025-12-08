@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:whatsapp/core/utils/time_utils.dart'; // Import TimeUtils
 import 'package:whatsapp/features/visit_Screen/data/model/visit_items.dart';
-
+import 'package:whatsapp/l10n/app_localizations.dart';
 class VisitTimelineCard extends StatelessWidget {
   final VisitItem visit;
   final bool isLast;
@@ -26,7 +26,6 @@ class VisitTimelineCard extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          // Timeline Line
           Column(
             children: [
               GestureDetector(
@@ -137,34 +136,21 @@ class VisitTimelineCard extends StatelessWidget {
                                     children: [
                                       Icon(Icons.edit, color: Colors.blue, size: 20.sp),
                                       SizedBox(width: 8.w),
-                                      Text('Edit Time', style: TextStyle(fontSize: 14.sp)),
+                                      Text(AppLocalizations.of(context)!.editTime, style: TextStyle(fontSize: 14.sp)),
                                     ],
                                   ),
                                 ),
                                 PopupMenuItem(
-                                  onTap: onDelete,
+                                  onTap: () => Future.delayed(Duration.zero, onDelete),
                                   child: Row(
                                     children: [
                                       Icon(Icons.delete, color: Colors.red, size: 20.sp),
                                       SizedBox(width: 8.w),
-                                      Text('Delete', style: TextStyle(fontSize: 14.sp)),
+                                      Text(AppLocalizations.of(context)!.delete, style: TextStyle(fontSize: 14.sp)),
                                     ],
                                   ),
                                 ),
-                                PopupMenuItem(
-                                  onTap: () => onStatusChanged(!visit.isCompleted),
-                                  child: Row(
-                                    children: [
-                                      Icon(
-                                        visit.isCompleted ? Icons.close : Icons.check,
-                                        color: Colors.green,
-                                        size: 20.sp,
-                                      ),
-                                      SizedBox(width: 8.w),
-                                      Text(visit.isCompleted ? 'Mark Undone' : 'Mark Done', style: TextStyle(fontSize: 14.sp)),
-                                    ],
-                                  ),
-                                ),
+
                               ],
                             ),
                           ],

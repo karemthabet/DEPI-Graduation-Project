@@ -75,5 +75,8 @@ Future<void> setupServiceLocator() async {
     () => VisitRepositoryImpl(remoteDataSource: getIt<VisitRemoteDataSource>()),
   );
 
-  getIt.registerFactory(() => VisitCubit(visitRepository: getIt<VisitRepository>()));
+  getIt.registerFactory(() => VisitCubit(
+    visitRepository: getIt<VisitRepository>(),
+    userRepository: getIt<UserRepository>(),
+  ));
 }

@@ -24,7 +24,7 @@ class VisitDateSelector extends StatelessWidget {
         controller: scrollController,
         scrollDirection: Axis.horizontal,
         padding: EdgeInsets.symmetric(horizontal: 16.w),
-        itemCount: 30, // Show next 30 days
+        itemCount: 30, 
         separatorBuilder: (context, index) => SizedBox(width: 12.w),
         itemBuilder: (context, index) {
           final date = DateTime.now().add(Duration(days: index));

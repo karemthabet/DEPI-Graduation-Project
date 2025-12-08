@@ -121,5 +121,7 @@
   "confirmNewPassword": "Confirm New Password",
   "passwordMismatch": "Passwords do not match",
   "noInternetConnection": "No internet connection, please try again",
-  "incorrectPassword": "The old password is incorrect"
+  "incorrectPassword": "The old password is incorrect",
+  "editTime": "Edit Time",
+  "todayVisits": "Today Visits"
 }

@@ -22,7 +22,7 @@ class HomeViewBody extends StatefulWidget {
 
 class _HomeViewBodyState extends State<HomeViewBody> {
   final TextEditingController textEditingController = TextEditingController();
-  late GoogleMapsPlaceServic googleMapsPlaceServic;
+  late GoogleMapsPlaceService googleMapsPlaceServic;
 
   @override
   void dispose() {
@@ -32,7 +32,7 @@ class _HomeViewBodyState extends State<HomeViewBody> {
 
   @override
   void initState() {
-    googleMapsPlaceServic = GoogleMapsPlaceServic();
+    googleMapsPlaceServic = GoogleMapsPlaceService();
     super.initState();
     context.read<UserCubit>().loadUserProfile();
     _checkLocationAndLoadPlaces();

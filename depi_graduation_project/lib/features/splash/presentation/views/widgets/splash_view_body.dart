@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:get_storage/get_storage.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:whatsapp/core/Cached/secure_storage.dart';
 import 'package:whatsapp/core/utils/assets/app_assets.dart';
 import 'package:whatsapp/core/utils/router/routes_name.dart';
@@ -77,14 +79,17 @@ class _SplashViewBodyState extends State<SplashViewBody>
     // Wait only 5 seconds before navigation
     await Future.delayed(const Duration(seconds: 5));
 
-    final token = await SecureStorageService.getAccessToken();
+    final session = Supabase.instance.client.auth.currentSession;
+    final bool isOnBoardingSeen = GetStorage().read('isOnBoardingSeen') ?? false;
 
     if (!mounted) return;
 
-    if (token == null || token.isEmpty) {
-      context.go(RoutesName.onboarding);
-    } else {
+    if (session != null) {
       context.go(RoutesName.mainView);
+    } else if (isOnBoardingSeen) {
+      context.go(RoutesName.welcome);
+    } else {
+      context.go(RoutesName.onboarding);
     }
   }
 

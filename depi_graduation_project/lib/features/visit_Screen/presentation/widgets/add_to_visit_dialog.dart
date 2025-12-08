@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart'; // Assuming screenutil is used
+import 'package:flutter_screenutil/flutter_screenutil.dart'; 
 import '../../data/model/place__model.dart';
 import '../cubit/visit_cubit.dart';
+import 'package:whatsapp/l10n/app_localizations.dart';
+import '../../../../core/services/network_checker.dart';
 
 class AddToVisitDialog extends StatefulWidget {
   final Place place;
@@ -17,7 +19,6 @@ class _AddToVisitDialogState extends State<AddToVisitDialog> {
   DateTime _focusedDay = DateTime.now();
   DateTime _selectedDate = DateTime.now();
   
-  // Time selection
   int _selectedHour = 11;
   int _selectedMinute = 30;
   String _selectedPeriod = 'AM';
@@ -26,7 +27,7 @@ class _AddToVisitDialogState extends State<AddToVisitDialog> {
   Widget build(BuildContext context) {
     return Dialog(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-      backgroundColor: const Color(0xFFFFF9DB), // Light yellow background
+      backgroundColor: const Color(0xFFFFF9DB), 
       child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: SingleChildScrollView(
@@ -35,7 +36,7 @@ class _AddToVisitDialogState extends State<AddToVisitDialog> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Text(
-                "Add To Visit List",
+                AppLocalizations.of(context)!.addToVisitList,
                 style: TextStyle(
                   fontSize: 18.sp,
                   fontWeight: FontWeight.bold,
@@ -48,7 +49,7 @@ class _AddToVisitDialogState extends State<AddToVisitDialog> {
               Align(
                 alignment: Alignment.centerLeft,
                 child: Text(
-                  "Date",
+                  AppLocalizations.of(context)!.date,
                   style: TextStyle(
                     fontWeight: FontWeight.w600,
                     fontSize: 14.sp,
@@ -83,11 +84,10 @@ class _AddToVisitDialogState extends State<AddToVisitDialog> {
               
               SizedBox(height: 20.h),
 
-              // Time Label
               Align(
                 alignment: Alignment.centerLeft,
                 child: Text(
-                  "Time",
+                  AppLocalizations.of(context)!.time,
                   style: TextStyle(
                     fontWeight: FontWeight.w600,
                     fontSize: 14.sp,
@@ -121,7 +121,6 @@ class _AddToVisitDialogState extends State<AddToVisitDialog> {
 
               SizedBox(height: 30.h),
 
-              // Buttons
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -131,14 +130,14 @@ class _AddToVisitDialogState extends State<AddToVisitDialog> {
                          _addToVisitList();
                       },
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFFFCD34D), // Yellow
+                        backgroundColor: const Color(0xFFFCD34D), 
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(20),
                         ),
                         padding: EdgeInsets.symmetric(vertical: 12.h),
                       ),
                       child: Text(
-                        "Add",
+                        AppLocalizations.of(context)!.add,
                         style: TextStyle(
                           color: Colors.black,
                           fontWeight: FontWeight.bold,
@@ -159,7 +158,7 @@ class _AddToVisitDialogState extends State<AddToVisitDialog> {
                          padding: EdgeInsets.symmetric(vertical: 12.h),
                       ),
                       child: Text(
-                        "Cancel",
+                        AppLocalizations.of(context)!.cancel ,
                         style: TextStyle(
                           color: Colors.black,
                           fontWeight: FontWeight.bold,
@@ -252,10 +251,23 @@ class _AddToVisitDialogState extends State<AddToVisitDialog> {
     );
   }
 
-  void _addToVisitList() {
+  Future<void> _addToVisitList() async {
+    final hasInternet = await NetworkChecker.instance.isConnected();
+    if (!mounted) return;
+
+    if (!hasInternet) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(AppLocalizations.of(context)!.noInternetConnection),
+        ),
+      );
+      return;
+    }
+
     final formattedDate = _selectedDate;
     final timeString = "${_selectedHour.toString().padLeft(2, '0')}:${_selectedMinute.toString().padLeft(2, '0')} $_selectedPeriod";
 
+    if (!mounted) return;
     context.read<VisitCubit>().addVisit(
          place: widget.place,
          visitDate: formattedDate,
@@ -264,7 +276,7 @@ class _AddToVisitDialogState extends State<AddToVisitDialog> {
     
     Navigator.pop(context);
     ScaffoldMessenger.of(context).showSnackBar(
-         const SnackBar(content: Text('Added to Visit List')),
+         SnackBar(content: Text(AppLocalizations.of(context)!.addedToVisitList)),
     );
   }
 }

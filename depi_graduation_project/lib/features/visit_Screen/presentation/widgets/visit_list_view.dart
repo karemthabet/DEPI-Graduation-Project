@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../data/model/visit_items.dart';
 import 'visit_timeline_card.dart';
+import 'package:whatsapp/l10n/app_localizations.dart';
 
 class VisitListView extends StatelessWidget {
   final List<VisitItem> visits;
@@ -28,7 +29,7 @@ class VisitListView extends StatelessWidget {
               Icon(Icons.calendar_today, size: 60.sp, color: Colors.grey[300]),
               SizedBox(height: 16.h),
               Text(
-                "No visits for this day",
+                AppLocalizations.of(context)!.noVisitsForDay,
                 style: TextStyle(
                   fontSize: 16.sp,
                   color: Colors.grey[500],

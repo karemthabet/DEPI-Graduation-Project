@@ -1,4 +1,6 @@
+import 'dart:io';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:whatsapp/features/profile/data/model/user_model.dart';
 
 class SupabaseService {
   final SupabaseClient _client = Supabase.instance.client;
@@ -21,5 +23,22 @@ class SupabaseService {
     required Map<String, dynamic> data,
   }) async {
     await _client.from('users').update(data).eq('id', userId);
+  }
+
+  //upload profile image to bucket
+  Future<String> uploadAvatar(File imageFile, UserModel user) async {
+    final ext = imageFile.path.split('.').last;
+    final fileName = '${user.fullName}.$ext';
+    final storagePath = '${user.id}/$fileName';
+
+    await _client.storage.from('avatars').upload(storagePath, imageFile);
+
+    final imageUrl = _client.storage.from('avatars').getPublicUrl(storagePath);
+
+    if (imageUrl.isEmpty) {
+      throw Exception('Failed to get public URL after upload.');
+    }
+
+    return imageUrl;
   }
 }

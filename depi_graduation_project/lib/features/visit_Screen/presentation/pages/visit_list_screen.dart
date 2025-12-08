@@ -5,7 +5,7 @@ import '../cubit/visit_cubit.dart';
 import '../cubit/visit_state.dart';
 import '../widgets/visit_date_selector.dart';
 import '../widgets/visit_list_view.dart';
-
+import 'package:whatsapp/l10n/app_localizations.dart';
 class VisitListScreen extends StatefulWidget {
   const VisitListScreen({super.key});
 
@@ -28,7 +28,7 @@ class _VisitListScreenState extends State<VisitListScreen> {
       backgroundColor: Colors.white,
       appBar: AppBar(
         title: Text(
-          "Visit List",
+          AppLocalizations.of(context)!.visitList,
           style: TextStyle(
             color: Colors.black,
             fontSize: 20.sp,
@@ -45,7 +45,48 @@ class _VisitListScreenState extends State<VisitListScreen> {
           if (state is VisitLoading) {
             return const Center(child: CircularProgressIndicator());
           } else if (state is VisitError) {
-            return Center(child: Text(state.failure.errMessage));
+            return Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    Icons.error_outline,
+                    color: Colors.orange,
+                    size: 60.sp,
+                  ),
+                  SizedBox(height: 16.h),
+                  Text(
+                    AppLocalizations.of(context)!.noInternetConnection,
+                    style: TextStyle(
+                      fontSize: 14.sp,
+                      color: Colors.black54,
+                    ),
+                  ),
+                  SizedBox(height: 24.h),
+                  ElevatedButton(
+                    onPressed: () {
+                       context.read<VisitCubit>().loadVisits(showLoading: true);
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0xFFF3F4F6), 
+                      foregroundColor: const Color(0xFF6B7280),
+                      elevation: 0,
+                      padding: EdgeInsets.symmetric(horizontal: 32.w, vertical: 12.h),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                    ),
+                    child: Text(
+                      AppLocalizations.of(context)!.retry,
+                      style: TextStyle(
+                        fontSize: 14.sp,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            );
           } else if (state is VisitLoaded) {
             final selectedDate = state.selectedDate;
             final visits = state.filteredVisits;
@@ -65,7 +106,7 @@ class _VisitListScreenState extends State<VisitListScreen> {
                   child: Align(
                     alignment: Alignment.centerLeft,
                     child: Text(
-                      "Today Visits",
+                      AppLocalizations.of(context)!.todayVisits,
                       style: TextStyle(
                         fontSize: 18.sp,
                         fontWeight: FontWeight.bold,

@@ -102,5 +102,7 @@
   "confirmNewPassword": "تأكيد كلمة المرور الجديدة",
   "passwordMismatch": "كلمات المرور غير متطابقة",
   "noInternetConnection": "مفيش انترنت جرب مره اخري",
-  "incorrectPassword": "كلمة المرور القديمة غير صحيحة"
+  "incorrectPassword": "كلمة المرور القديمة غير صحيحة",
+  "editTime": "تعديل الوقت",
+  "todayVisits": "زيارات اليوم"
 }
