@@ -38,18 +38,17 @@ class UserRepositoryImpl implements UserRepository {
 
   @override
   Future<UserModel?> getCurrentUser() async {
+    final User? authUser = supabase.auth.currentUser;
+    if (authUser == null) return null;
+
     try {
-      final User? authUser = supabase.auth.currentUser;
+      final userData = await _supabaseService.getUserProfile(authUser.id);
 
-      if (authUser != null) {
-        final userData = await _supabaseService.getUserProfile(authUser.id);
-
-        if (userData != null) {
-          final user = UserModel.fromJson(userData);
-          // Save to cache
-          await _userBox.put('current_user', user);
-          return user;
-        }
+      if (userData != null) {
+        final user = UserModel.fromJson(userData);
+        // Save to cache
+        await _userBox.put('current_user', user);
+        return user;
       }
     } catch (e) {
       // try to load from cache
@@ -57,7 +56,16 @@ class UserRepositoryImpl implements UserRepository {
         return _userBox.get('current_user');
       }
     }
-    return null;
+
+    // Fallback: Create user from Auth metadata if DB/Cache fails but session exists
+    final metadata = authUser.userMetadata;
+    return UserModel(
+      id: authUser.id,
+      email: authUser.email ?? '',
+      fullName:
+          metadata?['full_name'] ?? authUser.email?.split('@').first ?? 'User',
+      avatarUrl: metadata?['avatar_url'],
+    );
   }
 
   @override

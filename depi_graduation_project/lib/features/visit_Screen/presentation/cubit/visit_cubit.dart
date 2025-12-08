@@ -7,67 +7,68 @@ import '../../data/model/visit_date.dart';
 import '../../data/model/visit_items.dart';
 import 'visit_state.dart';
 import 'package:intl/intl.dart';
-import '../../../../core/error/exceptions.dart';
+import '../../../../core/errors/custom_exception.dart';
 import 'package:whatsapp/core/services/notification_service.dart';
+import '../../../../core/errors/server_failure.dart';
+
+import 'package:whatsapp/features/profile/data/repositories/user_repository.dart';
 
 class VisitCubit extends Cubit<VisitState> {
   final VisitRepository visitRepository;
-  String? _lastNotificationDate;
-  // ignore: cancel_subscriptions
+  final UserRepository userRepository;
+
   StreamSubscription<List<VisitDate>>? _visitSubscription;
 
-  VisitCubit({required this.visitRepository}) : super(VisitInitial());
+  VisitCubit({required this.visitRepository, required this.userRepository}) : super(VisitInitial());
 
-  void loadVisits() {
-    emit(VisitLoading());
-    final userId = Supabase.instance.client.auth.currentUser?.id;
+  void loadVisits({bool showLoading = true}) async {
+    if (showLoading) {
+      emit(VisitLoading());
+    }
+    
+    final user = await userRepository.getCurrentUser();
+    final userId = user?.id; // Get ID from Profile
+    
     _visitSubscription?.cancel();
-    _visitSubscription = visitRepository
-        .watchAllVisitDates(userId: userId)
-        .listen(
-          (visitDates) {
-            DateTime selectedDate = DateTime.now();
-            if (state is VisitLoaded) {
-              selectedDate = (state as VisitLoaded).selectedDate;
-            }
+    _visitSubscription = visitRepository.watchAllVisitDates(userId: userId).listen(
+      (visitDates) {
+        DateTime selectedDate = DateTime.now();
+        if (state is VisitLoaded) {
+          selectedDate = (state as VisitLoaded).selectedDate;
+        }
 
-            final filteredVisits = _getVisitsForDate(visitDates, selectedDate);
+        final filteredVisits = _getVisitsForDate(visitDates, selectedDate);
 
-            emit(
-              VisitLoaded(
-                visitDates: visitDates,
-                selectedDate: selectedDate,
-                filteredVisits: filteredVisits,
-              ),
-            );
-
-            _checkAndNotifyTodayVisits(visitDates);
-          },
-          onError: (error) {
-            emit(VisitError(error.toString()));
-          },
-        );
+        emit(VisitLoaded(
+          visitDates: visitDates,
+          selectedDate: selectedDate,
+          filteredVisits: filteredVisits,
+        ));
+        
+        _scheduleFutureNotifications(visitDates);
+      },
+      onError: (error) {
+        if (error is NetworkException) {
+          emit(VisitError(ServerFailure(errMessage: error.message)));
+        } else {
+          emit(VisitError(ServerFailure(errMessage: 'Error loading visits')));
+        }
+      },
+    );
   }
 
-  // ... (selectDate, _getVisitsForDate, _checkAndNotifyTodayVisits remain same)
 
   void selectDate(DateTime date) {
     if (state is VisitLoaded) {
       final currentState = state as VisitLoaded;
-      // Normalize date to start of day
       final normalizedDate = DateTime(date.year, date.month, date.day);
-
-      final filteredVisits = _getVisitsForDate(
-        currentState.visitDates,
-        normalizedDate,
-      );
-
-      emit(
-        currentState.copyWith(
-          selectedDate: normalizedDate,
-          filteredVisits: filteredVisits,
-        ),
-      );
+      
+      final filteredVisits = _getVisitsForDate(currentState.visitDates, normalizedDate);
+      
+      emit(currentState.copyWith(
+        selectedDate: normalizedDate,
+        filteredVisits: filteredVisits,
+      ));
     }
   }
 
@@ -80,68 +81,85 @@ class VisitCubit extends Cubit<VisitState> {
     return visitDateObj.visits;
   }
 
-  void _checkAndNotifyTodayVisits(List<VisitDate> visitDates) {
-    final todayStr = DateFormat('yyyy-MM-dd').format(DateTime.now());
+  void _scheduleFutureNotifications(List<VisitDate> visitDates) {
+    for (final visitDate in visitDates) {
+      final int notificationId = visitDate.date.year * 10000 +
+          visitDate.date.month * 100 +
+          visitDate.date.day;
 
-    if (_lastNotificationDate == todayStr) return;
+      if (visitDate.visits.isEmpty) {
+        NotificationService().cancelNotification(notificationId);
+        continue;
+      }
 
-    final todayVisits =
-        visitDates
-            .where(
-              (vd) =>
-                  DateFormat('yyyy-MM-dd').format(vd.date) == todayStr &&
-                  vd.visits.isNotEmpty,
-            )
-            .toList();
-
-    if (todayVisits.isNotEmpty) {
-      final count = todayVisits.first.visits.length;
-      NotificationService().showNotification(
-        id: 1,
+      final count = visitDate.visits.length;
+      NotificationService().scheduleNotification(
+        id: notificationId,
         title: 'You have visits today!',
         body: 'You have $count places to visit today. Check them out!',
+        scheduledDate: visitDate.date,
       );
-      _lastNotificationDate = todayStr;
     }
   }
 
   Future<void> addVisit({
     required Place place,
     required DateTime visitDate,
-    required String userId,
     String? visitTime,
   }) async {
     try {
+      final user = await userRepository.getCurrentUser();
+      final userId = user?.id;
+      
+      if (userId == null) {
+          emit(VisitError(ServerFailure(errMessage: 'User not logged in')));
+          return;
+      }
+      
       await visitRepository.addPlaceToVisitDate(
         place: place,
         visitDate: visitDate,
         userId: userId,
         visitTime: visitTime,
       );
+      loadVisits(showLoading: false);
     } on NetworkException catch (e) {
-      emit(VisitError(e.message));
+      emit(VisitError(ServerFailure(errMessage: e.message)));
     } catch (e) {
-      emit(VisitError(e.toString()));
+      emit(VisitError(ServerFailure(errMessage: 'Error adding visit')));
     }
   }
 
   Future<void> toggleCompletion(int visitId, bool isCompleted) async {
     try {
       await visitRepository.toggleVisitCompletion(visitId, isCompleted);
+      loadVisits(showLoading: false); 
     } on NetworkException catch (e) {
-      emit(VisitError(e.message));
+      emit(VisitError(ServerFailure(errMessage: e.message)));
     } catch (e) {
-      emit(VisitError(e.toString()));
+      emit(VisitError(ServerFailure(errMessage: 'Error updating visit')));
     }
   }
 
   Future<void> deleteVisit(int visitId) async {
     try {
       await visitRepository.deleteVisit(visitId);
+      loadVisits(showLoading: false);
     } on NetworkException catch (e) {
-      emit(VisitError(e.message));
+      emit(VisitError(ServerFailure(errMessage: e.message)));
     } catch (e) {
-      emit(VisitError(e.toString()));
+      emit(VisitError(ServerFailure(errMessage: 'Error deleting visit')));
+    }
+  }
+
+  Future<void> updateTime(int visitId, String newTime) async {
+    try {
+      await visitRepository.updateVisitTime(visitId, newTime);
+      loadVisits(showLoading: false); 
+    } on NetworkException catch (e) {
+      emit(VisitError(ServerFailure(errMessage: e.message)));
+    } catch (e) {
+      emit(VisitError(ServerFailure(errMessage: 'Error updating visit')));
     }
   }
 

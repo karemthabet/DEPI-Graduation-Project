@@ -37,7 +37,7 @@ class _BuildSearchBarState extends State<BuildSearchBar> {
       sessiontoken ??= uuid.v4();
 
       if (textEditingController.text.isNotEmpty) {
-        final service = GoogleMapsPlaceServic();
+        final service = GoogleMapsPlaceService();
         final result = await service.getpredictions(
           sessiontoken: sessiontoken!,
           input: textEditingController.text,
@@ -115,7 +115,7 @@ class customlistview extends StatelessWidget {
 
   final List<PlaceAutocompleteModel> places;
   final Function(PlacesDetailsModel) onPlaceSelection;
-  final GoogleMapsPlaceServic googleMapsPlaceServic = GoogleMapsPlaceServic();
+  final GoogleMapsPlaceService googleMapsPlaceServic = GoogleMapsPlaceService();
   @override
   Widget build(BuildContext context) {
     return Container(

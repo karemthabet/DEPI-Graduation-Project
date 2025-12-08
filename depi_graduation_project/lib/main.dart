@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:get_storage/get_storage.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-
 import 'package:whatsapp/core/services/setup_service_locator.dart';
 import 'package:whatsapp/core/utils/constants/supabase_constants.dart';
 import 'package:whatsapp/core/utils/router/app_router.dart';
@@ -18,16 +17,18 @@ import 'package:whatsapp/features/home/data/models/place_model.dart';
 import 'package:whatsapp/features/home/presentation/cubit/place_details_cubit.dart';
 import 'package:whatsapp/features/home/presentation/cubit/places_cubit.dart';
 import 'package:whatsapp/features/profile/presentation/cubit/user_cubit.dart';
-import 'package:whatsapp/l10n/app_localizations.dart';
 import 'package:whatsapp/supabase_service.dart';
-import 'package:whatsapp/features/profile/data/model/user_model.dart';
 import 'package:whatsapp/core/services/notification_service.dart';
 import 'package:whatsapp/features/visit_Screen/presentation/cubit/visit_cubit.dart';
-import 'package:whatsapp/core/di/injection_container.dart' as di;
 import 'package:whatsapp/core/localization/cubit/locale_cubit.dart';
+import 'package:whatsapp/l10n/app_localizations.dart';
+
+import 'package:whatsapp/features/profile/data/model/user_model.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  // Initialize GetStorage
   await GetStorage.init();
 
   // Initialize Hive
@@ -54,9 +55,7 @@ void main() async {
 
   await SupabaseService.initialize();
 
-  // Setup service locator
   setupServiceLocator();
-  await di.initGetIt();
   await NotificationService().init();
 
   runApp(
@@ -68,19 +67,15 @@ void main() async {
       ],
       child: MultiBlocProvider(
         providers: [
-          BlocProvider(create: (context) => LocaleCubit()),
           BlocProvider(create: (context) => PlacesCubit(repository: getIt())),
           BlocProvider(create: (context) => PlaceDetailsCubit(getIt())),
-          BlocProvider(
-            create: (context) => UserCubit(getIt())..loadUserProfile(),
-          ),
-
           BlocProvider(create: (context) => UserCubit(getIt())),
-          BlocProvider(create: (context) => di.sl<VisitCubit>()),
+          BlocProvider(create: (context) => getIt<VisitCubit>()),
+          BlocProvider(create: (context) => LocaleCubit()),
           BlocProvider<FavoritesCubit>(
-            create: (context) =>
-                FavoritesCubit(repository: context.read<IFavoritesRepository>())
-                  ..loadFavorites(),
+            create: (context) => FavoritesCubit(
+              repository: context.read<IFavoritesRepository>(),
+            )..loadFavorites(),
           ),
         ],
         child: const MyApp(),

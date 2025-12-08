@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:whatsapp/core/utils/colors/app_colors.dart';
 import 'package:whatsapp/core/utils/router/routes_name.dart';
 import 'package:whatsapp/l10n/app_localizations.dart';
@@ -53,6 +54,7 @@ class _OnboardingViewBodyState extends State<OnboardingViewBody> {
           curve: Curves.easeInOut,
         );
       } else {
+        GetStorage().write('isOnBoardingSeen', true);
         context.go(RoutesName.welcome);
       }
     }
@@ -220,6 +222,7 @@ class _OnboardingViewBodyState extends State<OnboardingViewBody> {
               right: 10.w,
               child: TextButton(
                 onPressed: () {
+                  GetStorage().write('isOnBoardingSeen', true);
                   context.go(RoutesName.welcome);
                 },
                 child: Text(

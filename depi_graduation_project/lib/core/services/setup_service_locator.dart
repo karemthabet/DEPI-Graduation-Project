@@ -18,6 +18,14 @@ import 'package:whatsapp/features/profile/data/repositories/user_repository.dart
 import 'package:whatsapp/features/profile/data/repositories/user_repository_impl.dart';
 import 'package:whatsapp/features/profile/presentation/cubit/user_cubit.dart';
 
+// Visit Feature
+import 'package:whatsapp/features/visit_Screen/data/datasources/visit_remote_datasource.dart';
+import 'package:whatsapp/features/visit_Screen/data/datasources/visit_remote_datasource_impl.dart';
+import 'package:whatsapp/features/visit_Screen/data/repositories/visit_repository_impl.dart';
+import 'package:whatsapp/features/visit_Screen/domain/repositories/visit_repository.dart';
+import 'package:whatsapp/features/visit_Screen/presentation/cubit/visit_cubit.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+
 final getIt = GetIt.instance;
 
 Future<void> setupServiceLocator() async {
@@ -57,4 +65,18 @@ Future<void> setupServiceLocator() async {
   );
 
   getIt.registerFactory(() => UserCubit(getIt<UserRepository>()));
+
+  // ================= Visit Feature =================
+  getIt.registerLazySingleton<VisitRemoteDataSource>(
+    () => VisitRemoteDataSourceImpl(supabase: Supabase.instance.client),
+  );
+
+  getIt.registerLazySingleton<VisitRepository>(
+    () => VisitRepositoryImpl(remoteDataSource: getIt<VisitRemoteDataSource>()),
+  );
+
+  getIt.registerFactory(() => VisitCubit(
+    visitRepository: getIt<VisitRepository>(),
+    userRepository: getIt<UserRepository>(),
+  ));
 }

@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart'; // Assuming screenutil is used
-import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:whatsapp/l10n/app_localizations.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart'; 
 import '../../data/model/place__model.dart';
 import '../cubit/visit_cubit.dart';
+import 'package:whatsapp/l10n/app_localizations.dart';
+import '../../../../core/services/network_checker.dart';
 
 class AddToVisitDialog extends StatefulWidget {
   final Place place;
@@ -16,10 +16,9 @@ class AddToVisitDialog extends StatefulWidget {
 }
 
 class _AddToVisitDialogState extends State<AddToVisitDialog> {
-  final DateTime _focusedDay = DateTime.now();
+  DateTime _focusedDay = DateTime.now();
   DateTime _selectedDate = DateTime.now();
-
-  // Time selection
+  
   int _selectedHour = 11;
   int _selectedMinute = 30;
   String _selectedPeriod = 'AM';
@@ -28,7 +27,7 @@ class _AddToVisitDialogState extends State<AddToVisitDialog> {
   Widget build(BuildContext context) {
     return Dialog(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-      backgroundColor: const Color(0xFFFFF9DB), // Light yellow background
+      backgroundColor: const Color(0xFFFFF9DB), 
       child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: SingleChildScrollView(
@@ -45,7 +44,7 @@ class _AddToVisitDialogState extends State<AddToVisitDialog> {
                 ),
               ),
               SizedBox(height: 20.h),
-
+              
               // Date Label
               Align(
                 alignment: Alignment.centerLeft,
@@ -68,7 +67,7 @@ class _AddToVisitDialogState extends State<AddToVisitDialog> {
                     BoxShadow(
                       color: Colors.black.withOpacity(0.05),
                       blurRadius: 10,
-                    ),
+                    )
                   ],
                 ),
                 child: CalendarDatePicker(
@@ -82,10 +81,9 @@ class _AddToVisitDialogState extends State<AddToVisitDialog> {
                   },
                 ),
               ),
-
+              
               SizedBox(height: 20.h),
 
-              // Time Label
               Align(
                 alignment: Alignment.centerLeft,
                 child: Text(
@@ -98,7 +96,6 @@ class _AddToVisitDialogState extends State<AddToVisitDialog> {
               ),
               SizedBox(height: 10.h),
 
-              // Time Picker Row
               Row(
                 children: [
                   _buildDropdown<int>(
@@ -108,13 +105,7 @@ class _AddToVisitDialogState extends State<AddToVisitDialog> {
                     width: 70.w,
                   ),
                   SizedBox(width: 8.w),
-                  Text(
-                    ':',
-                    style: TextStyle(
-                      fontSize: 18.sp,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
+                  Text(":", style: TextStyle(fontSize: 18.sp, fontWeight: FontWeight.bold)),
                   SizedBox(width: 8.w),
                   _buildDropdown<int>(
                     value: _selectedMinute,
@@ -130,17 +121,16 @@ class _AddToVisitDialogState extends State<AddToVisitDialog> {
 
               SizedBox(height: 30.h),
 
-              // Buttons
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Expanded(
                     child: ElevatedButton(
                       onPressed: () {
-                        _addToVisitList();
+                         _addToVisitList();
                       },
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFFFCD34D), // Yellow
+                        backgroundColor: const Color(0xFFFCD34D), 
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(20),
                         ),
@@ -161,24 +151,24 @@ class _AddToVisitDialogState extends State<AddToVisitDialog> {
                     child: OutlinedButton(
                       onPressed: () => Navigator.pop(context),
                       style: OutlinedButton.styleFrom(
-                        shape: RoundedRectangleBorder(
+                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(20),
                         ),
-                        side: const BorderSide(color: Colors.black54),
-                        padding: EdgeInsets.symmetric(vertical: 12.h),
+                         side: const BorderSide(color: Colors.black54),
+                         padding: EdgeInsets.symmetric(vertical: 12.h),
                       ),
                       child: Text(
-                        AppLocalizations.of(context)!.cancel,
+                        AppLocalizations.of(context)!.cancel ,
                         style: TextStyle(
                           color: Colors.black,
                           fontWeight: FontWeight.bold,
-                          fontSize: 16.sp,
+                           fontSize: 16.sp,
                         ),
                       ),
                     ),
                   ),
                 ],
-              ),
+              )
             ],
           ),
         ),
@@ -194,53 +184,53 @@ class _AddToVisitDialogState extends State<AddToVisitDialog> {
     String Function(T)? itemLabel,
   }) {
     return Container(
-      width: width,
-      padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 4.h),
-      decoration: BoxDecoration(
-        color: const Color(0xFFFDE68A), // Light orange/yellow
-        borderRadius: BorderRadius.circular(20),
-      ),
-      child: DropdownButtonHideUnderline(
-        child: DropdownButton<T>(
-          value: value,
-          icon: const Icon(Icons.keyboard_arrow_down, size: 20),
-          isExpanded: true,
-          onChanged: onChanged,
-          items: items.map((item) {
-            return DropdownMenuItem<T>(
-              value: item,
-              child: Center(
-                child: Text(
-                  itemLabel != null ? itemLabel(item) : item.toString(),
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 14.sp,
-                  ),
-                ),
-              ),
-            );
-          }).toList(),
-        ),
-      ),
+       width: width,
+       padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 4.h),
+       decoration: BoxDecoration(
+          color: const Color(0xFFFDE68A), 
+          borderRadius: BorderRadius.circular(20),
+       ),
+       child: DropdownButtonHideUnderline(
+         child: DropdownButton<T>(
+           value: value,
+           icon: const Icon(Icons.keyboard_arrow_down, size: 20),
+           isExpanded: true,
+           onChanged: onChanged,
+           items: items.map((item) {
+             return DropdownMenuItem<T>(
+               value: item,
+               child: Center(
+                 child: Text(
+                   itemLabel != null ? itemLabel(item) : item.toString(),
+                   style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14.sp),
+                 ),
+               ),
+             );
+           }).toList(),
+         ),
+       ),
     );
   }
 
   Widget _buildPeriodSelector() {
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(10),
-        border: Border.all(color: Colors.black12),
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(10),
+          border: Border.all(color: Colors.black12)
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
-        children: [_periodButton('AM'), _periodButton('PM')],
+        children: [
+          _periodButton("AM"),
+          _periodButton("PM"),
+        ],
       ),
     );
   }
 
   Widget _periodButton(String period) {
-    final bool isSelected = _selectedPeriod == period;
+    bool isSelected = _selectedPeriod == period;
     return GestureDetector(
       onTap: () => setState(() => _selectedPeriod = period),
       child: Container(
@@ -252,38 +242,41 @@ class _AddToVisitDialogState extends State<AddToVisitDialog> {
         child: Text(
           period,
           style: TextStyle(
-            fontWeight: FontWeight.bold,
-            color: isSelected ? Colors.black : Colors.black54,
-            fontSize: 12.sp,
+             fontWeight: FontWeight.bold,
+             color: isSelected ? Colors.black : Colors.black54,
+             fontSize: 12.sp,
           ),
         ),
       ),
     );
   }
 
-  void _addToVisitList() {
-    final userId = Supabase.instance.client.auth.currentUser?.id;
-    if (userId == null) {
+  Future<void> _addToVisitList() async {
+    final hasInternet = await NetworkChecker.instance.isConnected();
+    if (!mounted) return;
+
+    if (!hasInternet) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(AppLocalizations.of(context)!.pleaseLoginFirst)),
+        SnackBar(
+          content: Text(AppLocalizations.of(context)!.noInternetConnection),
+        ),
       );
       return;
     }
 
     final formattedDate = _selectedDate;
-    final timeString =
-        "${_selectedHour.toString().padLeft(2, '0')}:${_selectedMinute.toString().padLeft(2, '0')} $_selectedPeriod";
+    final timeString = "${_selectedHour.toString().padLeft(2, '0')}:${_selectedMinute.toString().padLeft(2, '0')} $_selectedPeriod";
 
+    if (!mounted) return;
     context.read<VisitCubit>().addVisit(
-      place: widget.place,
-      visitDate: formattedDate,
-      userId: userId,
-      visitTime: timeString,
+         place: widget.place,
+         visitDate: formattedDate,
+         visitTime: timeString,
     );
-
+    
     Navigator.pop(context);
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(AppLocalizations.of(context)!.addedToVisitList)),
+         SnackBar(content: Text(AppLocalizations.of(context)!.addedToVisitList)),
     );
   }
 }

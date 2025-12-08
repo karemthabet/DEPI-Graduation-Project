@@ -1,5 +1,6 @@
 import '../../data/model/visit_date.dart';
 import '../../data/model/visit_items.dart';
+import '../../../../core/errors/server_failure.dart';
 
 abstract class VisitState {}
 
@@ -31,7 +32,9 @@ class VisitLoaded extends VisitState {
   }
 }
 
+
+
 class VisitError extends VisitState {
-  final String message;
-  VisitError(this.message);
+  final Failure failure;
+  VisitError(this.failure);
 }

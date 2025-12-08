@@ -6,7 +6,7 @@ publish_to: 'none' # Prevent publishing to pub.dev for now
 version: 1.0.0+1
 
 environment:
-  sdk: ">=3.8.0-262.0.dev <4.0.0"
+  sdk: ^3.8.0-262.0.dev
 
 dependencies:
   flutter:
@@ -38,20 +38,20 @@ dependencies:
   location: ^5.0.0
   logger: ^2.6.1
   pretty_dio_logger: ">=1.4.0 <2.0.0"
-  shared_preferences: ">=2.5.3 <3.0.0"
   shimmer: ^3.0.0
   skeletonizer: ^2.1.0+1
   supabase_flutter: ^2.10.3
   url_launcher: ">=6.3.2 <7.0.0"
-  liquid_glass_renderer: ^0.1.0
-  intl: ^0.20.2
+  liquid_glass_renderer: ^0.2.0-dev.4
   flutter_local_notifications: ^19.5.0
-  rxdart: ^0.28.0
+  timezone: ^0.10.1
+  intl: ^0.20.2
   flutter_localizations:
     sdk: flutter
+  rxdart: ^0.28.0
 
 dev_dependencies:
-  build_runner: ^2.5.4
+  build_runner: 2.4.13
   flutter_lints: ^5.0.0
   flutter_test:
     sdk: flutter

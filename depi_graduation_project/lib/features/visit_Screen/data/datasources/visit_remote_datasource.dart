@@ -12,5 +12,6 @@ abstract class VisitRemoteDataSource {
   });
   Future<void> toggleVisitCompletion(int visitId, bool isCompleted);
   Future<void> deleteVisit(int visitId);
+  Future<void> updateVisitTime(int visitId, String visitTime);
   Stream<List<VisitDate>> watchAllVisitDates({String? userId});
 }
