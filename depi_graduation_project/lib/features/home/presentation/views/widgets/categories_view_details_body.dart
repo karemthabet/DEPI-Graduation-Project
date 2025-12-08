@@ -1,19 +1,20 @@
+import 'dart:math';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:whatsapp/core/helper/app_snack_bar.dart';
 import 'package:whatsapp/core/utils/colors/app_colors.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:get_storage/get_storage.dart';
 import 'package:whatsapp/core/services/location_service.dart';
 import 'package:whatsapp/features/FavouriteScreen/data/models/favourite_model.dart';
 import 'package:whatsapp/features/home/data/models/item_model.dart';
 import 'package:whatsapp/features/home/presentation/cubit/place_details_cubit.dart';
 import 'package:whatsapp/core/utils/constants/api_constants.dart';
 import 'package:whatsapp/supabase_service.dart';
-import 'package:whatsapp/l10n/app_localizations.dart';
 import 'package:whatsapp/features/FavouriteScreen/presentation/cubit/favourite_cubit.dart';
 import 'package:whatsapp/features/FavouriteScreen/presentation/cubit/favourite_state.dart';
 import 'package:whatsapp/features/visit_Screen/data/model/place__model.dart';
@@ -66,19 +67,16 @@ class _CategoriesViewDetailsBodyState extends State<CategoriesViewDetailsBody>
         await launchUrl(uri, mode: LaunchMode.externalApplication);
       } else {
         if (!mounted) return;
-        _showSnackBar('لا يمكن فتح Google Maps');
+
+        AppSnackBar.error(context, 'Error: ${e.toString()}');
       }
     } catch (e) {
       if (!mounted) return;
-      _showSnackBar('خطأ: ${e.toString()}');
+      AppSnackBar.error(context, 'Error: ${e.toString()}');
     }
   }
 
-  void _showSnackBar(String message) {
-    ScaffoldMessenger.of(
-      context,
-    ).showSnackBar(SnackBar(content: Text(message)));
-  }
+ 
 
   @override
   Widget build(BuildContext context) {
@@ -193,13 +191,9 @@ class _CategoriesViewDetailsBodyState extends State<CategoriesViewDetailsBody>
               final bool isGuest = storage.read('isGuest') ?? false;
 
               if (isGuest) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text(
-                      'You must login to add to favorites',
-                    ),
-                    backgroundColor: Colors.orange,
-                  ),
+                AppSnackBar.warning(
+                  context,
+                  'You must login to add to favorites',
                 );
                 return;
               }
@@ -651,7 +645,7 @@ class _CategoriesViewDetailsBodyState extends State<CategoriesViewDetailsBody>
   Future<void> _addToPlan() async {
     final userId = Supabase.instance.client.auth.currentUser?.id;
     if (userId == null) {
-      _showSnackBar('Please login first');
+      AppSnackBar.warning(context, 'Please login first');
       return;
     }
 

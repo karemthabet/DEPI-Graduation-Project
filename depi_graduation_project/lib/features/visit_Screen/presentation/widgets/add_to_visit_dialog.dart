@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:whatsapp/core/helper/app_snack_bar.dart';
 import '../../data/model/place__model.dart';
 import '../cubit/visit_cubit.dart';
 import 'package:whatsapp/l10n/app_localizations.dart';
@@ -267,12 +268,7 @@ class _AddToVisitDialogState extends State<AddToVisitDialog> {
     if (isGuest) {
       if (!mounted) return;
       Navigator.pop(context);
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Please login to add to visit list'),
-          backgroundColor: Colors.orange,
-        ),
-      );
+      AppSnackBar.warning(context, 'Please login to add to visit list');
       return;
     }
 
@@ -280,11 +276,7 @@ class _AddToVisitDialogState extends State<AddToVisitDialog> {
     if (!mounted) return;
 
     if (!hasInternet) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(AppLocalizations.of(context)!.noInternetConnection),
-        ),
-      );
+      AppSnackBar.warning(context, 'No internet connection');
       return;
     }
 
@@ -300,8 +292,6 @@ class _AddToVisitDialogState extends State<AddToVisitDialog> {
         );
 
     Navigator.pop(context);
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(AppLocalizations.of(context)!.addedToVisitList)),
-    );
+    AppSnackBar.success(context, 'Added to visit list');
   }
 }
