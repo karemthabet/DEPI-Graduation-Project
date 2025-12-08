@@ -59,12 +59,59 @@ class AuthCubit extends Cubit<AuthState> {
       final user = response.user;
 
       if (user != null) {
-        emit(
-          AuthEmailVerificationRequired(
-            'A confirmation email has been sent to your email address. Please check your inbox.',
-            email,
-          ),
-        );
+        // Check if user is already registered (identities is empty)
+        if (user.identities != null && user.identities!.isEmpty) {
+          // If Supabase returns emailConfirmedAt, use it
+          if (user.emailConfirmedAt != null) {
+            emit(
+              AuthFailure(
+                'This email is already registered. Please login instead.',
+              ),
+            );
+          } else {
+            // If emailConfirmedAt is null (fake user), try to sign in to check status
+            try {
+              final signInResponse = await supabase.auth.signInWithPassword(
+                email: email,
+                password: password,
+              );
+
+              if (signInResponse.user != null) {
+                // Sign in success -> User is confirmed
+                await supabase.auth.signOut();
+                emit(
+                  AuthFailure(
+                    'This email is already registered. Please login instead.',
+                  ),
+                );
+              }
+            } on AuthException catch (e) {
+              if (e.message.contains('Email not confirmed')) {
+                emit(
+                  AuthEmailVerificationRequired(
+                    'A confirmation email has been sent to your email address. Please check your inbox.',
+                    email,
+                  ),
+                );
+              } else {
+                // Invalid credentials or other error -> Assume registered
+                emit(
+                  AuthFailure(
+                    'This email is already registered. Please login instead.',
+                  ),
+                );
+              }
+            }
+          }
+        } else {
+          // New user created successfully
+          emit(
+            AuthEmailVerificationRequired(
+              'A confirmation email has been sent to your email address. Please check your inbox.',
+              email,
+            ),
+          );
+        }
       } else {
         emit(AuthFailure('Failed to create account'));
       }
