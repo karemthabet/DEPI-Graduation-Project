@@ -15,7 +15,6 @@ class AuthCubit extends Cubit<AuthState> {
       final response = await supabase.auth.signInWithPassword(
         email: email,
         password: password,
-
       );
 
       final user = response.user;
@@ -60,10 +59,12 @@ class AuthCubit extends Cubit<AuthState> {
       final user = response.user;
 
       if (user != null) {
-        emit(AuthEmailVerificationRequired(
-          'A confirmation email has been sent to your email address. Please check your inbox.',
-          email,
-        ));
+        emit(
+          AuthEmailVerificationRequired(
+            'A confirmation email has been sent to your email address. Please check your inbox.',
+            email,
+          ),
+        );
       } else {
         emit(AuthFailure('Failed to create account'));
       }
@@ -84,11 +85,13 @@ class AuthCubit extends Cubit<AuthState> {
         email: email,
         emailRedirectTo: 'com.example.depi_graduation_project://login-callback',
       );
-      
-      emit(AuthEmailVerificationRequired(
-        'A confirmation email has been sent to your email address. Please check your inbox.',
-        email,
-      ));
+
+      emit(
+        AuthEmailVerificationRequired(
+          'A confirmation email has been sent to your email address. Please check your inbox.',
+          email,
+        ),
+      );
     } on AuthException catch (e) {
       _handleAuthException(e);
     } catch (e) {
