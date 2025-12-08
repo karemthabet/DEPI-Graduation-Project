@@ -22,6 +22,7 @@ import 'package:whatsapp/core/services/notification_service.dart';
 import 'package:whatsapp/features/visit_Screen/presentation/cubit/visit_cubit.dart';
 import 'package:whatsapp/core/localization/cubit/locale_cubit.dart';
 import 'package:whatsapp/l10n/app_localizations.dart';
+import 'package:whatsapp/features/login/presentation/cubit/auth_cubit.dart';
 
 import 'package:whatsapp/features/profile/data/model/user_model.dart';
 
@@ -77,6 +78,7 @@ void main() async {
               repository: context.read<IFavoritesRepository>(),
             )..loadFavorites(),
           ),
+          BlocProvider(create: (context) => AuthCubit()),
         ],
         child: const MyApp(),
       ),

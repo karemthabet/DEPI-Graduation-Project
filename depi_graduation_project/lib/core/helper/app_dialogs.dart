@@ -210,7 +210,7 @@ static void showLoading(
     BuildContext context, {
     String? title,
     String? message,
-    String okLabel = 'موافق',
+    String okLabel = 'OK',
     VoidCallback? onOk,
     bool rtl = true,
   }) async {
