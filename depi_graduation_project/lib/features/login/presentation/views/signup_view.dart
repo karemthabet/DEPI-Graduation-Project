@@ -51,7 +51,6 @@ class _SignUpViewState extends State<SignUpView> {
                 ),
               ),
               const SizedBox(height: 10),
-
               Text(
                 AppLocalizations.of(context)!.letsGetStarted,
                 style: GoogleFonts.inter(
@@ -63,21 +62,18 @@ class _SignUpViewState extends State<SignUpView> {
                 ),
               ),
               const SizedBox(height: 40),
-
               _buildTextField(
                 controller: nameController,
                 icon: Icons.person_outline,
                 hintText: AppLocalizations.of(context)!.name,
               ),
               const SizedBox(height: 16),
-
               _buildTextField(
                 controller: emailController,
                 icon: Icons.email_outlined,
                 hintText: AppLocalizations.of(context)!.email,
               ),
               const SizedBox(height: 16),
-
               PasswordField(
                 controller: passController,
                 hintText: AppLocalizations.of(context)!.password,
@@ -85,28 +81,19 @@ class _SignUpViewState extends State<SignUpView> {
                 isPassword: true,
               ),
               const SizedBox(height: 16),
-
               PasswordField(
                 controller: confirmPassController,
                 hintText: AppLocalizations.of(context)!.confirmPassword,
                 icon: Icons.lock_outline,
                 isConfirmPassword: true,
               ),
-
               const SizedBox(height: 24),
-
               _buildSignUpButton(),
-
               const SizedBox(height: 16),
-
               _buildContinueWithText(),
-
               const SizedBox(height: 16),
-
               _buildGoogleButton(),
-
               const SizedBox(height: 24),
-
               _buildAlreadyHaveAccount(),
             ],
           ),

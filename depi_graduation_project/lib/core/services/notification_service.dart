@@ -2,7 +2,6 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:whatsapp/core/helper/app_logger.dart';
 import 'package:timezone/data/latest_all.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
-import 'package:whatsapp/core/helper/app_logger.dart';
 import '../../core/errors/custom_exception.dart';
 
 class NotificationService {
@@ -50,16 +49,17 @@ class NotificationService {
     try {
       const AndroidNotificationDetails androidPlatformChannelSpecifics =
           AndroidNotificationDetails(
-        'visit_channel_id',
-        'Visits',
-        channelDescription: 'Notifications for scheduled visits',
-        importance: Importance.max,
-        priority: Priority.high,
-        showWhen: true,
-      );
+            'visit_channel_id',
+            'Visits',
+            channelDescription: 'Notifications for scheduled visits',
+            importance: Importance.max,
+            priority: Priority.high,
+            showWhen: true,
+          );
 
-      const NotificationDetails platformChannelSpecifics =
-          NotificationDetails(android: androidPlatformChannelSpecifics);
+      const NotificationDetails platformChannelSpecifics = NotificationDetails(
+        android: androidPlatformChannelSpecifics,
+      );
 
       await _flutterLocalNotificationsPlugin.show(
         id,
@@ -83,22 +83,23 @@ class NotificationService {
     try {
       const AndroidNotificationDetails androidPlatformChannelSpecifics =
           AndroidNotificationDetails(
-        'visit_scheduled_channel_id',
-        'Scheduled Visits',
-        channelDescription: 'Scheduled notifications for visits',
-        importance: Importance.max,
-        priority: Priority.high,
-        showWhen: true,
-      );
+            'visit_scheduled_channel_id',
+            'Scheduled Visits',
+            channelDescription: 'Scheduled notifications for visits',
+            importance: Importance.max,
+            priority: Priority.high,
+            showWhen: true,
+          );
 
-      const NotificationDetails platformChannelSpecifics =
-          NotificationDetails(android: androidPlatformChannelSpecifics);
+      const NotificationDetails platformChannelSpecifics = NotificationDetails(
+        android: androidPlatformChannelSpecifics,
+      );
 
       final DateTime targetDateTime = DateTime(
         scheduledDate.year,
         scheduledDate.month,
         scheduledDate.day,
-        12, 
+        12,
         0,
       );
 
@@ -106,10 +107,12 @@ class NotificationService {
         targetDateTime,
         tz.local,
       );
-      
+
       if (tzScheduledDate.isBefore(tz.TZDateTime.now(tz.local))) {
-           AppLogger.log("Skipping scheduling for $id as it is in the past: $tzScheduledDate");
-           return;
+        AppLogger.log(
+          'Skipping scheduling for $id as it is in the past: $tzScheduledDate',
+        );
+        return;
       }
 
       await _flutterLocalNotificationsPlugin.zonedSchedule(
@@ -121,7 +124,7 @@ class NotificationService {
         androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
         payload: payload,
       );
-      
+
       AppLogger.log('Scheduled notification $id for $tzScheduledDate');
     } catch (e) {
       throw NotificationException('Failed to schedule notification: $e');

@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:whatsapp/core/Cached/secure_storage.dart';
 import 'package:whatsapp/core/utils/assets/app_assets.dart';
 import 'package:whatsapp/core/utils/router/routes_name.dart';
+
+import '../../../../../core/helper/app_logger.dart';
 
 class SplashViewBody extends StatefulWidget {
   const SplashViewBody({super.key});
@@ -15,7 +16,6 @@ class SplashViewBody extends StatefulWidget {
 
 class _SplashViewBodyState extends State<SplashViewBody>
     with SingleTickerProviderStateMixin {
-  
   late AnimationController _animationController;
   late Animation<Offset> _slideAnimation; // Image 1 (slides down)
   late Animation<Offset> _slideAnimation2; // Image 2 (slides up)
@@ -41,7 +41,7 @@ class _SplashViewBodyState extends State<SplashViewBody>
         curve: const Interval(0.0, 0.5, curve: Curves.easeOutCubic),
       ),
     );
-    
+
     // 2. Image 2 slides up (0.5 → 1.0)
     _slideAnimation2 = Tween<Offset>(
       begin: const Offset(0, 3.0),
@@ -71,24 +71,34 @@ class _SplashViewBodyState extends State<SplashViewBody>
   @override
   void dispose() {
     _animationController.dispose();
-    
     super.dispose();
   }
 
   Future<void> _checkAuthAndNavigate() async {
-    // Wait only 5 seconds before navigation
-    await Future.delayed(const Duration(seconds: 5));
+    // Read onboarding flag first (no need to wait)
+    final storage = GetStorage();
+    final bool isOnBoardingSeen = storage.read('isOnBoardingSeen') ?? false;
 
+    // Get current session/user
     final session = Supabase.instance.client.auth.currentSession;
-    final bool isOnBoardingSeen = GetStorage().read('isOnBoardingSeen') ?? false;
+    AppLogger.log(' Token is $session');
+    AppLogger.log(' onbording  is $isOnBoardingSeen');
+
+    // Splash delay
+    await Future.delayed(
+      const Duration(seconds: 5),
+    ); 
 
     if (!mounted) return;
 
     if (session != null) {
+      // User is logged in
       context.go(RoutesName.mainView);
     } else if (isOnBoardingSeen) {
+      // No session + onboarding done
       context.go(RoutesName.welcome);
     } else {
+      // First-time user
       context.go(RoutesName.onboarding);
     }
   }

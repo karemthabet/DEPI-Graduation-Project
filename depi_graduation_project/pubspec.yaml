@@ -6,7 +6,7 @@ publish_to: 'none' # Prevent publishing to pub.dev for now
 version: 1.0.0+1
 
 environment:
-  sdk: ^3.8.0-262.0.dev
+  sdk: '>=3.0.0 <4.0.0'
 
 dependencies:
   flutter:
@@ -42,7 +42,7 @@ dependencies:
   skeletonizer: ^2.1.0+1
   supabase_flutter: ^2.10.3
   url_launcher: ">=6.3.2 <7.0.0"
-  liquid_glass_renderer: ^0.2.0-dev.4
+  liquid_glass_renderer: ^0.1.1-dev.6
   flutter_local_notifications: ^19.5.0
   timezone: ^0.10.1
   intl: ^0.20.2
