@@ -272,6 +272,7 @@ class _GoogleButton extends StatelessWidget {
       child: OutlinedButton.icon(
         onPressed: () {
           AppDialogs.showInfo(
+            actions: [],
             context,
             message: '!Google Sign In feature coming soon',
           );

@@ -9,6 +9,7 @@ import 'package:whatsapp/features/home/presentation/views/widgets/places_example
 import 'package:whatsapp/features/login/presentation/views/sign_in_view.dart';
 import 'package:whatsapp/features/login/presentation/views/signup_view.dart';
 import 'package:whatsapp/features/login/presentation/views/welcome_view.dart';
+import 'package:whatsapp/features/profile/presentation/views/email_confirmation_view.dart';
 import 'package:whatsapp/features/root_navigation_glass/presentation/views/main_view.dart';
 import 'package:whatsapp/features/profile/presentation/views/edit_profile_view.dart';
 import 'package:whatsapp/features/profile/presentation/views/profile_veiw.dart';
@@ -26,6 +27,13 @@ class AppRouter {
         name: RoutesName.mainView,
         path: RoutesName.mainView,
         builder: (context, state) => const MainView(),
+      ),
+      GoRoute(
+        name: RoutesName.emailConfirm,
+        path: RoutesName.emailConfirm,
+        builder: (context, state) => EmailVerificationPage(
+          email: state.extra as String,
+        ),
       ),
       GoRoute(
         name: RoutesName.placesExample,

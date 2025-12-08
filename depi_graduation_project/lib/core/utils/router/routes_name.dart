@@ -17,4 +17,5 @@ class RoutesName {
   static const String placesExample = '/PlacesExampleUsage';
   static const String visitList = '/visitList';
   static const String changePasswordView = '/changePasswordView';
+  static const String emailConfirm = '/emailConfirm';
 }

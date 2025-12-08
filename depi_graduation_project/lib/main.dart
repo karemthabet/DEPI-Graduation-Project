@@ -23,7 +23,6 @@ import 'package:whatsapp/features/visit_Screen/presentation/cubit/visit_cubit.da
 import 'package:whatsapp/core/localization/cubit/locale_cubit.dart';
 import 'package:whatsapp/l10n/app_localizations.dart';
 import 'package:whatsapp/features/login/presentation/cubit/auth_cubit.dart';
-
 import 'package:whatsapp/features/profile/data/model/user_model.dart';
 
 void main() async {
@@ -55,6 +54,17 @@ void main() async {
   );
 
   await SupabaseService.initialize();
+
+  // ⬇️ إضافة Auth State Listener للـ Deep Link
+  Supabase.instance.client.auth.onAuthStateChange.listen((data) {
+    final event = data.event;
+    final session = data.session;
+    
+    if (event == AuthChangeEvent.signedIn && session != null) {
+      print('✅ User signed in: ${session.user.email}');
+      print('✅ Email confirmed: ${session.user.emailConfirmedAt != null}');
+    }
+  });
 
   setupServiceLocator();
   await NotificationService().init();

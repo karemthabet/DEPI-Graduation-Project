@@ -53,12 +53,104 @@ class _SignUpViewState extends State<SignUpView> {
   }
 
   void _handleAuthStateChanges(BuildContext context, AuthState state) {
-    if (state is AuthSuccess) {
-      AppSnackBar.warning(
+    if (state is AuthEmailVerificationRequired) {
+      // showDialog(
+      //   context: context,
+      //   barrierDismissible: false,
+      //   builder: (context) => AlertDialog(
+      //     shape: RoundedRectangleBorder(
+      //       borderRadius: BorderRadius.circular(20),
+      //     ),
+      //     title: const Row(
+      //       children: [
+      //         Icon(Icons.email, color: Colors.blue, size: 30),
+      //         SizedBox(width: 10),
+      //         Text('Email Verification Required'),
+      //       ],
+      //     ),
+      //     content: Column(
+      //       mainAxisSize: MainAxisSize.min,
+      //       crossAxisAlignment: CrossAxisAlignment.start,
+      //       children: [
+      //         Text(
+
+      //           style: TextStyle(fontSize: 14, color: Colors.grey[700]),
+      //         ),
+      //         const SizedBox(height: 8),
+      //         Text(
+      //           state.email,
+      //           style: const TextStyle(
+      //             fontSize: 16,
+      //             fontWeight: FontWeight.bold,
+      //             color: Colors.blue,
+      //           ),
+      //         ),
+      //         const SizedBox(height: 16),
+      //         const Text(
+      //           'برجاء فتح بريدك الإلكتروني والضغط على رابط التأكيد لإكمال التسجيل.',
+      //           style: TextStyle(fontSize: 14),
+      //         ),
+      //       ],
+      //     ),
+      //     actions: [
+      //       TextButton(
+      //         onPressed: () {
+      //           context.read<AuthCubit>().resendVerificationEmail(
+      //                 email: state.email,
+      //               );
+      //         },
+      //         child: const Text('إعادة الإرسال'),
+      //       ),
+      //       ElevatedButton(
+      //         onPressed: () {
+      //           Navigator.pop(context); // أقفل الـ dialog
+      //           context.go(RoutesName.login); // ارجع للـ login
+      //         },
+      //         style: ElevatedButton.styleFrom(
+      //           backgroundColor: const Color(0xFFFFE26D),
+      //           foregroundColor: Colors.black,
+      //           shape: RoundedRectangleBorder(
+      //             borderRadius: BorderRadius.circular(10),
+      //           ),
+      //         ),
+      //         child: const Text('حسناً'),
+      //       ),
+      //     ],
+      //   ),
+      // );
+      AppDialogs.showInfo(
         context,
-        'You must confirm your email to login',
+        message:
+            'A confirmation email has been sent to your email address. Please check your inbox.',
+        title: 'Email Verification Required',
+        actions: [
+          TextButton(
+            onPressed: () {
+              context.read<AuthCubit>().resendVerificationEmail(
+                    email: state.email,
+                  );
+            },
+            child: const Text('Resend'),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              Navigator.pop(context); // أقفل الـ dialog
+              context.go(RoutesName.login); // ارجع للـ login
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: const Color(0xFFFFE26D),
+              foregroundColor: Colors.black,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10),
+              ),
+            ),
+            child: const Text('Ok'),
+          ),
+        ],
       );
-      context.go(RoutesName.login);
+    } else if (state is AuthSuccess) {
+      AppSnackBar.success(context, 'تم التسجيل بنجاح!');
+      context.go(RoutesName.mainView);
     } else if (state is AuthFailure) {
       AppSnackBar.error(context, state.message);
     }
@@ -214,9 +306,6 @@ class _EmailField extends StatelessWidget {
         if (!value.contains('@')) {
           return 'Please enter a valid email';
         }
-        if (!value.trim().endsWith('@gmail.com')) {
-          return 'Email must be a valid @gmail.com address';
-        }
         return null;
       },
     );
@@ -291,6 +380,7 @@ class _GoogleButton extends StatelessWidget {
       child: OutlinedButton.icon(
         onPressed: () {
           AppDialogs.showInfo(
+            actions: [],
             context,
             message: '!Google Sign In feature coming soon',
           );

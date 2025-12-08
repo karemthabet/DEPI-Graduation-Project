@@ -15,7 +15,7 @@ class AuthCubit extends Cubit<AuthState> {
       final response = await supabase.auth.signInWithPassword(
         email: email,
         password: password,
-        
+
       );
 
       final user = response.user;
@@ -26,7 +26,7 @@ class AuthCubit extends Cubit<AuthState> {
       }
 
       if (user.emailConfirmedAt == null) {
-        emit(AuthFailure('Please verify your email address'));
+        emit(AuthFailure('Please verify your email address before signing in'));
         return;
       }
 
@@ -50,22 +50,49 @@ class AuthCubit extends Cubit<AuthState> {
   }) async {
     emit(AuthLoading());
     try {
-      await supabase.auth.signUp(
+      final response = await supabase.auth.signUp(
         email: email,
         password: password,
         data: {'full_name': name},
+        emailRedirectTo: 'com.example.depi_graduation_project://login-callback',
       );
 
-      // Clear guest status on successful signup
-      GetStorage().write('isGuest', false);
+      final user = response.user;
 
-      emit(AuthSuccess());
+      if (user != null) {
+        emit(AuthEmailVerificationRequired(
+          'A confirmation email has been sent to your email address. Please check your inbox.',
+          email,
+        ));
+      } else {
+        emit(AuthFailure('Failed to create account'));
+      }
     } on AuthException catch (e) {
       _handleAuthException(e);
     } on SocketException {
       emit(AuthFailure('No internet connection. Please check your network.'));
     } catch (e) {
       _handleGenericException(e);
+    }
+  }
+
+  Future<void> resendVerificationEmail({required String email}) async {
+    emit(AuthLoading());
+    try {
+      await supabase.auth.resend(
+        type: OtpType.signup,
+        email: email,
+        emailRedirectTo: 'com.example.depi_graduation_project://login-callback',
+      );
+      
+      emit(AuthEmailVerificationRequired(
+        'A confirmation email has been sent to your email address. Please check your inbox.',
+        email,
+      ));
+    } on AuthException catch (e) {
+      _handleAuthException(e);
+    } catch (e) {
+      emit(AuthFailure('حدث خطأ أثناء إعادة الإرسال: $e'));
     }
   }
 

@@ -212,7 +212,7 @@ static void showLoading(
     String? message,
     String okLabel = 'OK',
     VoidCallback? onOk,
-    bool rtl = true,
+    bool rtl = true, required List<ButtonStyleButton> actions,
   }) async {
     await _showBase<void>(
       context,
