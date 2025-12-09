@@ -116,26 +116,15 @@ class PlacesLocalDataSource {
       _placeDetailsBoxName,
     );
 
-    // Search for existing place details
-    final existingIndex = box.values.toList().indexWhere(
-      (item) => item.placeId == placeId,
-    );
-
     final cachedData = CachedPlaceDetailsModel(
       placeId: placeId,
       details: details,
       timestamp: DateTime.now(),
     );
 
-    if (existingIndex != -1) {
-      // Update existing data
-      await box.putAt(existingIndex, cachedData);
-      print(' Updated place details: $placeId');
-    } else {
-      // Add new data
-      await box.add(cachedData);
-      print('Cached place details: $placeId');
-    }
+    // Use placeId as key for O(1) access
+    await box.put(placeId, cachedData);
+    print('Cached place details: $placeId');
   }
 
   /// Get place details from cache
@@ -149,12 +138,13 @@ class PlacesLocalDataSource {
       return null;
     }
 
-    // Search for place by placeId
-    try {
-      final cached = box.values.firstWhere((item) => item.placeId == placeId);
+    // Direct O(1) lookup
+    final cached = box.get(placeId);
+
+    if (cached != null) {
       print(' Found place details: $placeId');
       return cached;
-    } catch (e) {
+    } else {
       print(' Place details not found: $placeId');
       return null;
     }
@@ -166,12 +156,8 @@ class PlacesLocalDataSource {
       _placeDetailsBoxName,
     );
 
-    final index = box.values.toList().indexWhere(
-      (item) => item.placeId == placeId,
-    );
-
-    if (index != -1) {
-      await box.deleteAt(index);
+    if (box.containsKey(placeId)) {
+      await box.delete(placeId);
       print(' Deleted place details: $placeId');
     }
   }

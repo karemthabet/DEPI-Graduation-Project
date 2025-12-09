@@ -1,5 +1,3 @@
-import 'package:whatsapp/models/place_autocomplete_model/place_autocomplete_model.dart';
-
 abstract class SearchState {}
 
 class SearchInitial extends SearchState {}
@@ -7,8 +5,8 @@ class SearchInitial extends SearchState {}
 class SearchLoading extends SearchState {}
 
 class SearchSuccess extends SearchState {
-  final List<PlaceAutocompleteModel> places;
-  SearchSuccess(this.places);
+  final List<dynamic> predictions;
+  SearchSuccess(this.predictions);
 }
 
 class SearchError extends SearchState {

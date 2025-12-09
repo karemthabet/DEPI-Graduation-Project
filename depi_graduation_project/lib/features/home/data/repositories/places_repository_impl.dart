@@ -29,7 +29,7 @@ class PlacesRepositoryImpl implements PlacesRepository {
       final Position currentPosition =
           await LocationService.instance.getCurrentLocation();
 
-     AppLogger.info(
+      AppLogger.info(
         'Current location: (${currentPosition.latitude}, ${currentPosition.longitude})\n',
       );
       AppLogger.info('Step 2: Checking cache existence...');
@@ -44,7 +44,7 @@ class PlacesRepositoryImpl implements PlacesRepository {
       double? distanceFromCache;
 
       if (cachedPlaces != null && cachedLocation != null) {
-       AppLogger.info(' Cache found');
+        AppLogger.info(' Cache found');
 
         // Calculate distance between current and cached location
         distanceFromCache = DistanceCalculator.calculateDistance(
@@ -214,6 +214,10 @@ class PlacesRepositoryImpl implements PlacesRepository {
         yield Right(cachedDetails.details);
 
         print(' Emitted cached data\n');
+
+        // ------------- STOP EXECUTION IF CACHED -------------
+        print('✅ Using cached data, skipping API call.');
+        return;
       } else {
         print(' No cache for this place\n');
       }

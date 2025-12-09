@@ -82,7 +82,7 @@ class _HomeViewBodyState extends State<HomeViewBody> {
               children: [
                 const BuildProfileSection(),
                 SizedBox(height: 20.h),
-                BuildSearchBar(textEditingController: textEditingController),
+                BuildSearchBar(controller: textEditingController),
                 SizedBox(height: 24.h),
                 Text(
                   AppLocalizations.of(context)!.browseByCategory,

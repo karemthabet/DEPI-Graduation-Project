@@ -1,178 +1,173 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:uuid/uuid.dart';
-import 'package:whatsapp/core/services/google_maps_place_service.dart';
-import 'package:whatsapp/core/utils/styles/app_text_styles.dart';
-import 'package:whatsapp/features/home/data/models/item_model.dart';
-import 'package:whatsapp/l10n/app_localizations.dart';
-import 'package:whatsapp/models/place_autocomplete_model/place_autocomplete_model.dart';
-import 'package:whatsapp/features/home/presentation/views/widgets/categories_view_details_body.dart';
-import 'package:whatsapp/models/places_details_model/places_details_model.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:whatsapp/core/utils/constants/api_constants.dart';
+import 'package:whatsapp/core/utils/router/routes_name.dart';
+import 'package:whatsapp/features/home/data/models/item_model.dart';
+import 'package:whatsapp/features/home/presentation/cubit/search_cubit.dart';
+import 'package:whatsapp/features/home/presentation/cubit/search_state.dart';
 
-class BuildSearchBar extends StatefulWidget {
-  final TextEditingController textEditingController;
-  const BuildSearchBar({super.key, required this.textEditingController});
+class BuildSearchBar extends StatelessWidget {
+  final TextEditingController controller;
 
-  @override
-  _BuildSearchBarState createState() => _BuildSearchBarState();
-}
-
-class _BuildSearchBarState extends State<BuildSearchBar> {
-  String? sessiontoken;
-  late Uuid uuid;
-  List<PlaceAutocompleteModel> places = [];
-  late TextEditingController textEditingController;
-
-  @override
-  void initState() {
-    textEditingController = widget.textEditingController;
-    uuid = const Uuid();
-    super.initState();
-    fetchPredictions();
-  }
-
-  void fetchPredictions() {
-    textEditingController.addListener(() async {
-      sessiontoken ??= uuid.v4();
-
-      if (textEditingController.text.isNotEmpty) {
-        final service = GoogleMapsPlaceService();
-        final result = await service.getpredictions(
-          sessiontoken: sessiontoken!,
-          input: textEditingController.text,
-        );
-        places.clear();
-        places.addAll(result);
-        setState(() {});
-      } else {
-        places.clear();
-        setState(() {});
-      }
-    });
-  }
+  const BuildSearchBar({super.key, required this.controller});
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 10.h),
-      decoration: BoxDecoration(
-        color: Colors.grey[200],
-        borderRadius: BorderRadius.circular(25.r),
-      ),
-      child: Row(
-        children: [
-          Icon(Icons.search, color: Colors.grey, size: 22.sp),
-          SizedBox(width: 12.w),
-          Expanded(
-            child: Column(
-              children: [
-                TextField(
-                  controller: textEditingController,
-
-                  style: AppTextStyles.bodyMedium(context).copyWith(
-                    color: Colors.grey,
-                    fontSize: 13.sp,
-                    fontWeight: FontWeight.w400,
+    return Column(
+      children: [
+        // ------------------- Search Bar -------------------
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+          decoration: BoxDecoration(
+            color: Colors.grey[200],
+            borderRadius: BorderRadius.circular(25),
+          ),
+          child: Row(
+            children: [
+              const Icon(Icons.search, color: Colors.grey, size: 22),
+              const SizedBox(width: 12),
+              Expanded(
+                child: TextField(
+                  controller: controller,
+                  onChanged: (value) =>
+                      context.read<SearchCubit>().search(value),
+                  style: const TextStyle(
+                    fontSize: 14,
+                    color: Colors.black87,
                   ),
-
-                  decoration: InputDecoration(
-                    hintText: AppLocalizations.of(context)!.searchHint,
-                    hintStyle: AppTextStyles.bodyMedium(context).copyWith(
-                      color: Colors.grey,
-                      fontSize: 13.sp,
-                      fontWeight: FontWeight.w400,
-                    ),
+                  decoration: const InputDecoration(
+                    hintText: 'Search for a place...',
                     border: InputBorder.none,
                     isCollapsed: true,
                   ),
                 ),
-                const SizedBox(height: 16),
-                customlistview(
-                  places: places,
-                  onPlaceSelection: (PlaceDetails) {
-                    textEditingController.clear();
-                    places.clear();
-                    sessiontoken = null;
-                    setState(() {});
+              ),
+            ],
+          ),
+        ),
+
+        const SizedBox(height: 10),
+
+        // ------------------- Predictions List -------------------
+        BlocBuilder<SearchCubit, SearchState>(
+          builder: (context, state) {
+            if (state is SearchLoading) {
+              return const Padding(
+                padding: EdgeInsets.only(top: 10),
+                child: CircularProgressIndicator(),
+              );
+            }
+
+            if (state is SearchSuccess) {
+              final predictions = state.predictions;
+
+              if (predictions.isEmpty) {
+                return const SizedBox.shrink();
+              }
+
+              return Container(
+                margin: const EdgeInsets.only(top: 10),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(12),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.08),
+                      blurRadius: 8,
+                      offset: const Offset(0, 2),
+                    ),
+                  ],
+                ),
+                child: ListView.separated(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  itemCount: predictions.length,
+                  separatorBuilder: (_, __) =>
+                      const Divider(height: 0, color: Colors.grey),
+                  itemBuilder: (context, index) {
+                    final item = predictions[index];
+
+                    return ListTile(
+                      contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 4,
+                      ),
+                      title: Text(
+                        item['description'],
+                        style: const TextStyle(fontSize: 14),
+                      ),
+                      trailing: const Icon(
+                        Icons.arrow_forward_ios_rounded,
+                        size: 18,
+                        color: Colors.grey,
+                      ),
+                      onTap: () async {
+                        // ---------- Get Place Details ----------
+                        // Use the repo directly (as before), but now it caches!
+                        final details = await context
+                            .read<SearchCubit>()
+                            .repo
+                            .getPlaceDetails(item['place_id']);
+
+                        if (details == null) return;
+
+                        if (!context.mounted) return;
+
+                        // ---------- Process Image URL ----------
+                        String imageUrl = '';
+                        if (details['photos'] != null &&
+                            (details['photos'] as List).isNotEmpty) {
+                          final photoRef =
+                              details['photos'][0]['photo_reference'];
+                          if (photoRef != null) {
+                            imageUrl =
+                                'https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photo_reference=$photoRef&key=${ApiBase.apiKey}';
+                          }
+                        }
+
+                        // ---------- Build ItemModel ----------
+                        // Extracting 'editorial_summary' for description if available
+                        String description = '';
+                        if (details['editorial_summary'] != null &&
+                            details['editorial_summary']['overview'] != null) {
+                          description =
+                              details['editorial_summary']['overview'];
+                        }
+
+                        final itemModel = ItemModel(
+                          id: details['place_id'] ?? item['place_id'],
+                          name: details['name'] ?? item['description'],
+                          location: details['formatted_address'] ??
+                              details['vicinity'] ??
+                              '',
+                          image: imageUrl,
+                          rating: details['rating']?.toString() ?? '0.0',
+                          openNow: details['opening_hours'] != null
+                              ? details['opening_hours']['open_now'] ?? false
+                              : false,
+                          description: description,
+                        );
+
+                        // ---------- Clear UI & Navigate ----------
+                        controller.clear();
+                        context.read<SearchCubit>().search('');
+
+                        context.push(
+                          RoutesName.categoriesViewDetails,
+                          extra: itemModel,
+                        );
+                      },
+                    );
                   },
                 ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
+              );
+            }
 
-class customlistview extends StatelessWidget {
-  customlistview({
-    super.key,
-    required this.places,
-    required this.onPlaceSelection,
-  });
-
-  final List<PlaceAutocompleteModel> places;
-  final Function(PlacesDetailsModel) onPlaceSelection;
-  final GoogleMapsPlaceService googleMapsPlaceServic = GoogleMapsPlaceService();
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      child: ListView.separated(
-        shrinkWrap: true,
-        itemBuilder: (context, index) {
-          return ListTile(
-            title: Text(places[index].description!),
-            trailing: IconButton(
-              onPressed: () async {
-                final placeDetails = await googleMapsPlaceServic
-                    .getPlaceDetails(placeId: places[index].placeId.toString());
-
-                String imageUrl = '';
-                if (placeDetails.photos?.isNotEmpty == true &&
-                    placeDetails.photos![0].photoReference != null) {
-                  imageUrl =
-                      'https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photo_reference=${placeDetails.photos![0].photoReference}&key=${ApiBase.apiKey}';
-                }
-
-                final item = ItemModel(
-                  id: places[index].placeId,
-
-                  name: places[index].description ?? 'unkown place',
-
-                  image: imageUrl,
-
-                  location:
-                      placeDetails.formattedAddress ??
-                      (placeDetails.geometry != null
-                          ? '${placeDetails.geometry!.location!.lat},${placeDetails.geometry!.location!.lng}'
-                          : 'Location not available'),
-                  description:
-                      placeDetails.editorialSummary ??
-                      '', // وصف افتراضي أو فاضي
-                  openNow: true,
-                  rating: placeDetails.rating?.toString() ?? '0', // افتراضي
-                );
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) =>
-                        CategoriesViewDetailsBody(itemModel: item),
-                  ),
-                ).then((_) {
-                  onPlaceSelection(placeDetails);
-                });
-              },
-              icon: const Icon(Icons.arrow_circle_right_outlined),
-            ),
-          );
-        },
-        separatorBuilder: (context, index) {
-          return const Divider(height: 0);
-        },
-        itemCount: places.length,
-      ),
+            return const SizedBox.shrink();
+          },
+        ),
+      ],
     );
   }
 }

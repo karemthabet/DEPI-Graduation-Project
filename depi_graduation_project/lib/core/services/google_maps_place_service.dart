@@ -1,46 +1,53 @@
-import 'dart:convert';
-import 'package:whatsapp/models/place_autocomplete_model/place_autocomplete_model.dart';
-import 'package:http/http.dart' as http;
-import 'package:whatsapp/models/places_details_model/places_details_model.dart';
+import 'package:dio/dio.dart';
 
 class GoogleMapsPlaceService {
+  final Dio dio = Dio();
+
   final String baseUrl = 'https://maps.googleapis.com/maps/api/place';
-  final String apikey = 'AIzaSyA3FifUzz1TsB2bknK0VARH_45PT_AuyMw';
+  final String apiKey = 'AIzaSyA3FifUzz1TsB2bknK0VARH_45PT_AuyMw';
 
-  Future<List<PlaceAutocompleteModel>> getpredictions({
+  Future<List<dynamic>> fetchPredictions({
     required String input,
-    required String sessiontoken,
+    required String sessionToken,
   }) async {
-    final response = await http.get(
-      Uri.parse(
-        '$baseUrl/autocomplete/json?key=$apikey&input=$input&sessiontoken=$sessiontoken&components=country:eg',
-      ),
-    );
+    try {
+      final response = await dio.get(
+        '$baseUrl/autocomplete/json',
+        queryParameters: {
+          'key': apiKey,
+          'input': input,
+          'sessiontoken': sessionToken,
+          'components': 'country:eg',
+        },
+      );
 
-    if (response.statusCode == 200) {
-      final data = jsonDecode(response.body)['predictions'];
-      final List<PlaceAutocompleteModel> places = [];
-
-      for (var item in data) {
-        places.add(PlaceAutocompleteModel.fromJson(item));
+      if (response.data['status'] == 'OK') {
+        return response.data['predictions'];
+      } else {
+        return [];
       }
-      return places;
-    } else {
-      throw Exception();
+    } catch (_) {
+      return [];
     }
   }
 
-  Future<PlacesDetailsModel> getPlaceDetails({required String placeId}) async {
-    final response = await http.get(
-      Uri.parse('$baseUrl/details/json?key=$apikey&place_id=$placeId'),
-    );
+  Future<Map<String, dynamic>?> fetchPlaceDetails(String placeId) async {
+    try {
+      final response = await dio.get(
+        '$baseUrl/details/json',
+        queryParameters: {
+          'key': apiKey,
+          'place_id': placeId,
+        },
+      );
 
-    if (response.statusCode == 200) {
-      final data = jsonDecode(response.body)['result'];
-
-      return PlacesDetailsModel.fromJson(data);
-    } else {
-      throw Exception();
+      if (response.data['status'] == 'OK') {
+        return response.data['result'];
+      } else {
+        return null;
+      }
+    } catch (_) {
+      return null;
     }
   }
 }
