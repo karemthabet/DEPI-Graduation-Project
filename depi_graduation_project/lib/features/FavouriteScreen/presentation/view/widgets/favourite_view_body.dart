@@ -102,10 +102,45 @@ class FavouriteViewBody extends StatelessWidget {
           ),
         ],
       ),
-      body: BlocBuilder<FavoritesCubit, FavoritesState>(
+      body: BlocConsumer<FavoritesCubit, FavoritesState>(
+        listener: (context, state) {
+          if (state is FavoritesActionFailure) {
+            final message = state.errMessage == 'no_internet'
+                ? AppLocalizations.of(context)!.noInternetConnection
+                : state.errMessage;
+
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(message),
+                backgroundColor: Colors.red,
+                duration: const Duration(seconds: 2),
+              ),
+            );
+          }
+        },
         builder: (context, state) {
           if (state is FavoritesLoading) {
             return const Center(child: CircularProgressIndicator());
+          } else if (state is FavoritesNoInternet) {
+            return Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Icon(Icons.wifi_off, size: 64, color: Colors.grey),
+                  const SizedBox(height: 16),
+                  Text(
+                    AppLocalizations.of(context)!.noInternetConnection,
+                    style: TextStyle(fontSize: 16, color: Colors.grey[700]),
+                  ),
+                  const SizedBox(height: 24),
+                  ElevatedButton(
+                    onPressed: () =>
+                        context.read<FavoritesCubit>().loadFavorites(),
+                    child: Text(AppLocalizations.of(context)!.retry),
+                  ),
+                ],
+              ),
+            );
           } else if (state is FavoritesLoaded) {
             final favorites = state.favorites;
             if (favorites.isEmpty) {

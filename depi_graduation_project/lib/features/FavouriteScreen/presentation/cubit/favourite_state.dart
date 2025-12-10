@@ -30,3 +30,14 @@ class FavoritesError extends FavoritesState {
   @override
   List<Object?> get props => [failure];
 }
+
+class FavoritesNoInternet extends FavoritesState {}
+
+class FavoritesActionFailure extends FavoritesLoaded {
+  final String errMessage;
+
+  const FavoritesActionFailure(super.favorites, this.errMessage);
+
+  @override
+  List<Object?> get props => [favorites, errMessage];
+}
