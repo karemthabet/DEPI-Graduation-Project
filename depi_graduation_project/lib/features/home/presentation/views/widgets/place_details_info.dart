@@ -64,7 +64,6 @@ class PlaceItemInfo extends StatelessWidget {
               ),
             ),
           ),
-
           Expanded(
             child: Padding(
               padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 6.h),
@@ -86,15 +85,9 @@ class PlaceItemInfo extends StatelessWidget {
                             overflow: TextOverflow.ellipsis,
                           ),
                         ),
-                        Icon(
-                          Icons.favorite_border,
-                          color: Colors.grey[700],
-                          size: 16.sp,
-                        ),
                       ],
                     ),
                     SizedBox(height: 2.h),
-
                     Row(
                       children: [
                         Icon(
@@ -117,7 +110,6 @@ class PlaceItemInfo extends StatelessWidget {
                       ],
                     ),
                     SizedBox(height: 2.h),
-
                     Row(
                       children: [
                         Text(
@@ -132,7 +124,6 @@ class PlaceItemInfo extends StatelessWidget {
                       ],
                     ),
                     SizedBox(height: 2.h),
-
                     Text(
                       itemModel.openNow ? '• Open Now' : '• Closed',
                       style: TextStyle(

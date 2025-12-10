@@ -1,7 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../supabase_service.dart';
 import '../../data/models/favourite_model.dart';
-import '../../data/models/repositories/favourites_repository.dart';
+import '../../data/repositories/favourites_repository.dart';
 import 'favourite_state.dart';
 import '../../../../core/errors/server_failure.dart';
 

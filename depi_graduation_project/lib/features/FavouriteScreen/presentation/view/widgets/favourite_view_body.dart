@@ -4,7 +4,6 @@ import 'package:go_router/go_router.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:whatsapp/l10n/app_localizations.dart';
 import '../../../../../core/utils/router/routes_name.dart';
-import '../../../../../supabase_service.dart';
 import '../../../../root_navigation_glass/presentation/views/main_view.dart';
 import '../../cubit/favourite_cubit.dart';
 import '../../cubit/favourite_state.dart';

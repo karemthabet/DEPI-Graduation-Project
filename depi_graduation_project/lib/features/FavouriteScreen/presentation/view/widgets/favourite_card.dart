@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:whatsapp/core/functions/device_size.dart';
 import 'package:whatsapp/core/utils/colors/app_colors.dart';
 import '../../../../../core/utils/router/routes_name.dart';
 import '../../../../home/data/models/item_model.dart';
@@ -20,8 +20,8 @@ class FavouriteCard extends StatelessWidget {
     return BlocBuilder<FavoritesCubit, FavoritesState>(
       builder: (context, state) {
         final isFavorite = context.read<FavoritesCubit>().isFavorite(
-          item.placeId,
-        );
+              item.placeId,
+            );
 
         return GestureDetector(
           onTap: () {
@@ -40,124 +40,74 @@ class FavouriteCard extends StatelessWidget {
           child: Stack(
             children: [
               Container(
-                width: screenWidth(context) / 0.3,
-                height: screenHeight(context) / 7,
+                width: double.infinity,
                 decoration: BoxDecoration(
                   color: AppColors.cardColor,
-                  borderRadius: BorderRadius.circular(16.0),
+                  borderRadius: BorderRadius.circular(16.r),
                 ),
-                margin: const EdgeInsets.symmetric(
-                  horizontal: 8.0,
-                  vertical: 4.0,
+                margin: EdgeInsets.symmetric(
+                  horizontal: 8.w,
+                  vertical: 4.h,
                 ),
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 16.0,
-                  vertical: 16.0,
-                ),
+                padding: EdgeInsets.all(16.w),
                 child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.start,
                   children: [
+                    // الصورة
                     ClipRRect(
-                      borderRadius: BorderRadius.circular(14),
+                      borderRadius: BorderRadius.circular(14.r),
                       child: Image.network(
                         item.imageUrl,
-                        width: 124,
-                        height: 112,
+                        width: 110.w,
+                        height: 110.h,
                         fit: BoxFit.cover,
                       ),
                     ),
-                    const SizedBox(width: 16),
+                    SizedBox(width: 16.w),
 
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const SizedBox(height: 12),
-                        SizedBox(
-                          width: 155,
+                    // المحتوى - العنوان فقط
+                    Expanded(
+                      child: Padding(
+                        padding: EdgeInsets.only(right: 30.w),
+                        child: Center(
                           child: Text(
                             item.title,
                             style: GoogleFonts.inter(
-                              fontSize: 18,
+                              fontSize: 18.sp,
                               fontWeight: FontWeight.w800,
                               color: const Color(0xFF243E4B),
                             ),
-                            maxLines: 1,
+                            maxLines: 2,
                             overflow: TextOverflow.ellipsis,
+                            textAlign: TextAlign.start,
                           ),
                         ),
-                        const SizedBox(height: 8),
-
-                        Row(
-                          children: [
-                            const Icon(
-                              Icons.location_on,
-                              color: AppColors.namesColor,
-                              size: 16,
-                            ),
-                            const SizedBox(width: 2),
-                            SizedBox(
-                              width: 155,
-                              child: Text(
-                                item.location,
-                                style: GoogleFonts.inter(
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w600,
-                                  color: AppColors.namesColor,
-                                ),
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 8),
-                        Row(
-                          children: [
-                            const Icon(
-                              Icons.star,
-                              color: AppColors.starColor,
-                              size: 16,
-                            ),
-                            const SizedBox(width: 4),
-                            SizedBox(
-                              width: 155,
-                              child: Text(
-                                item.rating,
-                                style: GoogleFonts.inter(
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w600,
-                                  color: AppColors.namesColor,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
+                      ),
                     ),
                   ],
                 ),
               ),
 
               Positioned(
-                top: 24,
-                right: 24,
+                top: 16.h,
+                right: 16.w,
                 child: GestureDetector(
                   onTap: () {
                     context.read<FavoritesCubit>().toggleFavorite(item);
                   },
-                  child:
-                      isFavorite
-                          ? Image.asset(
+                  child: Container(
+                    padding: EdgeInsets.all(4.w),
+                    child: isFavorite
+                        ? Image.asset(
                             'assets/images/heartFilled.png',
-                            width: 24,
-                            height: 24,
+                            width: 24.w,
+                            height: 24.h,
                           )
-                          : Image.asset(
+                        : Image.asset(
                             'assets/images/heart.png',
-                            width: 24,
-                            height: 24,
+                            width: 24.w,
+                            height: 24.h,
                           ),
+                  ),
                 ),
               ),
             ],

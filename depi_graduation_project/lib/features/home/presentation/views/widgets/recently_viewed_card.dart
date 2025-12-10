@@ -128,7 +128,8 @@ class RecentlyViewedCard extends StatelessWidget {
                   Text(
                     itemModel.openNow == true ? '• Open Now' : '• Closed',
                     style: TextStyle(
-                      color: itemModel.openNow == true ? Colors.green : Colors.red,
+                      color:
+                          itemModel.openNow == true ? Colors.green : Colors.red,
                       fontSize: 11.sp,
                       fontWeight: FontWeight.w500,
                     ),

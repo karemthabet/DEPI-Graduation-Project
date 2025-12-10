@@ -54,70 +54,7 @@ class _SignUpViewState extends State<SignUpView> {
 
   void _handleAuthStateChanges(BuildContext context, AuthState state) {
     if (state is AuthEmailVerificationRequired) {
-      // showDialog(
-      //   context: context,
-      //   barrierDismissible: false,
-      //   builder: (context) => AlertDialog(
-      //     shape: RoundedRectangleBorder(
-      //       borderRadius: BorderRadius.circular(20),
-      //     ),
-      //     title: const Row(
-      //       children: [
-      //         Icon(Icons.email, color: Colors.blue, size: 30),
-      //         SizedBox(width: 10),
-      //         Text('Email Verification Required'),
-      //       ],
-      //     ),
-      //     content: Column(
-      //       mainAxisSize: MainAxisSize.min,
-      //       crossAxisAlignment: CrossAxisAlignment.start,
-      //       children: [
-      //         Text(
-
-      //           style: TextStyle(fontSize: 14, color: Colors.grey[700]),
-      //         ),
-      //         const SizedBox(height: 8),
-      //         Text(
-      //           state.email,
-      //           style: const TextStyle(
-      //             fontSize: 16,
-      //             fontWeight: FontWeight.bold,
-      //             color: Colors.blue,
-      //           ),
-      //         ),
-      //         const SizedBox(height: 16),
-      //         const Text(
-      //           'برجاء فتح بريدك الإلكتروني والضغط على رابط التأكيد لإكمال التسجيل.',
-      //           style: TextStyle(fontSize: 14),
-      //         ),
-      //       ],
-      //     ),
-      //     actions: [
-      //       TextButton(
-      //         onPressed: () {
-      //           context.read<AuthCubit>().resendVerificationEmail(
-      //                 email: state.email,
-      //               );
-      //         },
-      //         child: const Text('إعادة الإرسال'),
-      //       ),
-      //       ElevatedButton(
-      //         onPressed: () {
-      //           Navigator.pop(context); // أقفل الـ dialog
-      //           context.go(RoutesName.login); // ارجع للـ login
-      //         },
-      //         style: ElevatedButton.styleFrom(
-      //           backgroundColor: const Color(0xFFFFE26D),
-      //           foregroundColor: Colors.black,
-      //           shape: RoundedRectangleBorder(
-      //             borderRadius: BorderRadius.circular(10),
-      //           ),
-      //         ),
-      //         child: const Text('حسناً'),
-      //       ),
-      //     ],
-      //   ),
-      // );
+   
       AppDialogs.showInfo(
         context,
         message:
