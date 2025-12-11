@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:whatsapp/core/utils/colors/app_colors.dart';
 import 'package:whatsapp/core/utils/router/routes_name.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class OnboardingViewBody extends StatefulWidget {
   const OnboardingViewBody({super.key});
@@ -19,17 +20,20 @@ class _OnboardingViewBodyState extends State<OnboardingViewBody> {
     {
       'image': 'assets/images/onboardingimg1.jpg',
       'title': 'Discover Famous\nLandmarks',
-      'desc': 'Explore Egypt’s iconic attractions, \n from ancient wonders to modern gems'
+      'desc':
+          'Explore Egypt’s iconic attractions, \n from ancient wonders to modern gems'
     },
     {
       'image': 'assets/images/onboardingimg2.jpg',
       'title': 'Plan Your Journey',
-      'desc': 'Create and customize your own visit list with museums, malls, hidden gems, and iconic landmarks.',
+      'desc':
+          'Create and customize your own visit list with museums, malls, hidden gems, and iconic landmarks.',
     },
     {
       'image': 'assets/images/onboarding3.jpg',
       'title': 'Navigate With Ease',
-      'desc': 'Get map directions, live alerts, and instant notifications when you’re near a landmark.',
+      'desc':
+          'Get map directions, live alerts, and instant notifications when you’re near a landmark.',
     },
   ];
 
@@ -40,8 +44,7 @@ class _OnboardingViewBodyState extends State<OnboardingViewBody> {
         curve: Curves.easeInOut,
       );
     } else {
-                      context.go(RoutesName.welcome);
-
+      context.go(RoutesName.welcome);
     }
   }
 
@@ -66,7 +69,8 @@ class _OnboardingViewBodyState extends State<OnboardingViewBody> {
                   children: [
                     /// IMAGE SECTION
                     Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 20.h),
+                      padding: EdgeInsets.symmetric(
+                          horizontal: 24.w, vertical: 20.h),
                       child: Center(
                         child: Image.asset(
                           item['image']!,
@@ -96,7 +100,8 @@ class _OnboardingViewBodyState extends State<OnboardingViewBody> {
                     /// DOTS INDICATOR
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
-                      children: List.generate(onboardingData.length, (dotIndex) {
+                      children:
+                          List.generate(onboardingData.length, (dotIndex) {
                         return AnimatedContainer(
                           duration: const Duration(milliseconds: 300),
                           margin: EdgeInsets.symmetric(horizontal: 4.w),
@@ -105,91 +110,87 @@ class _OnboardingViewBodyState extends State<OnboardingViewBody> {
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
                             color: _currentPage == dotIndex
-                                ? AppColors.primaryBlue
-                                : AppColors.lightGray,
+                                ? const Color(0xFF6EABC7)
+                                : const Color(0xFFD9D9D9),
                           ),
                         );
                       }),
                     ),
 
-                    SizedBox(height: 20.h),
+                    SizedBox(height: 25.h),
 
                     /// CONTENT CARD
-                    Expanded(
-                      child: Container(
-                        width: double.infinity,
-                        padding: EdgeInsets.only(
-                          top: 32.h,
-                          left: 32.w,
-                          right: 32.w,
-                          bottom: 40.h,
-                        ),
-                        decoration: BoxDecoration(
-                          color: AppColors.primaryYellow,
-                          borderRadius: BorderRadius.only(
-                            topLeft: Radius.circular(40.r),
-                            topRight: Radius.circular(40.r),
+
+                    Container(
+                      margin: EdgeInsets.symmetric(horizontal: 25.w),
+                      padding: EdgeInsets.symmetric(
+                          horizontal: 25.w, vertical: 25.h),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFFFFE26D),
+                        borderRadius: BorderRadius.circular(30.r),
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          /// TITLE
+                          Text(
+                            item['title']!,
+                            textAlign: TextAlign.center,
+                            style: GoogleFonts.inter(
+                              fontSize: 24.sp,
+                              fontWeight: FontWeight.w700,
+                              color: const Color(0xFF243E4B),
+                              letterSpacing: 0.3,
+                              height: 1.1,
+                            ),
                           ),
-                        ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            /// TITLE
-                            Text(
-                              item['title']!,
-                              style: TextStyle(
-                                fontSize: 28.sp,
-                                fontWeight: FontWeight.w800,
-                                color: AppColors.darkText,
-                                height: 1.2,
-                              ),
+                          SizedBox(height: 10.h),
+
+                          /// DESCRIPTION
+                          Text(
+                            item['desc']!,
+                            textAlign: TextAlign.center,
+                            style: GoogleFonts.inter(
+                              fontSize: 16.sp,
+                              color: const Color(0xFF243E4B).withOpacity(0.8),
+                              height: 1.4,
+                              letterSpacing: 0.1,
                             ),
-                            SizedBox(height: 16.h),
+                          ),
 
-                            /// DESCRIPTION
-                            Text(
-                              item['desc']!,
-                              style: TextStyle(
-                                fontSize: 18.sp,
-                                color: AppColors.darkText.withOpacity(0.8),
-                                height: 1.4,
-                              ),
-                            ),
+                          const SizedBox(height: 40.0),
 
-                            const Spacer(),
-
-                            /// NEXT BUTTON
-                            Center(
-                              child: GestureDetector(
-                                onTap: _nextPage,
-                                child: Container(
-                                  width: 64.w,
-                                  height: 64.w,
-                                  decoration: BoxDecoration(
-                                    color: Colors.white,
-                                    borderRadius: BorderRadius.circular(32.r),
-                                    border: Border.all(
-                                      color: AppColors.primaryBlue,
-                                      width: 2.0,
+                          /// NEXT BUTTON
+                          Center(
+                            child: GestureDetector(
+                              onTap: _nextPage,
+                              child: Container(
+                                width: 64.w,
+                                height: 64.w,
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(32.r),
+                                  border: Border.all(
+                                    color: const Color(0xFF6EABC7),
+                                    width: 4.0,
+                                  ),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.black.withOpacity(0.15),
+                                      blurRadius: 10,
+                                      offset: const Offset(0, 4),
                                     ),
-                                    boxShadow: [
-                                      BoxShadow(
-                                        color: Colors.black.withOpacity(0.15),
-                                        blurRadius: 10,
-                                        offset: const Offset(0, 4),
-                                      ),
-                                    ],
-                                  ),
-                                  child: Icon(
-                                    Icons.arrow_forward,
-                                    size: 32.sp,
-                                    color: AppColors.primaryBlue,
-                                  ),
+                                  ],
+                                ),
+                                child: Icon(
+                                  Icons.arrow_forward,
+                                  size: 32.sp,
+                                  color: const Color(0xFF243E4B),
                                 ),
                               ),
                             ),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
                     ),
                   ],
@@ -203,12 +204,12 @@ class _OnboardingViewBodyState extends State<OnboardingViewBody> {
               right: 10.w,
               child: TextButton(
                 onPressed: () {
-                 context.go(RoutesName.welcome);
+                  context.go(RoutesName.welcome);
                 },
                 child: Text(
                   'Skip',
                   style: TextStyle(
-                    color: AppColors.primaryBlue,
+                    color: const Color(0xFF243E4B),
                     fontWeight: FontWeight.w600,
                     fontSize: 16.sp,
                   ),

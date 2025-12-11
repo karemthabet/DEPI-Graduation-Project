@@ -1,0 +1,28 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "depi_graduation_project",
+            "cwd": "depi_graduation_project",
+            "request": "launch",
+            "type": "dart"
+        },
+        {
+            "name": "depi_graduation_project (profile mode)",
+            "cwd": "depi_graduation_project",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "profile"
+        },
+        {
+            "name": "depi_graduation_project (release mode)",
+            "cwd": "depi_graduation_project",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "release"
+        }
+    ]
+}
