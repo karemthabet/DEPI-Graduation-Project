@@ -1,7 +1,7 @@
 # 🏖️ Tour Guide App (Guidee) – Explore Egypt Smartly  
 
 <div align="center">
-  <img src="./depi_graduation_project/assets/images/splash,welcome.png" alt="Splash & Welcome Screens" width="600"/>
+  <img src="./depi_graduation_project//assets/images/imageSplashWelcome.png" alt="Splash & Welcome Screens" width="600"/>
 </div>
 
 ---
@@ -75,21 +75,21 @@ The main goal of the app is to **enhance the tourism experience in Egypt** by or
 
 ### 👋 Splash & Welcome Screens  
 <div align="center">
-  <img src="./depi_graduation_project/assets/images/splash,welcome.png" alt="Splash & Welcome Screens" width="600"/>
+  <img src="./depi_graduation_project/assets/images/imageSplashWelcome.png" alt="Splash & Welcome Screens" width="600"/>
 </div>
 
 ---
 
 ### 🏠 Home & Places  
 <div align="center">
-  <img src="./depi_graduation_project/assets/images/home,place,category.png" alt="Home & Places Screens" width="600"/>
+  <img src="./depi_graduation_project/assets/images/imageHomePlaceCategory.png" alt="Home & Places Screens" width="600"/>
 </div>
 
 ---
 
 ### 🔖 Visit List & Favorites  
 <div align="center">
-  <img src="./depi_graduation_project/assets/images/Visit List,favourites.png" alt="Visit List and Favorites" width="600"/>
+  <img src="./depi_graduation_project/assets/images/imageVisitListFavourites.png" alt="Visit List and Favorites" width="600"/>
 </div>
 
 ---
