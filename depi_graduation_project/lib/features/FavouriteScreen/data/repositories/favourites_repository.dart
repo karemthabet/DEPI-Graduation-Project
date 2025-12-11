@@ -1,7 +1,7 @@
 
 import 'package:dartz/dartz.dart';
 import 'package:whatsapp/core/errors/server_failure.dart';
-import '../favourite_model.dart';
+import '../models/favourite_model.dart';
 
 abstract class IFavoritesRepository {
   Future<Either<ServerFailure, void>> addFavorite(FavouriteModel favorite);

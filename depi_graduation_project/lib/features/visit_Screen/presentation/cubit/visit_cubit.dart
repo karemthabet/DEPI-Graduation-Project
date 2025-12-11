@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../domain/repositories/visit_repository.dart';
 import '../../data/model/place__model.dart';
 import '../../data/model/visit_date.dart';
@@ -19,18 +18,20 @@ class VisitCubit extends Cubit<VisitState> {
 
   StreamSubscription<List<VisitDate>>? _visitSubscription;
 
-  VisitCubit({required this.visitRepository, required this.userRepository}) : super(VisitInitial());
+  VisitCubit({required this.visitRepository, required this.userRepository})
+      : super(VisitInitial());
 
   void loadVisits({bool showLoading = true}) async {
     if (showLoading) {
       emit(VisitLoading());
     }
-    
+
     final user = await userRepository.getCurrentUser();
     final userId = user?.id; // Get ID from Profile
-    
+
     _visitSubscription?.cancel();
-    _visitSubscription = visitRepository.watchAllVisitDates(userId: userId).listen(
+    _visitSubscription =
+        visitRepository.watchAllVisitDates(userId: userId).listen(
       (visitDates) {
         DateTime selectedDate = DateTime.now();
         if (state is VisitLoaded) {
@@ -39,12 +40,14 @@ class VisitCubit extends Cubit<VisitState> {
 
         final filteredVisits = _getVisitsForDate(visitDates, selectedDate);
 
-        emit(VisitLoaded(
-          visitDates: visitDates,
-          selectedDate: selectedDate,
-          filteredVisits: filteredVisits,
-        ));
-        
+        emit(
+          VisitLoaded(
+            visitDates: visitDates,
+            selectedDate: selectedDate,
+            filteredVisits: filteredVisits,
+          ),
+        );
+
         _scheduleFutureNotifications(visitDates);
       },
       onError: (error) {
@@ -57,18 +60,20 @@ class VisitCubit extends Cubit<VisitState> {
     );
   }
 
-
   void selectDate(DateTime date) {
     if (state is VisitLoaded) {
       final currentState = state as VisitLoaded;
       final normalizedDate = DateTime(date.year, date.month, date.day);
-      
-      final filteredVisits = _getVisitsForDate(currentState.visitDates, normalizedDate);
-      
-      emit(currentState.copyWith(
-        selectedDate: normalizedDate,
-        filteredVisits: filteredVisits,
-      ));
+
+      final filteredVisits =
+          _getVisitsForDate(currentState.visitDates, normalizedDate);
+
+      emit(
+        currentState.copyWith(
+          selectedDate: normalizedDate,
+          filteredVisits: filteredVisits,
+        ),
+      );
     }
   }
 
@@ -110,12 +115,12 @@ class VisitCubit extends Cubit<VisitState> {
     try {
       final user = await userRepository.getCurrentUser();
       final userId = user?.id;
-      
+
       if (userId == null) {
-          emit(VisitError(ServerFailure(errMessage: 'User not logged in')));
-          return;
+        emit(VisitError(ServerFailure(errMessage: 'User not logged in')));
+        return;
       }
-      
+
       await visitRepository.addPlaceToVisitDate(
         place: place,
         visitDate: visitDate,
@@ -133,7 +138,7 @@ class VisitCubit extends Cubit<VisitState> {
   Future<void> toggleCompletion(int visitId, bool isCompleted) async {
     try {
       await visitRepository.toggleVisitCompletion(visitId, isCompleted);
-      loadVisits(showLoading: false); 
+      loadVisits(showLoading: false);
     } on NetworkException catch (e) {
       emit(VisitError(ServerFailure(errMessage: e.message)));
     } catch (e) {
@@ -155,7 +160,7 @@ class VisitCubit extends Cubit<VisitState> {
   Future<void> updateTime(int visitId, String newTime) async {
     try {
       await visitRepository.updateVisitTime(visitId, newTime);
-      loadVisits(showLoading: false); 
+      loadVisits(showLoading: false);
     } on NetworkException catch (e) {
       emit(VisitError(ServerFailure(errMessage: e.message)));
     } catch (e) {

@@ -1,12 +1,9 @@
-import 'package:dartz/dartz.dart';
 import '../../../../core/errors/custom_exception.dart';
-import '../../../../core/errors/server_failure.dart';
 import '../../domain/repositories/visit_repository.dart';
 import '../datasources/visit_remote_datasource.dart';
 import '../model/place__model.dart';
 import '../model/visit_date.dart';
 import '../../../../core/services/network_checker.dart';
-import '../../../../core/helper/app_logger.dart';
 
 class VisitRepositoryImpl implements VisitRepository {
   final VisitRemoteDataSource remoteDataSource;

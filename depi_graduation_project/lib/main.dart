@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hive_flutter/hive_flutter.dart';
@@ -9,8 +10,8 @@ import 'package:whatsapp/core/services/setup_service_locator.dart';
 import 'package:whatsapp/core/utils/constants/supabase_constants.dart';
 import 'package:whatsapp/core/utils/router/app_router.dart';
 import 'package:whatsapp/core/utils/router/routes_name.dart';
-import 'package:whatsapp/features/FavouriteScreen/data/models/repositories/favourite_repository_impl.dart';
-import 'package:whatsapp/features/FavouriteScreen/data/models/repositories/favourites_repository.dart';
+import 'package:whatsapp/features/FavouriteScreen/data/repositories/favourite_repository_impl.dart';
+import 'package:whatsapp/features/FavouriteScreen/data/repositories/favourites_repository.dart';
 import 'package:whatsapp/features/FavouriteScreen/presentation/cubit/favourite_cubit.dart';
 import 'package:whatsapp/features/home/data/models/cached_place_details_model.dart';
 import 'package:whatsapp/features/home/data/models/cached_places_model.dart';
@@ -32,6 +33,11 @@ import 'package:whatsapp/features/profile/data/model/user_model.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  // lock screen orientation to portrait
+  await SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+    DeviceOrientation.portraitDown,
+  ]);
 
   // Initialize GetStorage
   await GetStorage.init();

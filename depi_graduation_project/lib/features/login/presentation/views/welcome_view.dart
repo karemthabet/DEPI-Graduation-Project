@@ -23,9 +23,9 @@ class WelcomeView extends StatelessWidget {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                SizedBox(height: 40.h),
+                SizedBox(height: 15.h),
                 _buildLogo(),
-                SizedBox(height: 30.h),
+                //  SizedBox(height: 30.h),
                 _buildTitle(context),
                 SizedBox(height: 8.h),
                 _buildSubtitle(context),
