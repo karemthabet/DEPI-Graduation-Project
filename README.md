@@ -197,28 +197,6 @@ This project was developed as the graduation project for the **Digital Egypt Pio
 **Our Achievement**: Successfully created a production-ready tourism application showcasing advanced mobile development skills, offline-first architecture, and user-centric design principles.
 
 ---
-
-## 📄 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
----
-
-## 🤝 Contributing
-
-We welcome contributions! Please feel free to submit pull requests or open issues for bugs and feature requests.
-
----
-
-## 📞 Contact & Support
-
-For questions, suggestions, or support:
-- 📧 Email: guidee.support@example.com
-- 🐛 Issues: [GitHub Issues](https://github.com/your-repo/guidee-app/issues)
-- 📱 Follow us: [@GuideeApp](https://twitter.com/guideeapp)
-
----
-
 <div align="center">
   <p><b>Made with ❤️ in Egypt 🇪🇬</b></p>
   <p><i>"Discover Egypt, One Place at a Time"</i></p>
