@@ -107,5 +107,14 @@
   "todayVisits": "زيارات اليوم",
   "loginToSeeVisitList": "يجب تسجيل الدخول لرؤية قائمة الزيارات",
   "loginToAddToVisitList": "يجب تسجيل الدخول لإضافة أماكن إلى قائمة الزيارات",
-  "loginToAddToFavourites": "يجب تسجيل الدخول لإضافة أماكن إلى المفضلة"
+  "loginToAddToFavourites": "يجب تسجيل الدخول لإضافة أماكن إلى المفضلة",
+  "resetPasswordTitle": "إعادة تعيين كلمة المرور",
+  "resetPasswordSubtitle": "أدخل كلمة المرور الجديدة أدناه.",
+  "enterNewPassword": "أدخل كلمة المرور الجديدة",
+  "updatePassword": "تحديث كلمة المرور",
+  "passwordUpdatedSuccess": "تم تحديث كلمة المرور بنجاح",
+  "passwordLengthError": "كلمة المرور يجب أن تكون 6 أحرف على الأقل",
+  "resetPasswordLabel": "كلمة المرور الجديدة"
 }
+
+

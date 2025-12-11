@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:whatsapp/features/login/presentation/cubit/auth_cubit.dart';
+import 'package:whatsapp/features/login/presentation/cubit/auth_state.dart';
 import 'package:whatsapp/l10n/app_localizations.dart';
 
 const Color primaryColor = Color(0xFFFFE26D);
@@ -16,8 +18,6 @@ class ForgotPasswordScreen extends StatefulWidget {
 
 class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
   final TextEditingController emailController = TextEditingController();
-  final supabase = Supabase.instance.client;
-  bool _isLoading = false;
 
   @override
   void dispose() {
@@ -25,114 +25,112 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
     super.dispose();
   }
 
-  Future<void> _sendPasswordReset() async {
-    final email = emailController.text.trim();
-
-    if (email.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(AppLocalizations.of(context)!.emailRequired)),
-      );
-      return;
-    }
-
-    setState(() {
-      _isLoading = true;
-    });
-
-    try {
-      //  final response = await supabase.auth.resetPasswordForEmail(email);
-
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(AppLocalizations.of(context)!.resetLinkSent)),
-      );
-
-      // Optionally, navigate back to login
-      Navigator.of(context).pop();
-    } on AuthException catch (e) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(e.message)));
-    } catch (e) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text('Unexpected error: $e')));
-    } finally {
-      setState(() {
-        _isLoading = false;
-      });
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: AppBar(
-        elevation: 0,
-        backgroundColor: Colors.white,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: darkBlueColor),
-          onPressed: () => Navigator.of(context).pop(),
-        ),
-      ),
-      body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(horizontal: 24.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const SizedBox(height: 20),
-              Text(
-                AppLocalizations.of(context)!.forgotPasswordTitle,
-                style: GoogleFonts.inter(
-                  fontSize: 32,
-                  fontWeight: FontWeight.bold,
-                  color: darkBlueColor,
-                  height: 1.2,
-                ),
-              ),
-              const SizedBox(height: 50),
-              _buildEmailInputField(context),
-              const SizedBox(height: 16),
-              Text(
-                AppLocalizations.of(context)!.forgotPasswordSubtitle,
-                style: GoogleFonts.inter(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w400,
-                  color: darkBlueColor,
-                  height: 1.5,
-                ),
-              ),
-              const SizedBox(height: 30),
-              SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(
-                  onPressed: _isLoading ? null : _sendPasswordReset,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: primaryColor,
-                    padding: const EdgeInsets.symmetric(vertical: 14),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(32.0),
-                    ),
-                    foregroundColor: darkBlueColor,
-                  ),
-                  child: _isLoading
-                      ? const CircularProgressIndicator(color: darkBlueColor)
-                      : Text(
-                          AppLocalizations.of(context)!.submit,
-                          style: GoogleFonts.inter(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                            color: darkBlueColor,
-                          ),
-                        ),
-                ),
-              ),
-              const SizedBox(height: 40),
-            ],
+    return BlocConsumer<AuthCubit, AuthState>(
+      listener: (context, state) {
+        if (state is AuthPasswordResetEmailSent) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+                content: Text(AppLocalizations.of(context)!.resetLinkSent)),
+          );
+          Navigator.of(context).pop();
+        } else if (state is AuthFailure) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(state.message)),
+          );
+        }
+      },
+      builder: (context, state) {
+        return Scaffold(
+          backgroundColor: Colors.white,
+          appBar: AppBar(
+            elevation: 0,
+            backgroundColor: Colors.white,
+            leading: IconButton(
+              icon: const Icon(Icons.arrow_back, color: darkBlueColor),
+              onPressed: () => Navigator.of(context).pop(),
+            ),
           ),
-        ),
-      ),
+          body: SafeArea(
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.symmetric(horizontal: 24.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const SizedBox(height: 20),
+                  Text(
+                    AppLocalizations.of(context)!.forgotPasswordTitle,
+                    style: GoogleFonts.inter(
+                      fontSize: 32,
+                      fontWeight: FontWeight.bold,
+                      color: darkBlueColor,
+                      height: 1.2,
+                    ),
+                  ),
+                  const SizedBox(height: 50),
+                  _buildEmailInputField(context),
+                  const SizedBox(height: 16),
+                  Text(
+                    AppLocalizations.of(context)!.forgotPasswordSubtitle,
+                    style: GoogleFonts.inter(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w400,
+                      color: darkBlueColor,
+                      height: 1.5,
+                    ),
+                  ),
+                  const SizedBox(height: 30),
+                  SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton(
+                      onPressed: state is AuthLoading
+                          ? null
+                          : () {
+                              final email = emailController.text.trim();
+                              if (email.isEmpty) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text(
+                                      AppLocalizations.of(context)!
+                                          .emailRequired,
+                                    ),
+                                  ),
+                                );
+                                return;
+                              }
+                              context
+                                  .read<AuthCubit>()
+                                  .resetPasswordForEmail(email);
+                            },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: primaryColor,
+                        padding: const EdgeInsets.symmetric(vertical: 14),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(32.0),
+                        ),
+                        foregroundColor: darkBlueColor,
+                      ),
+                      child: state is AuthLoading
+                          ? const CircularProgressIndicator(
+                              color: darkBlueColor)
+                          : Text(
+                              AppLocalizations.of(context)!.submit,
+                              style: GoogleFonts.inter(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                                color: darkBlueColor,
+                              ),
+                            ),
+                    ),
+                  ),
+                  const SizedBox(height: 40),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
     );
   }
 

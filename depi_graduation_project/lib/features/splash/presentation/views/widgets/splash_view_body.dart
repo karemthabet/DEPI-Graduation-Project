@@ -91,6 +91,13 @@ class _SplashViewBodyState extends State<SplashViewBody>
 
     if (!mounted) return;
 
+    // SAFETY CHECK:
+    // If we are not the top-most screen (e.g. Password Reset safely opened on top),
+    // then STOP. Do not redirect.
+    if (ModalRoute.of(context)?.isCurrent != true) {
+      return;
+    }
+
     if (session != null) {
       // User is logged in
       context.go(RoutesName.mainView);

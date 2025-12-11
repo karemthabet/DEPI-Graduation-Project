@@ -14,17 +14,19 @@ class AuthSuccess extends AuthState {}
 class AuthFailure extends AuthState {
   final String message;
   AuthFailure(this.message);
-  
+
   @override
   List<Object> get props => [message];
 }
 
 class AuthEmailVerificationRequired extends AuthState {
   final String message;
-  final String email; 
-  
+  final String email;
+
   AuthEmailVerificationRequired(this.message, this.email);
-  
+
   @override
   List<Object> get props => [message, email];
 }
+
+class AuthPasswordResetEmailSent extends AuthState {}

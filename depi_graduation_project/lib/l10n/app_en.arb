@@ -126,5 +126,12 @@
   "todayVisits": "Today Visits",
   "loginToSeeVisitList": "You must log in to see your visit list",
   "loginToAddToVisitList": "You must log in to add places to your visit list",
-  "loginToAddToFavourites": "You must log in to add places to your favourites"
+  "loginToAddToFavourites": "You must log in to add places to your favourites",
+  "resetPasswordTitle": "Reset Password",
+  "resetPasswordSubtitle": "Enter your new password below.",
+  "enterNewPassword": "Enter new password",
+  "updatePassword": "Update Password",
+  "passwordUpdatedSuccess": "Password updated successfully",
+  "passwordLengthError": "Password must be at least 6 characters",
+  "resetPasswordLabel": "New Password"
 }

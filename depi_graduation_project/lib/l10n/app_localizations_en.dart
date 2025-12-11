@@ -15,7 +15,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get startJourney => 'Start Your Egyptian Journey';
 
   @override
-  String get exploreSubtitle => 'Explore ancient wonders, hidden gems,\nand timeless treasures';
+  String get exploreSubtitle =>
+      'Explore ancient wonders, hidden gems,\nand timeless treasures';
 
   @override
   String get login => 'Log In';
@@ -42,7 +43,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get forgotPasswordTitle => 'Forgot password?';
 
   @override
-  String get forgotPasswordSubtitle => 'We will send you a message to set or reset your new password';
+  String get forgotPasswordSubtitle =>
+      'We will send you a message to set or reset your new password';
 
   @override
   String get authValidation => 'Email and password are required';
@@ -93,7 +95,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get emailRequired => 'Email is required';
 
   @override
-  String get resetLinkSent => 'If an account exists, a password reset link has been sent to your email';
+  String get resetLinkSent =>
+      'If an account exists, a password reset link has been sent to your email';
 
   @override
   String get browseByCategory => 'Browse By Category';
@@ -137,7 +140,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get locationServiceDisabledTitle => 'Location Service Disabled';
 
   @override
-  String get locationServiceDisabledMessage => 'The app needs location services enabled to show nearby places.\n\nDo you want to enable it now?';
+  String get locationServiceDisabledMessage =>
+      'The app needs location services enabled to show nearby places.\n\nDo you want to enable it now?';
 
   @override
   String get later => 'Later';
@@ -149,7 +153,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get permissionDeniedTitle => 'Location Permission Denied';
 
   @override
-  String get permissionDeniedMessage => 'The app needs location permission to show nearby places.\n\nDo you want to grant permission?';
+  String get permissionDeniedMessage =>
+      'The app needs location permission to show nearby places.\n\nDo you want to grant permission?';
 
   @override
   String get deny => 'Deny';
@@ -158,16 +163,19 @@ class AppLocalizationsEn extends AppLocalizations {
   String get grantPermission => 'Grant Permission';
 
   @override
-  String get permissionDeniedForeverTitle => 'Location Permission Denied Forever';
+  String get permissionDeniedForeverTitle =>
+      'Location Permission Denied Forever';
 
   @override
-  String get permissionDeniedForeverMessage => 'Location permission is permanently denied.\n\nPlease go to settings and enable it manually.';
+  String get permissionDeniedForeverMessage =>
+      'Location permission is permanently denied.\n\nPlease go to settings and enable it manually.';
 
   @override
   String get openSettings => 'Open Settings';
 
   @override
-  String get permissionDeniedSnackBar => 'Location permission denied. The app cannot show nearby places.';
+  String get permissionDeniedSnackBar =>
+      'Location permission denied. The app cannot show nearby places.';
 
   @override
   String get profile => 'Profile';
@@ -185,7 +193,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get arabic => 'Arabic';
 
   @override
-  String get errorLoadingProfile => 'Error loading profile. Please log in first.';
+  String get errorLoadingProfile =>
+      'Error loading profile. Please log in first.';
 
   @override
   String get goToLogin => 'Go to Login';
@@ -277,19 +286,22 @@ class AppLocalizationsEn extends AppLocalizations {
   String get onboardingTitle1 => 'Discover Famous\nLandmarks';
 
   @override
-  String get onboardingDesc1 => 'Explore Egypt’s iconic attractions, \n from ancient wonders to modern gems';
+  String get onboardingDesc1 =>
+      'Explore Egypt’s iconic attractions, \n from ancient wonders to modern gems';
 
   @override
   String get onboardingTitle2 => 'Plan Your Journey';
 
   @override
-  String get onboardingDesc2 => 'Create and customize your own visit list with museums, malls, hidden gems, and iconic landmarks.';
+  String get onboardingDesc2 =>
+      'Create and customize your own visit list with museums, malls, hidden gems, and iconic landmarks.';
 
   @override
   String get onboardingTitle3 => 'Navigate With Ease';
 
   @override
-  String get onboardingDesc3 => 'Get map directions, live alerts, and instant notifications when you’re near a landmark.';
+  String get onboardingDesc3 =>
+      'Get map directions, live alerts, and instant notifications when you’re near a landmark.';
 
   @override
   String get illustrationMissing => 'Illustration Missing';
@@ -328,8 +340,31 @@ class AppLocalizationsEn extends AppLocalizations {
   String get loginToSeeVisitList => 'You must log in to see your visit list';
 
   @override
-  String get loginToAddToVisitList => 'You must log in to add places to your visit list';
+  String get loginToAddToVisitList =>
+      'You must log in to add places to your visit list';
 
   @override
-  String get loginToAddToFavourites => 'You must log in to add places to your favourites';
+  String get loginToAddToFavourites =>
+      'You must log in to add places to your favourites';
+
+  @override
+  String get resetPasswordTitle => 'Reset Password';
+
+  @override
+  String get resetPasswordSubtitle => 'Enter your new password below.';
+
+  @override
+  String get enterNewPassword => 'Enter new password';
+
+  @override
+  String get updatePassword => 'Update Password';
+
+  @override
+  String get passwordUpdatedSuccess => 'Password updated successfully';
+
+  @override
+  String get passwordLengthError => 'Password must be at least 6 characters';
+
+  @override
+  String get resetPasswordLabel => 'New Password';
 }

@@ -8,6 +8,7 @@ import 'package:whatsapp/core/services/google_maps_place_service.dart';
 import 'package:whatsapp/core/services/setup_service_locator.dart';
 import 'package:whatsapp/core/utils/constants/supabase_constants.dart';
 import 'package:whatsapp/core/utils/router/app_router.dart';
+import 'package:whatsapp/core/utils/router/routes_name.dart';
 import 'package:whatsapp/features/FavouriteScreen/data/models/repositories/favourite_repository_impl.dart';
 import 'package:whatsapp/features/FavouriteScreen/data/models/repositories/favourites_repository.dart';
 import 'package:whatsapp/features/FavouriteScreen/presentation/cubit/favourite_cubit.dart';
@@ -69,6 +70,9 @@ void main() async {
     if (event == AuthChangeEvent.signedIn && session != null) {
       print('✅ User signed in: ${session.user.email}');
       print('✅ Email confirmed: ${session.user.emailConfirmedAt != null}');
+    } else if (event == AuthChangeEvent.passwordRecovery) {
+      print('Password Recovery Event Detected');
+      AppRouter.router.push(RoutesName.updatePassword);
     }
   });
 

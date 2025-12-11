@@ -8,6 +8,7 @@ import 'package:whatsapp/features/home/presentation/views/home_view.dart';
 import 'package:whatsapp/features/home/presentation/views/widgets/places_example_usage.dart';
 import 'package:whatsapp/features/login/presentation/views/sign_in_view.dart';
 import 'package:whatsapp/features/login/presentation/views/signup_view.dart';
+import 'package:whatsapp/features/login/presentation/views/update_password_view.dart';
 import 'package:whatsapp/features/login/presentation/views/welcome_view.dart';
 import 'package:whatsapp/features/profile/presentation/views/email_confirmation_view.dart';
 import 'package:whatsapp/features/root_navigation_glass/presentation/views/main_view.dart';
@@ -23,6 +24,10 @@ class AppRouter {
     initialLocation: RoutesName.splash,
     errorBuilder: (context, state) => const General404Page(),
     routes: [
+      GoRoute(
+        path: '/',
+        builder: (context, state) => const SplashView(),
+      ),
       GoRoute(
         name: RoutesName.mainView,
         path: RoutesName.mainView,
@@ -105,6 +110,11 @@ class AppRouter {
         name: RoutesName.changePasswordView,
         path: RoutesName.changePasswordView,
         builder: (context, state) => const ChangePasswordView(),
+      ),
+      GoRoute(
+        name: RoutesName.updatePassword,
+        path: RoutesName.updatePassword,
+        builder: (context, state) => const UpdatePasswordView(),
       ),
     ],
   );
