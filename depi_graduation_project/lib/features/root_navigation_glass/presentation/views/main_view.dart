@@ -3,7 +3,6 @@ import 'package:whatsapp/features/home/presentation/views/home_view.dart';
 import 'package:whatsapp/features/profile/presentation/views/profile_veiw.dart';
 import 'package:whatsapp/features/root_navigation_glass/presentation/views/widgets/custom_glass_nav_bar.dart';
 import 'package:whatsapp/features/FavouriteScreen/presentation/view/favourite_view.dart';
-import 'package:whatsapp/supabase_service.dart';
 import 'package:whatsapp/features/visit_Screen/presentation/pages/visit_list_screen.dart';
 
 class MainView extends StatefulWidget {
