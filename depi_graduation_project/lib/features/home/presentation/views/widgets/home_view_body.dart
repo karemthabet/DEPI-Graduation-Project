@@ -107,17 +107,17 @@ class _HomeViewBodyState extends State<HomeViewBody> {
                 const BuildRecommendationList(),
                 SizedBox(height: 20.h),
 
-                // Recently Viewed Section (From Logic)
-                Text(
-                  AppLocalizations.of(context)!.recentlyViewed,
-                  style: TextStyle(
-                    fontSize: 18.sp,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black87,
-                  ),
-                ),
-                SizedBox(height: 10.h),
-                const BuildRecentlyViewed(),
+                // // Recently Viewed Section (From Logic)
+                // Text(
+                //   AppLocalizations.of(context)!.recentlyViewed,
+                //   style: TextStyle(
+                //     fontSize: 18.sp,
+                //     fontWeight: FontWeight.bold,
+                //     color: Colors.black87,
+                //   ),
+                // ),
+                // SizedBox(height: 10.h),
+                // const BuildRecentlyViewed(),
                 SizedBox(height: 20.h),
               ],
             ),
