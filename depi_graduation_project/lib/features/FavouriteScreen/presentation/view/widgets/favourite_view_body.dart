@@ -65,7 +65,7 @@ class FavouriteViewBody extends StatelessWidget {
         actions: [
           IconButton(
             onPressed: () => Navigator.push(
-                context, MaterialPageRoute(builder: (_) => const MainView())),
+                context, MaterialPageRoute(builder: (_) => const MainView()),),
             icon: Image.asset('assets/images/plus.png', height: 24, width: 24),
           ),
         ],

@@ -2,7 +2,6 @@ import 'package:go_router/go_router.dart';
 import 'package:whatsapp/core/general_404_page/general_404_page.dart';
 import 'package:whatsapp/core/utils/router/routes_name.dart';
 import 'package:whatsapp/features/home/data/models/item_model.dart';
-import 'package:whatsapp/features/home/presentation/views/categories_view.dart';
 import 'package:whatsapp/features/home/presentation/views/categories_view_details.dart';
 import 'package:whatsapp/features/home/presentation/views/home_view.dart';
 import 'package:whatsapp/features/home/presentation/views/widgets/places_example_usage.dart';
@@ -53,14 +52,14 @@ class AppRouter {
           return CategoriesViewDetails(itemModel: itemModel);
         },
       ),
-      GoRoute(
-        name: RoutesName.categoriesView,
-        path: RoutesName.categoriesView,
-        builder: (context, state) {
-          final String title = state.extra as String;
-          return CategoriesView(title: title);
-        },
-      ),
+      // GoRoute(
+      //   name: RoutesName.categoriesView,
+      //   path: RoutesName.categoriesView,
+      //   builder: (context, state) {
+      //     final String title = state.extra as String;
+      //     return CategoriesView(title: title);
+      //   },
+      // ),
       GoRoute(
         name: RoutesName.profileView,
         path: RoutesName.profileView,

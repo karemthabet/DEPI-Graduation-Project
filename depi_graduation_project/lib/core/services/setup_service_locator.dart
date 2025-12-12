@@ -78,5 +78,5 @@ Future<void> setupServiceLocator() async {
   getIt.registerFactory(() => VisitCubit(
     visitRepository: getIt<VisitRepository>(),
     userRepository: getIt<UserRepository>(),
-  ));
+  ),);
 }

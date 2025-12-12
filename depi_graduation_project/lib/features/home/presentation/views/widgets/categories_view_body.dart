@@ -25,7 +25,7 @@ class CategoriesViewBody extends StatelessWidget {
               const GeneralArrowBack(),
               Text(title, style: AppTextStyles.titleLarge(context)),
               SizedBox(height: 20.h),
-              const BuildRecentlyViewed(),
+              //const BuildRecentlyViewed(),
             ],
           ),
         ),

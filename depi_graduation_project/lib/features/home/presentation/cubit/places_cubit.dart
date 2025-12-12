@@ -11,10 +11,6 @@ class PlacesCubit extends Cubit<PlacesState> {
   final PlacesRepository repository;
 
   PlacesCubit({required this.repository}) : super(PlacesInitial());
-
-
-
-
   Future<void> loadPlaces() async {
     // Emit loading state
     emit(PlacesLoading());
